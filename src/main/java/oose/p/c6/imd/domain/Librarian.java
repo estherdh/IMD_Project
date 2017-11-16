@@ -9,7 +9,7 @@ public class Librarian {
 
 	//TODO: Aanroepen van buitenaf door REST.
 	public Response removeQuest(int entryId, String token) {
-		User user = TokenManager.getUserByToken(token);
+		User user = TokenManager.getInstance().getUserFromToken(token);
 		return user.removeQuest(entryId);
 	}
 }

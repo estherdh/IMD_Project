@@ -21,7 +21,7 @@ public class ConnectMySQLTest {
 	@Test
 	public void getConnectionTest() throws SQLException {
 		//test
-		connection = ConnectMySQL.getConnection();
+		connection = new ConnectMySQL().getConnection();
 		//check
 		assertThat(connection.getMetaData().getUserName(), is(equalTo("root@localhost")));
 	}
