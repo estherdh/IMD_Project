@@ -1,10 +1,9 @@
-package oose.p.c6.imd.Dao;
+package oose.p.c6.imd.persistent;
 
-import org.h2.jdbc.JdbcSQLException;
+import oose.p.c6.imd.persistent.dao.QuestDao;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import java.sql.*;
 

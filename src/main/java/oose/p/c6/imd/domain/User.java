@@ -1,6 +1,7 @@
-package oose.p.c6.imd.Service;
+package oose.p.c6.imd.domain;
 
-import oose.p.c6.imd.Dao.QuestDao;
+import oose.p.c6.imd.persistent.dao.QuestDao;
+import oose.p.c6.imd.service.TokenManager;
 
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;

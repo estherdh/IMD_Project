@@ -1,7 +1,7 @@
-package oose.p.c6.imd;
+package oose.p.c6.imd.domain;
 
-import oose.p.c6.imd.Service.User;
-import oose.p.c6.imd.Service.TokenManager;
+import oose.p.c6.imd.domain.User;
+import oose.p.c6.imd.service.TokenManager;
 
 import javax.ws.rs.core.Response;
 

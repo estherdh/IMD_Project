@@ -1,4 +1,6 @@
-package oose.p.c6.imd.Service;
+package oose.p.c6.imd.service;
+
+import oose.p.c6.imd.domain.User;
 
 import java.util.ArrayList;
 

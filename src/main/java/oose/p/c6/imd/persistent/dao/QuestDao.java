@@ -1,11 +1,14 @@
-package oose.p.c6.imd.Dao;
+package oose.p.c6.imd.persistent.dao;
+
+import oose.p.c6.imd.persistent.ConnectMySQL;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.List;
 
-public class QuestDao {
-	private Connection conn = ConnectMySQL.getConnection();
+public class QuestDao implements IDao<Quest>{
+	private Connection conn = new ConnectMySQL().getConnection();
 
 	public boolean removeQuest(int entryId, int userId) {
 		try {
@@ -18,5 +21,25 @@ public class QuestDao {
 			e.printStackTrace();
 			return false;
 		}
+	}
+
+	public void add(Quest entity) {
+
+	}
+
+	public void update(Quest updatedEntity) {
+
+	}
+
+	public void remove(Quest entity) {
+
+	}
+
+	public List<Quest> list() {
+		return null;
+	}
+
+	public Quest find(int id) {
+		return null;
 	}
 }
