@@ -23,4 +23,8 @@ public class Token {
     public User getUser(){
         return u;
     }
+
+    public String getTokenString(){
+        return string;
+    }
 }
