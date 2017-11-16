@@ -2,21 +2,41 @@ package oose.p.c6.imd.service;
 
 import oose.p.c6.imd.domain.User;
 
+import javax.ejb.Singleton;
+import java.time.Instant;
 import java.util.ArrayList;
 
 public class TokenManager {
-	public static ArrayList<User> users = new ArrayList<User>();
+    private static TokenManager instance;
+    private ArrayList<Token> tokens = new ArrayList<>();
 
-	public static void addUser(User user) {
-		users.add(user);
+	public static TokenManager getInstance(){
+	    if(instance != null){
+            return instance;
+        } else {
+	        instance = new TokenManager();
+	        return instance;
+        }
 	}
 
-	public static User getUserByToken(String token) {
-		for (User user : users) {
-			if (user.getToken().equals(token)) {
-				return user;
-			}
-		}
-		return null;
-	}
+    private TokenManager() {
+
+    }
+
+    public Token createTokenForUser(User u){
+	    Token t = new Token(u, Instant.now().getEpochSecond());
+	    tokens.add(t);
+	    return t;
+    }
+
+    public User getUserFromToken(String t){
+        for(Token token : tokens){
+            if(token.tokenStringCorrect(t)){
+                return token.getUser();
+            }
+        }
+        return null;
+    }
+
+
 }

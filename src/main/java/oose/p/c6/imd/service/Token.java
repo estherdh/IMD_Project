@@ -1,0 +1,26 @@
+package oose.p.c6.imd.service;
+
+import oose.p.c6.imd.domain.User;
+
+class Token {
+    private String string;
+    private User u;
+    private Long timeCreated;
+    Token(User user, long timeCreated) {
+        this.u = user;
+        this.timeCreated = timeCreated;
+        this.string = generateRandomTokenSting();
+    }
+
+    private static String generateRandomTokenSting(){
+        return new RandomTokenString().nextString();
+    }
+
+    public boolean tokenStringCorrect(String t){
+        return t.equals(string);
+    }
+
+    public User getUser(){
+        return u;
+    }
+}

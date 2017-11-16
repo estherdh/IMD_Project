@@ -12,8 +12,7 @@ public class User {
 
 	private int userId;
 
-	public User() {
-		TokenManager.addUser(this);
+	public User(){
 	}
 
 	public Response removeQuest(int entryId) {

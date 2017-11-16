@@ -1,4 +1,4 @@
-package oose.p.c6.imd.service;
+package oose.p.c6.imd.domain;
 
 import oose.p.c6.imd.domain.User;
 import oose.p.c6.imd.persistent.dao.QuestDao;
