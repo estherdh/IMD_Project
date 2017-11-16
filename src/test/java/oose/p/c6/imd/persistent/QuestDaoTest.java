@@ -17,7 +17,6 @@ public class QuestDaoTest {
 	@Before
 	public void setUp() throws SQLException {
 		conn = DriverManager.getConnection("jdbc:h2:~/librarian", "sa", "");
-		ConnectMySQL.setConnection(conn);
 		dao = new QuestDao();
 	}
 

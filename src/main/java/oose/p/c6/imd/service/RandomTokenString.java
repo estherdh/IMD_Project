@@ -7,7 +7,7 @@ import java.util.Objects;
 import java.util.Random;
 
 @Singleton
-class RandomTokenString {
+public class RandomTokenString {
     /*
      * Modified from https://stackoverflow.com/questions/41107/how-to-generate-a-random-alpha-numeric-string
      */

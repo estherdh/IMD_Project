@@ -2,7 +2,7 @@ package oose.p.c6.imd.service;
 
 import oose.p.c6.imd.domain.User;
 
-class Token {
+public class Token {
     private String string;
     private User u;
     private Long timeCreated;
