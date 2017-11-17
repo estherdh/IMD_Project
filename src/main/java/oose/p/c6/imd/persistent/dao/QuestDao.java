@@ -1,5 +1,6 @@
 package oose.p.c6.imd.persistent.dao;
 
+import oose.p.c6.imd.domain.Quest;
 import oose.p.c6.imd.persistent.ConnectMySQL;
 
 import java.sql.Connection;
@@ -11,16 +12,7 @@ public class QuestDao implements IDao<Quest>{
 	private Connection conn = new ConnectMySQL().getConnection();
 
 	public boolean removeQuest(int entryId, int userId) {
-		try {
-			PreparedStatement query = conn.prepareStatement("DELETE FROM QuestLog WHERE EntryId = ? AND UserId = ?;");
-			query.setInt(1, entryId);
-			query.setInt(2, userId);
-			query.executeUpdate();
-			return true;
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}
+		return false;
 	}
 
 	public void add(Quest entity) {
@@ -32,7 +24,16 @@ public class QuestDao implements IDao<Quest>{
 	}
 
 	public void remove(Quest entity) {
-
+//		try {
+//			PreparedStatement query = conn.prepareStatement("DELETE FROM QuestLog WHERE EntryId = ? AND UserId = ?;");
+//			query.setInt(1, entryId);
+//			query.setInt(2, userId);
+//			query.executeUpdate();
+//			return true;
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//			return false;
+//		}
 	}
 
 	public List<Quest> list() {

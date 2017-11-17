@@ -43,6 +43,8 @@ public class User extends model{
         }
         return generatedPassword;
     }
+
+    //TODO revamp method
 //	public Response removeQuest(int entryId) {
 //		if (questDao.removeQuest(entryId, id)) {
 //			return Response.status(200).build();
