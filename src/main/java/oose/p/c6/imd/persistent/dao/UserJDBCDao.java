@@ -39,6 +39,7 @@ public class UserJDBCDao implements IUserDao {
             }
             connection.close();
         } catch (SQLException e) {
+            e.printStackTrace();
         }
         return users;
     }
@@ -46,11 +47,10 @@ public class UserJDBCDao implements IUserDao {
     @Override
     public User find(int id) {
         Connection connection = new ConnectMySQL().getConnection();
-        ResultSet rs = null;
         try {
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM user WHERE UserId = ?");
             ps.setInt(1, id);
-            rs = ps.executeQuery();
+            ResultSet rs = ps.executeQuery();
             if(rs.next()){
                 return new User(rs.getInt("UserId"), rs.getString("Username"), rs.getString("Password"), rs.getString("DisplayName"), rs.getInt("Coins"));
             }
@@ -63,14 +63,14 @@ public class UserJDBCDao implements IUserDao {
     @Override
     public User findUserByUsername(String username) {
         Connection connection = new ConnectMySQL().getConnection();
-        ResultSet rs = null;
         try {
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM users WHERE Username = ?");
             ps.setString(1, username);
-            rs = ps.executeQuery();
+            ResultSet rs = ps.executeQuery();
             if(rs.next()){
                 User u = new User(rs.getInt("UserId"), rs.getString("Username"), rs.getString("Password"), rs.getString("DisplayName"), rs.getInt("Coins"));
                 System.out.println("YOU ARELOOKING FOR THIS LINE IN THIS TRACE" + u.getId());
+                return u; //Deze was niet aanwezig...
             }
         } catch (SQLException e) {
             e.printStackTrace();
