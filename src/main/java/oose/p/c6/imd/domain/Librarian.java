@@ -22,6 +22,12 @@ public class Librarian {
         User u = getUserByEmail(email);
         return u.passwordCorrect(password);
     }
+
+    public void scanQrCode(User user, String qrCode) {
+        Action qrScanAction = new QrScanAction(qrCode);
+        user.
+    }
+
     public User getUserByEmail(String email){
         return users.findUserByemail(email);
     }

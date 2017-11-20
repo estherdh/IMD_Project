@@ -17,9 +17,8 @@ import java.util.List;
 
 @Path("/")
 public class RESTService {
-
     @Inject
-    Librarian l;
+    private Librarian l;
 
     @GET
     public String hello(){
@@ -37,5 +36,13 @@ public class RESTService {
             return Response.status(200).entity(t.getTokenString()).build();
         }
         return Response.status(400).build();
+    }
+
+    @POST
+    @Path("/quest/qr")
+    public void scanQrCode(JsonObject jo){
+        String qrCode = jo.getString("qrCode");
+        User user = TokenManager.getInstance().getUserFromToken(jo.getString("token"));
+		l.scanQrCode(user, qrCode);
     }
 }
