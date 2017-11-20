@@ -1,34 +1,50 @@
 package oose.p.c6.imd.domain;
 
-import oose.p.c6.imd.persistent.dao.QuestDao;
-import oose.p.c6.imd.service.TokenManager;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
-import javax.inject.Inject;
-import javax.ws.rs.core.Response;
+public class User extends Model {
+	//private QuestLog ql;
+	private String email;
+    private String password;
+    private String display_name;
+    private int coins;
 
-public class User {
-	@Inject
-	private QuestDao questDao;
-
-	private int userId;
-
-	public User(){
+	public User(int id, String email, String password, String display_name, int coins){
+		super(id);
+		this.email = email;
+		this.password = password;
+		this.display_name = display_name;
+		this.coins = coins;
 	}
 
-	public Response removeQuest(int entryId) {
-		if (questDao.removeQuest(entryId, userId)) {
-			return Response.status(200).build();
-		} else {
-			return Response.status(400).build();
-		}
-	}
+	public boolean passwordCorrect(String actual){
+        return hashPassword(actual).equals(password);
+    }
 
-	public int getUserId() {
-		return userId;
-	}
+    public String hashPassword(String toHash){
+        String generatedPassword = null;
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            byte[] bytes = md.digest(toHash.getBytes());
+            StringBuilder sb = new StringBuilder();
+            for(int i=0; i< bytes.length ;i++)
+            {
+                sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
+            }
+            generatedPassword = sb.toString();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return generatedPassword;
+    }
 
-	public void setUserId(int userId) {
-		this.userId = userId;
-	}
-
+    //TODO revamp method
+//	public Response removeQuest(int entryId) {
+//		if (questDao.removeQuest(entryId, id)) {
+//			return Response.status(200).build();
+//		} else {
+//			return Response.status(400).build();
+//		}
+//	}
 }

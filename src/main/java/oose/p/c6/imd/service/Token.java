@@ -12,7 +12,7 @@ public class Token {
         this.string = generateRandomTokenSting();
     }
 
-    private static String generateRandomTokenSting(){
+    private String generateRandomTokenSting(){
         return new RandomTokenString().nextString();
     }
 
@@ -22,5 +22,9 @@ public class Token {
 
     public User getUser(){
         return u;
+    }
+
+    public String getTokenString(){
+        return string;
     }
 }
