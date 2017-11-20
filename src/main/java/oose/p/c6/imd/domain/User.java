@@ -1,23 +1,18 @@
 package oose.p.c6.imd.domain;
 
-import oose.p.c6.imd.persistent.dao.QuestDao;
-import oose.p.c6.imd.service.TokenManager;
-
-import javax.inject.Inject;
-import javax.ws.rs.core.Response;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-public class User extends model{
+public class User extends Model {
 	//private QuestLog ql;
-	private String username;
+	private String email;
     private String password;
     private String display_name;
     private int coins;
 
-	public User(int id, String username, String password, String display_name, int coins){
+	public User(int id, String email, String password, String display_name, int coins){
 		super(id);
-		this.username = username;
+		this.email = email;
 		this.password = password;
 		this.display_name = display_name;
 		this.coins = coins;

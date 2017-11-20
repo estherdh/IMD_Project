@@ -18,9 +18,12 @@ public class Librarian {
         return users.helloWorld();
     }
 
-
-    public User getUserByUsername(String username){
-        return users.findUserByUsername(username);
+    public boolean verifyLogin(String email, String password) {
+        User u = getUserByEmail(email);
+        return u.passwordCorrect(password);
+    }
+    public User getUserByEmail(String email){
+        return users.findUserByemail(email);
     }
 //	TODO: Aanroepen van buitenaf door REST.
 //	public Response removeQuest(int entryId, String token) {

@@ -31,10 +31,9 @@ public class RESTService {
     @Path("/login")
     @Produces(MediaType.APPLICATION_JSON)
     public Response login(JsonObject jo){
-        User u = l.getUserByUsername(jo.getString("username"));
-        System.out.println(jo.getString("password"));
-        if(u.passwordCorrect(jo.getString("password"))){
-            Token t = TokenManager.getInstance().createTokenForUser(u);
+        String email = jo.getString("email");
+        if(l.verifyLogin(email, jo.getString("password"))){
+            Token t = TokenManager.getInstance().createTokenForUser(l.getUserByEmail(email));
             return Response.status(200).entity(t.getTokenString()).build();
         }
         return Response.status(400).build();
