@@ -14,7 +14,7 @@ import static org.mockito.Mockito.mock;
 public class TokenTest {
     @Test
     public void createTokenForUser(){
-        User u = new User(1, "a","a","a", 100);
+        User u = new User(1, "a","a","a", 100, 1);
         Token t = TokenManager.getInstance().createTokenForUser(u);
         assertEquals(u, t.getUser());
     }

@@ -49,7 +49,7 @@ public class QuestJDBCDao implements IDao<Quest>{
 	}
 
 	public List<Quest> getQuestsFromUser(int userId, int languageId) {
-		Connection connection = new ConnectMySQL().getConnection();
+		Connection connection = ConnectMySQL.getInstance().getConnection();
 		List<Quest> questList = new ArrayList<>();
 		try {
 			PreparedStatement ps = connection.prepareStatement("" +
@@ -77,7 +77,7 @@ public class QuestJDBCDao implements IDao<Quest>{
 	}
 
 	public Map<String, String> geVariablesOfQuest(int entryId) {
-		Connection connection = new ConnectMySQL().getConnection();
+		Connection connection = ConnectMySQL.getInstance().getConnection();
 		Map<String, String> propertyList = new HashMap<>();
 		try {
 			PreparedStatement ps = connection.prepareStatement("SELECT * FROM questproperties WHERE EntryId = ?;");

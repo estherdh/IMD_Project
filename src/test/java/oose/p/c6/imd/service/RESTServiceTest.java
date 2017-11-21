@@ -38,7 +38,7 @@ public class RESTServiceTest {
 	public void scanQrCode() throws Exception {
 		//init
 		TokenManager manager = TokenManager.getInstance();
-		User user = new User(1, "test@test", "test", "Tester test", 0);
+		User user = new User(1, "test@test", "test", "Tester test", 0, 1);
 		String token = manager.createTokenForUser(user).getTokenString();
 		JsonObject jo = Json.createObjectBuilder()
 				.add("qrCode", "aldfjalskdasdfasdf")

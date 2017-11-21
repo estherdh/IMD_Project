@@ -26,12 +26,12 @@ public class UserJDBCDao implements IUserDao {
     }
 
     public List<User> list() {
-        Connection connection = new ConnectMySQL().getConnection();
+        Connection connection = ConnectMySQL.getInstance().getConnection();
         List<User> users = new ArrayList<User>();
         try {
             ResultSet rs = connection.prepareStatement("SELECT * FROM user").executeQuery();
             while (rs.next()) {
-                users.add(new User(rs.getInt("UserId"), rs.getString("email"), rs.getString("Password"), rs.getString("DisplayName"), rs.getInt("Coins")));
+//                users.add(new User(rs.getInt("UserId"), rs.getString("email"), rs.getString("Password"), rs.getString("DisplayName"), rs.getInt("Coins")));
             }
             connection.close();
         } catch (SQLException e) {
@@ -40,14 +40,14 @@ public class UserJDBCDao implements IUserDao {
     }
 
     public User find(int id) {
-        Connection connection = new ConnectMySQL().getConnection();
+        Connection connection = ConnectMySQL.getInstance().getConnection();
         ResultSet rs = null;
         try {
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM user WHERE UserId = ?");
             ps.setInt(1, id);
             rs = ps.executeQuery();
             if(rs.next()){
-                return new User(rs.getInt("UserId"), rs.getString("email"), rs.getString("Password"), rs.getString("DisplayName"), rs.getInt("Coins"));
+//                return new User(rs.getInt("UserId"), rs.getString("email"), rs.getString("Password"), rs.getString("DisplayName"), rs.getInt("Coins"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -56,15 +56,15 @@ public class UserJDBCDao implements IUserDao {
     }
 
     public User findUserByemail(String email) {
-        Connection connection = new ConnectMySQL().getConnection();
+        Connection connection = ConnectMySQL.getInstance().getConnection();
         ResultSet rs = null;
         try {
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM users WHERE email = ?");
             ps.setString(1, email);
             rs = ps.executeQuery();
             if(rs.next()){
-                User u = new User(rs.getInt("UserId"), rs.getString("email"), rs.getString("Password"), rs.getString("DisplayName"), rs.getInt("Coins"));
-                System.out.println("YOU ARELOOKING FOR THIS LINE IN THIS TRACE" + u.getId());
+//                User u = new User(rs.getInt("UserId"), rs.getString("email"), rs.getString("Password"), rs.getString("DisplayName"), rs.getInt("Coins"));
+//                System.out.println("YOU ARELOOKING FOR THIS LINE IN THIS TRACE" + u.getId());
             }
         } catch (SQLException e) {
             e.printStackTrace();
