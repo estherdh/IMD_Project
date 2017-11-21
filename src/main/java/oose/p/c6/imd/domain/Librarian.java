@@ -25,7 +25,7 @@ public class Librarian {
 
     public void scanQrCode(User user, String qrCode) {
         Action qrScanAction = new QrScanAction(qrCode);
-        user.
+        user.checkQuestCompleted(qrScanAction);
     }
 
     public User getUserByEmail(String email){

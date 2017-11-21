@@ -9,13 +9,17 @@ public class User extends Model {
     private String password;
     private String display_name;
     private int coins;
+    private int taalId;
+    private QuestLog questLog;
 
-	public User(int id, String email, String password, String display_name, int coins){
+	public User(int id, String email, String password, String display_name, int coins, int taalId){
 		super(id);
 		this.email = email;
 		this.password = password;
 		this.display_name = display_name;
 		this.coins = coins;
+		this.taalId = taalId;
+		this.questLog = new QuestLog();
 	}
 
 	public boolean passwordCorrect(String actual){
@@ -39,6 +43,14 @@ public class User extends Model {
         return generatedPassword;
     }
 
+    public void checkQuestCompleted(Action action) {
+		int newCoins = questLog.checkQuestComplete(action);
+		if (newCoins > 0) {
+			coins += newCoins;
+			//TODO Updaten user naar de database. Update functie bestaat nog niet
+		}
+	}
+
     //TODO revamp method
 //	public Response removeQuest(int entryId) {
 //		if (questDao.removeQuest(entryId, id)) {
@@ -47,4 +59,42 @@ public class User extends Model {
 //			return Response.status(400).build();
 //		}
 //	}
+
+
+	public String getEmail() {
+		return email;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public String getDisplay_name() {
+		return display_name;
+	}
+
+	public int getCoins() {
+		return coins;
+	}
+
+	//test functie.
+	public void setQuestLog(QuestLog questLog) {
+    	this.questLog = questLog;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public void setDisplay_name(String display_name) {
+		this.display_name = display_name;
+	}
+
+	public void setCoins(int coins) {
+		this.coins = coins;
+	}
 }

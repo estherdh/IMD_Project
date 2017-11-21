@@ -1,6 +1,6 @@
 package oose.p.c6.imd.persistent;
 
-import oose.p.c6.imd.persistent.dao.QuestDao;
+import oose.p.c6.imd.persistent.dao.QuestJDBCDao;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,13 +11,14 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 
 public class QuestDaoTest {
-	private QuestDao dao;
+	private QuestJDBCDao dao;
 	private Connection conn;
 
 	@Before
 	public void setUp() throws SQLException {
 		conn = DriverManager.getConnection("jdbc:h2:~/librarian", "sa", "");
-		dao = new QuestDao();
+
+		dao = new QuestJDBCDao();
 	}
 
 	@After
