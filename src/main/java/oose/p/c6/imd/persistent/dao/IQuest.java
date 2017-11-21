@@ -5,5 +5,5 @@ import oose.p.c6.imd.domain.Quest;
 import java.util.List;
 
 public interface IQuest extends IDao<Quest> {
-	List<Quest> getQuestsFromUser(int id);
+	List<Quest> getQuestsForUser(int id, int languageID);
 }
