@@ -16,7 +16,7 @@ public class UserJDBCDao implements IUserDao {
     public void add(User entity) {
         Connection connection = new ConnectMySQL().getConnection();
         try{
-            PreparedStatement ps = connection.prepareStatement("INSERT INTO user (`Email`, `Password`, `DisplayName`, `Coins`, `LanguageId`) VALUES (?, ?, ?, ?, ?)");
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO Users (`Email`, `Password`, `DisplayName`, `Coins`, `LanguageId`) VALUES (?, ?, ?, ?, ?)");
             ps = fillVariables(ps, entity.getEmail(), entity.getPassword(), entity.getDisplay_name(), entity.getCoins(), entity.getLanguageId());
             ps.execute();
             connection.close();
@@ -37,7 +37,7 @@ public class UserJDBCDao implements IUserDao {
     public void update(User entity) {
         Connection connection = new ConnectMySQL().getConnection();
         try{
-            PreparedStatement ps = connection.prepareStatement("UPDATE user SET `Email` = ?," +
+            PreparedStatement ps = connection.prepareStatement("UPDATE Users SET `Email` = ?," +
                     " `Password` = ?," +
                     " `DisplayName` = ?," +
                     " `Coins` = ?," +
@@ -55,7 +55,7 @@ public class UserJDBCDao implements IUserDao {
     public void remove(User entity) {
         Connection connection = new ConnectMySQL().getConnection();
         try{
-            PreparedStatement ps = connection.prepareStatement("DELETE FROM user WHERE UserId = ?");
+            PreparedStatement ps = connection.prepareStatement("DELETE FROM Users WHERE UserId = ?");
             ps.setInt(1, entity.getId());
             ps.execute();
             connection.close();
@@ -68,7 +68,7 @@ public class UserJDBCDao implements IUserDao {
         Connection connection = new ConnectMySQL().getConnection();
         List<User> users = new ArrayList<User>();
         try {
-            ResultSet rs = connection.prepareStatement("SELECT * FROM user").executeQuery();
+            ResultSet rs = connection.prepareStatement("SELECT * FROM Users").executeQuery();
             while (rs.next()) {
                 users.add(new User(rs.getInt("UserId"), rs.getString("email"), rs.getString("Password"), rs.getString("DisplayName"), rs.getInt("Coins"), rs.getInt("LanguageId")));
             }
@@ -82,7 +82,7 @@ public class UserJDBCDao implements IUserDao {
         Connection connection = new ConnectMySQL().getConnection();
         ResultSet rs = null;
         try {
-            PreparedStatement ps = connection.prepareStatement("SELECT * FROM user WHERE UserId = ?");
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM Users WHERE UserId = ?");
             ps.setInt(1, id);
             rs = ps.executeQuery();
             if(rs.next()){
@@ -99,7 +99,7 @@ public class UserJDBCDao implements IUserDao {
         Connection connection = new ConnectMySQL().getConnection();
         ResultSet rs = null;
         try {
-            PreparedStatement ps = connection.prepareStatement("SELECT * FROM users WHERE email = ?");
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM Users WHERE Email = ?");
             ps.setString(1, email);
             rs = ps.executeQuery();
             if(rs.next()){
