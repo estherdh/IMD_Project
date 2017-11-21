@@ -1,8 +1,12 @@
 package oose.p.c6.imd.persistent.dao;
 
 import com.sun.org.apache.xpath.internal.SourceTree;
+import oose.p.c6.imd.domain.IQuestType;
 import oose.p.c6.imd.domain.Quest;
+import oose.p.c6.imd.domain.QuestFactory;
+import oose.p.c6.imd.domain.QuestTypes;
 import oose.p.c6.imd.persistent.ConnectMySQL;
+import org.hamcrest.Description;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -48,9 +52,10 @@ public class QuestJDBCDao implements IDao<Quest>{
 		return null;
 	}
 
-	public List<Quest> getQuestsFromUser(int userId, int languageId) {
+	public List<Quest> getQuestsForUser(int userId, int languageId) {
 		Connection connection = ConnectMySQL.getInstance().getConnection();
 		List<Quest> questList = new ArrayList<>();
+		QuestFactory factory = QuestFactory.getInstance();
 		try {
 			PreparedStatement ps = connection.prepareStatement("" +
 					"SELECT * FROM (questlog ql INNER JOIN QuestType qt" +
@@ -58,6 +63,7 @@ public class QuestJDBCDao implements IDao<Quest>{
 					"  INNER JOIN QuestTypeLanguage qtl" +
 					"    ON qt.QuestTypeId = qtl.QuestTypeId " +
 					"WHERE UserId = ?" +
+					"AND Completed = 0 " +
 					"AND LanguageId IN" +
 					"    (SELECT COALESCE(" +
 					"        (SELECT languageId FROM questtypelanguage WHERE LanguageId = ?)" +
@@ -67,7 +73,14 @@ public class QuestJDBCDao implements IDao<Quest>{
 			ps.setInt(2, languageId);
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
-				return null;
+				int questType = rs.getInt("ql.QuestTypeId");
+				IQuestType typeStrategy = factory.generateQuest(QuestTypes.values()[questType-1], getVariablesOfQuest(questType));
+				questList.add(new Quest(
+						rs.getString("Name"),
+						rs.getString("Description"),
+						rs.getInt("Reward"),
+						typeStrategy
+				));
 			}
 			connection.close();
 			return questList;
@@ -76,7 +89,7 @@ public class QuestJDBCDao implements IDao<Quest>{
 		}
 	}
 
-	public Map<String, String> geVariablesOfQuest(int entryId) {
+	private Map<String, String> getVariablesOfQuest(int entryId) {
 		Connection connection = ConnectMySQL.getInstance().getConnection();
 		Map<String, String> propertyList = new HashMap<>();
 		try {

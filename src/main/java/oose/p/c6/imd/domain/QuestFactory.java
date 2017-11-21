@@ -1,5 +1,7 @@
 package oose.p.c6.imd.domain;
 
+import java.util.Map;
+
 public class QuestFactory {
 	private static QuestFactory instance;
 
@@ -14,10 +16,10 @@ public class QuestFactory {
 		return instance;
 	}
 
-	public Quest generateQuest(QuestTypes type) {
+	public IQuestType generateQuest(QuestTypes type, Map<String, String> properties) {
 		switch (type) {
 			case QRCODESCAN:
-				return new Quest();
+				return new QrScanQuest(properties);
 			default:
 				System.out.println("HET QUESTTYPE " + type + " IS NIET GEVONDEN IN 'QuestFactory - generateQuests()'");
 				return null;

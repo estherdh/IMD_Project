@@ -24,7 +24,6 @@ public class ConnectMySQLTest {
 		//test
 		connection = ConnectMySQL.getInstance().getConnection();
 		//check
-		connection.close();
 		assertThat(connection.getMetaData().getUserName(), is(equalTo("root@localhost")));
 	}
 
