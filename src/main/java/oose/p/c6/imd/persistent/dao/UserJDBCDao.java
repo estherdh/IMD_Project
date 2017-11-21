@@ -14,15 +14,54 @@ import java.util.List;
 @Default
 public class UserJDBCDao implements IUserDao {
     public void add(User entity) {
-
+        Connection connection = new ConnectMySQL().getConnection();
+        try{
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO user (`Email`, `Password`, `DisplayName`, `Coins`, `LanguageId`) VALUES (?, ?, ?, ?, ?)");
+            ps = fillVariables(ps, entity.getEmail(), entity.getPassword(), entity.getDisplay_name(), entity.getCoins(), entity.getLanguageId());
+            ps.execute();
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void update(User updatedEntity) {
+    private PreparedStatement fillVariables(PreparedStatement ps, String email, String password, String displayname, int coins, int languageid) throws SQLException {
+        ps.setString(1, email);
+        ps.setString(2, password);
+        ps.setString(3, displayname);
+        ps.setInt(4, coins);
+        ps.setInt(5, languageid);
+        return ps;
+    }
 
+    public void update(User entity) {
+        Connection connection = new ConnectMySQL().getConnection();
+        try{
+            PreparedStatement ps = connection.prepareStatement("UPDATE user SET `Email` = ?," +
+                    " `Password` = ?," +
+                    " `DisplayName` = ?," +
+                    " `Coins` = ?," +
+                    " `LanguageId` = ?" +
+                    "WHERE UserId = ?");
+            ps = fillVariables(ps, entity.getEmail(), entity.getPassword(), entity.getDisplay_name(), entity.getCoins(), entity.getLanguageId());
+            ps.setInt(6, entity.getId());
+            ps.execute();
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public void remove(User entity) {
-
+        Connection connection = new ConnectMySQL().getConnection();
+        try{
+            PreparedStatement ps = connection.prepareStatement("DELETE FROM user WHERE UserId = ?");
+            ps.setInt(1, entity.getId());
+            ps.execute();
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public List<User> list() {
@@ -31,7 +70,7 @@ public class UserJDBCDao implements IUserDao {
         try {
             ResultSet rs = connection.prepareStatement("SELECT * FROM user").executeQuery();
             while (rs.next()) {
-                users.add(new User(rs.getInt("UserId"), rs.getString("email"), rs.getString("Password"), rs.getString("DisplayName"), rs.getInt("Coins")));
+                users.add(new User(rs.getInt("UserId"), rs.getString("email"), rs.getString("Password"), rs.getString("DisplayName"), rs.getInt("Coins"), rs.getInt("LanguageId")));
             }
             connection.close();
         } catch (SQLException e) {
@@ -47,8 +86,9 @@ public class UserJDBCDao implements IUserDao {
             ps.setInt(1, id);
             rs = ps.executeQuery();
             if(rs.next()){
-                return new User(rs.getInt("UserId"), rs.getString("email"), rs.getString("Password"), rs.getString("DisplayName"), rs.getInt("Coins"));
+                return new User(rs.getInt("UserId"), rs.getString("email"), rs.getString("Password"), rs.getString("DisplayName"), rs.getInt("Coins"), rs.getInt("LanguageId"));
             }
+            connection.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -63,16 +103,13 @@ public class UserJDBCDao implements IUserDao {
             ps.setString(1, email);
             rs = ps.executeQuery();
             if(rs.next()){
-                User u = new User(rs.getInt("UserId"), rs.getString("email"), rs.getString("Password"), rs.getString("DisplayName"), rs.getInt("Coins"));
-                System.out.println("YOU ARELOOKING FOR THIS LINE IN THIS TRACE" + u.getId());
+                User u = new User(rs.getInt("UserId"), rs.getString("email"), rs.getString("Password"), rs.getString("DisplayName"), rs.getInt("Coins"), rs.getInt("LanguageId"));
+                return u;
             }
+            connection.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return null;
-    }
-
-    public String helloWorld() {
-        return "Hello?";
     }
 }
