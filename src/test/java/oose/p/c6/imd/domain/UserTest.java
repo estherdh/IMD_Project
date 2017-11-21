@@ -26,7 +26,7 @@ public class UserTest {
 		Action inputAction = mock(Action.class);
 		QuestLog questLog = mock(QuestLog.class);
 		user.setQuestLog(questLog);
-		when(questLog.checkQuestComplete(any(Action.class))).thenReturn(100);
+		when(questLog.checkQuestComplete(inputAction, 0, 1)).thenReturn(100);
 		//test
 		user.checkQuestCompleted(inputAction);
 		//check
@@ -39,7 +39,7 @@ public class UserTest {
 		Action inputAction = mock(Action.class);
 		QuestLog questLog = mock(QuestLog.class);
 		user.setQuestLog(questLog);
-		when(questLog.checkQuestComplete(any(Action.class))).thenReturn(0);
+		when(questLog.checkQuestComplete(inputAction, 0, 1)).thenReturn(0);
 		//test
 		user.checkQuestCompleted(inputAction);
 		//check
