@@ -41,7 +41,7 @@ public class UserJDBCDao implements IUserDao {
                     " `Password` = ?," +
                     " `DisplayName` = ?," +
                     " `Coins` = ?," +
-                    " `LanguageId` = ?" +
+                    " `LanguageId` = ? " +
                     "WHERE UserId = ?");
             ps = fillVariables(ps, entity.getEmail(), entity.getPassword(), entity.getDisplay_name(), entity.getCoins(), entity.getLanguageId());
             ps.setInt(6, entity.getId());
