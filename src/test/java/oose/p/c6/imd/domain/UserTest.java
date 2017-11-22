@@ -46,9 +46,9 @@ public class UserTest {
 		assertThat(user.getCoins(), is(0));
 	}
 
-	//TODO fix deze functie, werkt op het moment niet omdmat de rest nog niet is geïmplementeerd.
-	@Test
-	public void removeQuestTestSuccess() {
+//TODO fix deze functie, werkt op het moment niet omdmat de rest nog niet is geïmplementeerd.
+//	@Test
+//	public void removeQuestTestSuccess() {
 		//init
 //		User user = new User();
 //		user.setId(1);
@@ -57,5 +57,5 @@ public class UserTest {
 //		Response actualResult = user.removeQuest(1);
 		//check
 //		assertThat(actualResult.getStatus(), is(200));
-	}
+//	}
 }

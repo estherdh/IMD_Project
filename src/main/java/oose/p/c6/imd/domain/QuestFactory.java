@@ -25,4 +25,8 @@ public class QuestFactory {
 				return null;
 		}
 	}
+
+	public static void setFactory(QuestFactory factory) {
+		instance = factory;
+	}
 }

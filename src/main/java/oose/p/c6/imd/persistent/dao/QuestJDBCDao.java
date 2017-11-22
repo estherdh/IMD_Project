@@ -66,14 +66,14 @@ public class QuestJDBCDao implements IDao<Quest>{
 					"AND Completed = 0 " +
 					"AND LanguageId IN" +
 					"    (SELECT COALESCE(" +
-					"        (SELECT languageId FROM questtypelanguage WHERE LanguageId = ?)" +
+					"        (SELECT languageId FROM questtypelanguage qtl2 WHERE qtl2.LanguageId = ? AND qtl2.QuestTypeId = qt.QuestTypeId)" +
 					"        , 1)" +
 					"    );");
 			ps.setInt(1, userId);
 			ps.setInt(2, languageId);
 			ResultSet rs = ps.executeQuery();
-			if (rs.next()) {
-				int questType = rs.getInt("ql.QuestTypeId");
+			while (rs.next()) {
+				int questType = rs.getInt("QuestTypeId");
 				IQuestType typeStrategy = factory.generateQuest(QuestTypes.values()[questType-1], getVariablesOfQuest(questType));
 				questList.add(new Quest(
 						rs.getString("Name"),
@@ -82,9 +82,12 @@ public class QuestJDBCDao implements IDao<Quest>{
 						typeStrategy
 				));
 			}
-			connection.close();
+			if (!connection.isClosed()) {
+				connection.close();
+			}
 			return questList;
 		} catch (SQLException e) {
+			e.printStackTrace();
 			return null;
 		}
 	}
@@ -101,7 +104,6 @@ public class QuestJDBCDao implements IDao<Quest>{
 				String value = rs.getString("Value");
 				propertyList.put(key, value);
 			}
-			connection.close();
 			return propertyList;
 		} catch (SQLException e) {
 			return null;

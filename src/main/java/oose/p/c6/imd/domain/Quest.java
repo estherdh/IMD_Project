@@ -20,4 +20,20 @@ public class Quest {
 			return 0;
 		}
 	}
+
+	public String getName() {
+		return name;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public int getReward() {
+		return reward;
+	}
+
+	public IQuestType getQuestStrategy() {
+		return questStrategy;
+	}
 }

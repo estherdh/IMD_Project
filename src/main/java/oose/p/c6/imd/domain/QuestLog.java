@@ -1,13 +1,15 @@
 package oose.p.c6.imd.domain;
 
-import oose.p.c6.imd.persistent.dao.IQuest;
+import oose.p.c6.imd.persistent.dao.IQuestDAO;
+import org.junit.runner.RunWith;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import javax.inject.Inject;
 import java.util.List;
 
 public class QuestLog {
 	@Inject
-	IQuest dao;
+	IQuestDAO dao;
 
 	public int checkQuestComplete(Action action, int userId, int languageId) {
 		List<Quest> questList = dao.getQuestsForUser(userId, languageId);

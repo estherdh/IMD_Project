@@ -27,16 +27,7 @@ public class ConnectMySQL {
 		try {
 			this.properties = properties;
 			this.properties.load(getClass().getClassLoader().getResourceAsStream("database.properties"));
-			Class.forName(properties.getProperty("driver"));
-			this.connection = DriverManager.getConnection(properties.getProperty("databaseurl") + "?user=" + properties.getProperty("user") + "&password=" + properties.getProperty("password"));
-		} catch (ClassNotFoundException e) {
-			logger.severe(e.getMessage());
-			e.printStackTrace();
-
 		} catch (IOException e) {
-			logger.severe(e.getMessage());
-			e.printStackTrace();
-		} catch (SQLException e) {
 			logger.severe(e.getMessage());
 			e.printStackTrace();
 		}
@@ -51,12 +42,22 @@ public class ConnectMySQL {
 	}
 
 
-	public void setConnection(Connection connection) {
-		this.connection = connection;
+	public void setProperties(Properties properties) {
+		this.properties = properties;
 	}
 
 	public Connection getConnection()
 	{
+		try {
+			if (connection == null || this.connection.isClosed()) {
+				Class.forName(properties.getProperty("driver"));
+				this.connection = DriverManager.getConnection(properties.getProperty("databaseurl"), properties.getProperty("user"), properties.getProperty("password"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
 		return this.connection;
 	}
 }
