@@ -51,14 +51,9 @@ public class User extends Model {
 		}
 	}
 
-    //TODO revamp method
-//	public Response removeQuest(int entryId) {
-//		if (questDao.removeQuest(entryId, id)) {
-//			return Response.status(200).build();
-//		} else {
-//			return Response.status(400).build();
-//		}
-//	}
+	public boolean removeQuestFromQuestLog(int entryId) {
+		return questLog.removeQuestFromQuestLog(entryId, super.getId());
+	}
 
 	public int getCoins() {
 		return coins;

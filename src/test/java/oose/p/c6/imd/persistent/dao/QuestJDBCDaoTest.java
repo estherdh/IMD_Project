@@ -13,6 +13,7 @@ import org.omg.CORBA.Any;
 import java.io.FileReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
@@ -87,40 +88,17 @@ public class QuestJDBCDaoTest {
 		assertThat(actualResult, is(expectedResult));
 	}
 
-//	@Test
-//	public void removeQuestTestSuccess() throws SQLException {
-//		//init
-//		boolean expectedResult = true;
-//		conn.createStatement().executeUpdate("CREATE TABLE QuestLog" +
-//				"(" +
-//				"EntryId INT NOT NULL," +
-//				"UserId INT NOT NULL," +
-//				"QuestTypeId INT NOT NULL," +
-//				"State TINYINT(1) NOT NULL DEFAULT '0'" +
-//				")" +
-//				";");
-//		conn.createStatement().executeUpdate("INSERT INTO QuestLog VALUES " +
-//				"(1, 2, 2, 0)," +
-//				"(1, 3, 5, 1)");
-//		//test
-//		boolean actualResult = dao.removeQuest(1, 3);
-//		ResultSet resultDeleted = conn.createStatement().executeQuery("SELECT * FROM QuestLog WHERE EntryId = 1 AND UserId = 3");
-//		ResultSet resultNotDeleted = conn.createStatement().executeQuery("SELECT * FROM QuestLog WHERE EntryId = 1 AND UserId = 2");
-//		//check
-//		assertThat(actualResult, is(expectedResult));
-//		assertThat(resultDeleted.next(), is(false));
-//		assertThat(resultNotDeleted.next(), is(true));
-//	}
-
 	@Test
-	public void removeQuestTestException() throws SQLException {
-		//init
-		boolean expectedResult = false;
+	public void removeQuestFromQuestLogSuccess() throws SQLException {
 		//test
-		boolean actualResult = dao.removeQuest(0, 0);
+		boolean actualResult = dao.removeQuestFromQuestLog(1, 1);
+		ResultSet resultDeleted = conn.createStatement().executeQuery("SELECT * FROM QuestLog WHERE EntryId = 1 AND UserId = 1");
+		ResultSet resultNotDeleted = conn.createStatement().executeQuery("SELECT * FROM QuestLog WHERE EntryId = 4 AND UserId = 1");
+		ResultSet resultNotDeleted2 = conn.createStatement().executeQuery("SELECT * FROM questproperties WHERE EntryId = 4");
 		//check
-		assertThat(actualResult, is(expectedResult));
+		assertTrue(actualResult);
+		assertThat(resultDeleted.next(), is(false));
+		assertThat(resultNotDeleted.next(), is(true));
+		assertThat(resultNotDeleted2.next(), is(true));
 	}
-
-
 }

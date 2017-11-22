@@ -31,9 +31,10 @@ public class Librarian {
     public User getUserByEmail(String email){
         return users.findUserByemail(email);
     }
+
 //	TODO: Aanroepen van buitenaf door REST.
-//	public Response removeQuest(int entryId, String token) {
-//		User user = TokenManager.getInstance().getUserFromToken(token);
-//		return user.removeQuest(entryId);
-//	}
+	public boolean removeQuest(int entryId, String token) {
+		User user = TokenManager.getInstance().getUserFromToken(token);
+		return user.removeQuestFromQuestLog(entryId);
+	}
 }
