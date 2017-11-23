@@ -18,8 +18,13 @@ public class Librarian {
         User u = getUserByEmail(email);
         return u.passwordCorrect(password);
     }
-    public User getUserByEmail(String email){
+
+    public User getUserByEmail(String email) {
         return users.findUserByemail(email);
+    }
+
+    public void buyReplica(User user, int replicaId) {
+
     }
 //	TODO: Aanroepen van buitenaf door REST.
 //	public Response removeQuest(int entryId, String token) {

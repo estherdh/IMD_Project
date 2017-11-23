@@ -7,10 +7,7 @@ import oose.p.c6.imd.persistent.dao.IUserDao;
 
 import javax.inject.Inject;
 import javax.json.JsonObject;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
@@ -20,7 +17,6 @@ public class RESTService {
 
     @Inject
     Librarian l;
-
 
     @POST
     @Path("/login")
@@ -32,5 +28,17 @@ public class RESTService {
             return Response.status(200).entity(t.getTokenString()).build();
         }
         return Response.status(400).build();
+    }
+
+    @Path("/shop/buy/{id}")
+    public Response buyReplica(@PathParam("id") int replicaId, @QueryParam("token") String token)
+    {
+        User user = TokenManager.getInstance().getUserFromToken(token);
+        if(user != null)
+        {
+            l.buyReplica(user, replicaId);
+            return Response.status(200).build();
+        }
+        return Response.status(403).build();
     }
 }
