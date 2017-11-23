@@ -26,14 +26,17 @@ public class RESTService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response login(JsonObject jo){
         String email = jo.getString("email");
-        if(l.verifyLogin(email, jo.getString("password"))){
+        JsonBuilderFactory factory = Json.createBuilderFactory(null);
+        JsonObjectBuilder job = factory.createObjectBuilder();
+        int loginState = l.verifyLogin(email, jo.getString("password"));
+        if(loginState == 0){
             Token t = TokenManager.getInstance().createTokenForUser(l.getUserByEmail(email));
-            JsonBuilderFactory factory = Json.createBuilderFactory(null);
-            JsonObjectBuilder job = factory.createObjectBuilder();
             job.add("token", t.getTokenString());
             return Response.status(201).entity(job.build()).build();
+        } else {
+            job.add("reason", loginState );
+            return Response.status(401).entity(job.build()).build();
         }
-        return Response.status(401).build();
     }
 
     @POST

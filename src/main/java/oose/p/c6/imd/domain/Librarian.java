@@ -8,9 +8,16 @@ public class Librarian {
     @Inject
     private IUserDao userDao;
 
-    public boolean verifyLogin(String email, String password) {
+    public int verifyLogin(String email, String password) {
         User u = getUserByEmail(email);
-        return u.passwordCorrect(password);
+        if(u == null) {
+            return 1;
+        }
+        if(u.passwordCorrect(password)){
+            return 0;
+        } else {
+            return 2;
+        }
     }
 
     public void scanQrCode(User user, String qrCode) {
