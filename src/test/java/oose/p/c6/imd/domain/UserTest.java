@@ -1,27 +1,59 @@
 package oose.p.c6.imd.domain;
 
-import oose.p.c6.imd.domain.User;
-import oose.p.c6.imd.persistent.dao.QuestDao;
+import oose.p.c6.imd.persistent.dao.IQuestDAO;
+import oose.p.c6.imd.persistent.dao.QuestJDBCDao;
 import oose.p.c6.imd.persistent.dao.UserJDBCDao;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-
-import javax.ws.rs.core.Response;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.class)
 public class UserTest {
 	@Mock
-	QuestDao questDao;
+	private QuestJDBCDao questDao;
+	private UserJDBCDao userDao;
 	@InjectMocks
-	User user;
+	private User user = new User(0, "mail", "password", "fullname", 0, 1);
 
-	//TODO fix deze functie, werkt op het moment niet omdmat de rest nog niet is geïmplementeerd.
 	@Test
-	public void removeQuestTestSuccess() {
+	public void checkQuestCompletedAddCoins() throws Exception {
+		//init
+		Action inputAction = mock(Action.class);
+		QuestLog questLog = mock(QuestLog.class);
+		user.setQuestLog(questLog);
+		when(questLog.checkQuestComplete(inputAction, 0, 1)).thenReturn(100);
+		//test
+		boolean actualResult = user.checkQuestCompleted(inputAction);
+		//check
+		assertTrue(actualResult);
+		assertThat(user.getCoins(), is(100));
+	}
+
+	@Test
+	public void checkQuestQuestFailedNoCoins() throws Exception {
+		//init
+		Action inputAction = mock(Action.class);
+		QuestLog questLog = mock(QuestLog.class);
+		user.setQuestLog(questLog);
+		when(questLog.checkQuestComplete(inputAction, 0, 1)).thenReturn(0);
+		//test
+		Boolean actualResult = user.checkQuestCompleted(inputAction);
+		//check
+		assertThat(user.getCoins(), is(0));
+		assertFalse(actualResult);
+	}
+
+//TODO fix deze functie, werkt op het moment niet omdmat de rest nog niet is geïmplementeerd.
+//	@Test
+//	public void removeQuestTestSuccess() {
 		//init
 //		User user = new User();
 //		user.setId(1);
@@ -30,15 +62,5 @@ public class UserTest {
 //		Response actualResult = user.removeQuest(1);
 		//check
 //		assertThat(actualResult.getStatus(), is(200));
-
-		//user = new User(5, "hoi@hoi", "test15", "jan", 12, 1);
-		//new UserJDBCDao().add(user);
-		//System.out.println(new UserJDBCDao().list().size());
-		//System.out.println(new UserJDBCDao().find(1).getEmail());
-		//new UserJDBCDao().update(user);
-		//new UserJDBCDao().remove(user);
-		//System.out.println(new UserJDBCDao().findUserByemail("mail").getEmail());
-	}
-
-
+//	}
 }

@@ -1,15 +1,19 @@
 package oose.p.c6.imd.domain;
 
+import oose.p.c6.imd.persistent.dao.IUserDao;
+
+import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class User extends Model {
-    //private QuestLog ql;
 	private String email;
     private String password;
     private String display_name;
     private int coins;
     private int languageId;
+    private QuestLog questLog;
 
 	public User(int id, String email, String password, String display_name, int coins, int languageId){
 		super(id);
@@ -18,7 +22,13 @@ public class User extends Model {
 		this.display_name = display_name;
 		this.coins = coins;
 		this.languageId = languageId;
+		this.questLog = new QuestLog();
 	}
+
+//	@Inject
+//	public void setDao(IUserDao dao) {
+//		this.dao = dao;
+//	}
 
 	public boolean passwordCorrect(String actual){
         return hashPassword(actual).equals(password);
@@ -40,6 +50,15 @@ public class User extends Model {
         }
         return generatedPassword;
     }
+
+    public boolean checkQuestCompleted(Action action) {
+		int newCoins = questLog.checkQuestComplete(action, super.getId(), languageId);
+		if (newCoins > 0) {
+			coins += newCoins;
+			return true;
+		}
+		return false;
+	}
 
     //TODO revamp method
 //	public Response removeQuest(int entryId) {
@@ -89,4 +108,8 @@ public class User extends Model {
     public void setLanguageId(int languageId) {
         this.languageId = languageId;
     }
+
+	public void setQuestLog(QuestLog questLog) {
+    	this.questLog = questLog;
+	}
 }
