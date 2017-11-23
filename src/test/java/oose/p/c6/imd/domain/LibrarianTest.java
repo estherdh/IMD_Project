@@ -27,10 +27,12 @@ public class LibrarianTest {
 		//init
 		User expectedUser = mock(User.class);
 		String expectedQrCode = "a qr code";
+		when(expectedUser.checkQuestCompleted(any(Action.class))).thenReturn(true);
 		//test
 		librarian.scanQrCode(expectedUser, expectedQrCode);
 		//init
 		verify(expectedUser, times(1)).checkQuestCompleted(any(Action.class));
+		verify(userDao, times(1)).update(expectedUser);
 	}
 
 	@Test

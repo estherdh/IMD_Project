@@ -40,10 +40,9 @@ public class RESTServiceTest {
 		String token = manager.createTokenForUser(user).getTokenString();
 		JsonObject jo = Json.createObjectBuilder()
 				.add("qrCode", "aldfjalskdasdfasdf")
-				.add("token", token)
 				.build();
 		//test
-		service.scanQrCode(jo);
+		service.scanQrCode(token, jo);
 		//check
 		verify(librarian, times(1)).scanQrCode(user, "aldfjalskdasdfasdf");
 	}

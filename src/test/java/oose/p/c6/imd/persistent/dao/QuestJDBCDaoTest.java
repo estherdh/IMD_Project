@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
@@ -55,8 +56,8 @@ public class QuestJDBCDaoTest {
 		QuestFactory factory = mock(QuestFactory.class);
 		QuestFactory.setFactory(factory);
 		when(factory.generateQuest(any(QuestTypes.class), any(Map.class))).thenReturn(new QrScanQuest(new HashMap<>()));
-		Quest expectedQuest1 = new Quest("(EN)Scan qr code", "(EN)Scan a qr code", 10, new QrScanQuest(new HashMap<>()));
-		Quest expectedQuest2 = new Quest("(NL)Stuur tekst", "(NL)Stuur een bepaald stuk tekst op", 15, new QrScanQuest(new HashMap<>()));
+		Quest expectedQuest1 = new Quest(1, "(EN)Scan qr code", "(EN)Scan a qr code", 10, new QrScanQuest(new HashMap<>()));
+		Quest expectedQuest2 = new Quest(2, "(NL)Stuur tekst", "(NL)Stuur een bepaald stuk tekst op", 15, new QrScanQuest(new HashMap<>()));
 		//test
 		List<Quest> actualResult = dao.getQuestsForUser(2, 2);
 		//check
@@ -86,6 +87,16 @@ public class QuestJDBCDaoTest {
 		//test
 		List<Quest> actualResult = dao.getQuestsForUser(1,1);
 		assertThat(actualResult, is(expectedResult));
+	}
+
+	@Test
+	public void setQuestCompleteTestSuccess() throws Exception {
+		//test
+		dao.setQuestComplete(1);
+		ResultSet rs = conn.createStatement().executeQuery("SELECT * FROM questlog WHERE completed = 1");
+		//check
+		assertTrue(rs.next());
+		assertFalse(rs.next());
 	}
 
 	@Test

@@ -17,7 +17,7 @@ public class QuestTest {
 	@Before
 	public void setUp() {
 		mockStrategy = mock(QrScanQuest.class);
-		this.quest = new Quest("questName", "questDescription", 100, mockStrategy);
+		this.quest = new Quest(1, "questName", "questDescription", 100, mockStrategy);
 	}
 
 	@Test

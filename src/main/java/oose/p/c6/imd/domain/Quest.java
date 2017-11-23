@@ -1,12 +1,14 @@
 package oose.p.c6.imd.domain;
 
 public class Quest {
+	int entryId;
 	String name;
 	String description;
 	int reward;
 	IQuestType questStrategy;
 
-	public Quest(String name, String description, int reward, IQuestType questStrategy) {
+	public Quest(int entryId, String name, String description, int reward, IQuestType questStrategy) {
+		this.entryId = entryId;
 		this.name = name;
 		this.description = description;
 		this.reward = reward;
