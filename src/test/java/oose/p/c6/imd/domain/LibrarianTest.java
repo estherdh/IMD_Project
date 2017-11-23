@@ -1,16 +1,19 @@
 package oose.p.c6.imd.domain;
 
 import oose.p.c6.imd.persistent.dao.IUserDao;
+import oose.p.c6.imd.service.Token;
+import oose.p.c6.imd.service.TokenManager;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import javax.validation.constraints.AssertTrue;
+
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class LibrarianTest {
@@ -30,4 +33,17 @@ public class LibrarianTest {
 		verify(expectedUser, times(1)).checkQuestCompleted(any(Action.class));
 	}
 
+	@Test
+	public void removeQuestFromQuestLogTest() {
+		//init
+		TokenManager manager = mock(TokenManager.class);
+		User mockUser = mock(User.class);
+		TokenManager.setInstance(manager);
+		when(manager.getUserFromToken("userToken")).thenReturn(mockUser);
+		when(mockUser.removeQuestFromQuestLog(1)).thenReturn(true);
+		//test
+		boolean actualResult = librarian.removeQuestFromQuestLog(1, "userToken");
+		//check
+		assertTrue(actualResult);
+	}
 }

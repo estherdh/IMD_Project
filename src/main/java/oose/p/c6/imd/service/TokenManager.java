@@ -38,5 +38,9 @@ public class TokenManager {
         return null;
     }
 
+    public static void setInstance(TokenManager newInstance) {
+    	instance = newInstance;
+	}
+
 
 }
