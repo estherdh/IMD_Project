@@ -17,11 +17,6 @@ public class RESTService {
     @Inject
     private Librarian l;
 
-    @GET
-    public String hello(){
-        return l.tested();
-    }
-
 
     @POST
     @Path("/login")

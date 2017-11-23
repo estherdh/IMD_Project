@@ -14,10 +14,6 @@ public class Librarian {
     @Inject
     private IUserDao users;
 
-    public String tested(){
-        return users.helloWorld();
-    }
-
     public boolean verifyLogin(String email, String password) {
         User u = getUserByEmail(email);
         return u.passwordCorrect(password);
