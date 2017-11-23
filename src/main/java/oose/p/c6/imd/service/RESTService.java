@@ -29,8 +29,8 @@ public class RESTService {
         String email = jo.getString("email");
         if(l.verifyLogin(email, jo.getString("password"))){
             Token t = TokenManager.getInstance().createTokenForUser(l.getUserByEmail(email));
-            return Response.status(200).entity(t.getTokenString()).build();
+            return Response.status(201).entity(t.getTokenString()).build();
         }
-        return Response.status(400).build();
+        return Response.status(401).build();
     }
 }
