@@ -1,6 +1,7 @@
 package oose.p.c6.imd.domain;
 
 import oose.p.c6.imd.persistent.dao.IUserDao;
+import oose.p.c6.imd.service.TokenManager;
 
 import javax.inject.Inject;
 

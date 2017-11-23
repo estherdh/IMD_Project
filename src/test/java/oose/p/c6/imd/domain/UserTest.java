@@ -63,7 +63,6 @@ public class UserTest {
 		//test
 		boolean actualResult = user.removeQuestFromQuestLog(1);
 		//check
-		System.out.println(actualResult);
 		assertTrue(actualResult);
 	}
 }

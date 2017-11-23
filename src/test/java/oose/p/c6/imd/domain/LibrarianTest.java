@@ -47,5 +47,6 @@ public class LibrarianTest {
 		boolean actualResult = librarian.removeQuestFromQuestLog(1, "userToken");
 		//check
 		assertTrue(actualResult);
+		TokenManager.setInstance(null);
 	}
 }
