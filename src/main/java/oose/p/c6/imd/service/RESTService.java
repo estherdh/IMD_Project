@@ -6,7 +6,10 @@ import oose.p.c6.imd.domain.User;
 import oose.p.c6.imd.persistent.dao.IUserDao;
 
 import javax.inject.Inject;
+import javax.json.Json;
+import javax.json.JsonBuilderFactory;
 import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -29,7 +32,10 @@ public class RESTService {
         String email = jo.getString("email");
         if(l.verifyLogin(email, jo.getString("password"))){
             Token t = TokenManager.getInstance().createTokenForUser(l.getUserByEmail(email));
-            return Response.status(200).entity(t.getTokenString()).build();
+            JsonBuilderFactory factory = Json.createBuilderFactory(null);
+            JsonObjectBuilder job = factory.createObjectBuilder();
+            job.add("token", t.getTokenString());
+            return Response.status(200).entity(job.build()).build();
         }
         return Response.status(400).build();
     }
