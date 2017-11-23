@@ -2,6 +2,7 @@ package oose.p.c6.imd.service;
 
 
 import oose.p.c6.imd.domain.Librarian;
+import oose.p.c6.imd.domain.Replica;
 import oose.p.c6.imd.domain.User;
 import oose.p.c6.imd.persistent.dao.IUserDao;
 
@@ -30,14 +31,26 @@ public class RESTService {
         return Response.status(400).build();
     }
 
+    @POST
     @Path("/shop/buy/{id}")
-    public Response buyReplica(@PathParam("id") int replicaId, @QueryParam("token") String token)
-    {
+    public Response buyReplica(@PathParam("id") int replicaId, @QueryParam("token") String token) {
         User user = TokenManager.getInstance().getUserFromToken(token);
         if(user != null)
         {
             l.buyReplica(user, replicaId);
-            return Response.status(200).build();
+            return Response.status(201).build();
+        }
+        return Response.status(403).build();
+    }
+
+    @GET
+    @Path("/shop")
+    public Response getReplicas(@QueryParam("token") String token) {
+        User user = TokenManager.getInstance().getUserFromToken(token);
+        if(user != null)
+        {
+            List<Replica> replicas = l.getAvailableReplicas(user);
+            return Response.status(200).entity(replicas).build();
         }
         return Response.status(403).build();
     }

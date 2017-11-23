@@ -65,17 +65,17 @@ public class UserJDBCDao implements IUserDao {
     }
 
     public List<User> list() {
-        Connection connection = new ConnectMySQL().getConnection();
-        List<User> users = new ArrayList<User>();
-        try {
-            ResultSet rs = connection.prepareStatement("SELECT * FROM Users").executeQuery();
-            while (rs.next()) {
-                users.add(new User(rs.getInt("UserId"), rs.getString("email"), rs.getString("Password"), rs.getString("DisplayName"), rs.getInt("Coins"), rs.getInt("LanguageId")));
+            Connection connection = new ConnectMySQL().getConnection();
+            List<User> users = new ArrayList<User>();
+            try {
+                ResultSet rs = connection.prepareStatement("SELECT * FROM Users").executeQuery();
+                while (rs.next()) {
+                    users.add(new User(rs.getInt("UserId"), rs.getString("email"), rs.getString("Password"), rs.getString("DisplayName"), rs.getInt("Coins"), rs.getInt("LanguageId")));
+                }
+                connection.close();
+            } catch (SQLException e) {
             }
-            connection.close();
-        } catch (SQLException e) {
-        }
-        return users;
+            return users;
     }
 
     public User find(int id) {
