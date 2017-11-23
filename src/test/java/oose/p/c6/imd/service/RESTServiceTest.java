@@ -7,16 +7,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RESTServiceTest {
@@ -48,6 +46,14 @@ public class RESTServiceTest {
 		service.scanQrCode(jo);
 		//check
 		verify(librarian, times(1)).scanQrCode(user, "aldfjalskdasdfasdf");
+	}
+
+	@Test
+	public void removeQuestFromQuestLog() {
+		//test
+		service.removeQuestFromQuestLog(1, "userToken");
+		//check
+		verify(librarian, times(1)).removeQuestFromQuestLog(1, "userToken");
 	}
 
 }
