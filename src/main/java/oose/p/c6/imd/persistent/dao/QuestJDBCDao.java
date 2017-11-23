@@ -76,6 +76,7 @@ public class QuestJDBCDao implements IDao<Quest>{
 				int questType = rs.getInt("QuestTypeId");
 				IQuestType typeStrategy = factory.generateQuest(QuestTypes.values()[questType-1], getVariablesOfQuest(questType));
 				questList.add(new Quest(
+						rs.getInt("EntryId"),
 						rs.getString("Name"),
 						rs.getString("Description"),
 						rs.getInt("Reward"),
@@ -89,6 +90,20 @@ public class QuestJDBCDao implements IDao<Quest>{
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;
+		}
+	}
+
+	public void setQuestComplete(int entryId) {
+		Connection connection = ConnectMySQL.getInstance().getConnection();
+		try {
+			PreparedStatement ps = connection.prepareStatement("" +
+					"UPDATE questlog " +
+					"SET Completed = 1 " +
+					"WHERE EntryId = ?");
+			ps.setInt(1, entryId);
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
 	}
 

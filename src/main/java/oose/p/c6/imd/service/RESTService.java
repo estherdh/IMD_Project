@@ -7,10 +7,7 @@ import oose.p.c6.imd.persistent.dao.IUserDao;
 
 import javax.inject.Inject;
 import javax.json.JsonObject;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
@@ -35,9 +32,9 @@ public class RESTService {
 
     @POST
     @Path("/quest/qr")
-    public void scanQrCode(JsonObject jo){
+    public void scanQrCode(@QueryParam("token") String token, JsonObject jo){
         String qrCode = jo.getString("qrCode");
-        User user = TokenManager.getInstance().getUserFromToken(jo.getString("token"));
+        User user = TokenManager.getInstance().getUserFromToken(token);
 		l.scanQrCode(user, qrCode);
     }
 }

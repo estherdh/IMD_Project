@@ -1,6 +1,8 @@
 package oose.p.c6.imd.domain;
 
+import oose.p.c6.imd.persistent.dao.IQuestDAO;
 import oose.p.c6.imd.persistent.dao.QuestJDBCDao;
+import oose.p.c6.imd.persistent.dao.UserJDBCDao;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -17,6 +19,7 @@ import static org.mockito.Mockito.when;
 public class UserTest {
 	@Mock
 	private QuestJDBCDao questDao;
+	private UserJDBCDao userDao;
 	@InjectMocks
 	private User user = new User(0, "mail", "password", "fullname", 0, 1);
 
@@ -28,8 +31,9 @@ public class UserTest {
 		user.setQuestLog(questLog);
 		when(questLog.checkQuestComplete(inputAction, 0, 1)).thenReturn(100);
 		//test
-		user.checkQuestCompleted(inputAction);
+		boolean actualResult = user.checkQuestCompleted(inputAction);
 		//check
+		assertTrue(actualResult);
 		assertThat(user.getCoins(), is(100));
 	}
 

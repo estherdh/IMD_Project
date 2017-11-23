@@ -9,9 +9,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class LibrarianTest {
@@ -25,10 +23,12 @@ public class LibrarianTest {
 		//init
 		User expectedUser = mock(User.class);
 		String expectedQrCode = "a qr code";
+		when(expectedUser.checkQuestCompleted(any(Action.class))).thenReturn(true);
 		//test
 		librarian.scanQrCode(expectedUser, expectedQrCode);
 		//init
 		verify(expectedUser, times(1)).checkQuestCompleted(any(Action.class));
+		verify(userDao, times(1)).update(expectedUser);
 	}
 
 }

@@ -1,10 +1,13 @@
 package oose.p.c6.imd.domain;
 
+import oose.p.c6.imd.persistent.dao.IUserDao;
+
+import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class User extends Model {
-	//private QuestLog ql;
 	private String email;
     private String password;
     private String display_name;
@@ -21,6 +24,11 @@ public class User extends Model {
 		this.languageId = languageId;
 		this.questLog = new QuestLog();
 	}
+
+//	@Inject
+//	public void setDao(IUserDao dao) {
+//		this.dao = dao;
+//	}
 
 	public boolean passwordCorrect(String actual){
         return hashPassword(actual).equals(password);
@@ -43,12 +51,13 @@ public class User extends Model {
         return generatedPassword;
     }
 
-    public void checkQuestCompleted(Action action) {
+    public boolean checkQuestCompleted(Action action) {
 		int newCoins = questLog.checkQuestComplete(action, super.getId(), languageId);
 		if (newCoins > 0) {
 			coins += newCoins;
-			//TODO Updaten user naar de database. Update functie bestaat nog niet
+			return true;
 		}
+		return false;
 	}
 
     //TODO revamp method
