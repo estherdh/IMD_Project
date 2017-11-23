@@ -45,9 +45,10 @@ public class UserTest {
 		user.setQuestLog(questLog);
 		when(questLog.checkQuestComplete(inputAction, 0, 1)).thenReturn(0);
 		//test
-		user.checkQuestCompleted(inputAction);
+		Boolean actualResult = user.checkQuestCompleted(inputAction);
 		//check
 		assertThat(user.getCoins(), is(0));
+		assertFalse(actualResult);
 	}
 
 //TODO fix deze functie, werkt op het moment niet omdmat de rest nog niet is geïmplementeerd.
