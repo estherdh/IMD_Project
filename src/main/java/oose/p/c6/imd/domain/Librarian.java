@@ -33,6 +33,7 @@ public class Librarian {
     }
 
 	public boolean removeQuestFromQuestLog(int entryId, User user) {
-		return user.removeQuestFromQuestLog(entryId);
+        System.out.println("entryId = [" + entryId + "], user = [" + user + "]");
+        return user.removeQuestFromQuestLog(entryId);
 	}
 }

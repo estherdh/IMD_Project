@@ -9,7 +9,7 @@ import java.util.List;
 
 public class QuestLog {
 	@Inject
-	IQuestDAO dao;
+	private IQuestDAO dao;
 
 	public int checkQuestComplete(Action action, int userId, int languageId) {
 		List<Quest> questList = dao.getQuestsForUser(userId, languageId);
@@ -26,6 +26,8 @@ public class QuestLog {
 	}
 
 	public boolean removeQuestFromQuestLog(int entryId, int userId) {
+		System.out.println("entryId = [" + entryId + "], userId = [" + userId + "]");
+		System.out.println("dao = " + dao);
 		return dao.removeQuestFromQuestLog(entryId, userId);
 	}
 }

@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class QuestJDBCDao implements IDao<Quest>{
+public class QuestJDBCDao implements IQuestDAO{
 	public void add(Quest entity) {
 
 	}

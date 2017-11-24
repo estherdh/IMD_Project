@@ -43,6 +43,7 @@ public class RESTService {
     @POST
     @Path("/quest/qr")
     public void scanQrCode(@QueryParam("token") String token, JsonObject jo){
+        System.out.println("token = [" + token + "], jo = [" + jo + "]");
         String qrCode = jo.getString("qrCode");
         User user = TokenManager.getInstance().getUserFromToken(token);
 		l.scanQrCode(user, qrCode);
@@ -51,6 +52,7 @@ public class RESTService {
     @GET
     @Path("/quest/remove")
     public void removeQuestFromQuestLog(@QueryParam("entryID") int entryID, @QueryParam("token") String token) {
+        System.out.println("entryID = [" + entryID + "], token = [" + token + "]");
         User user = TokenManager.getInstance().getUserFromToken(token);
         l.removeQuestFromQuestLog(entryID, user);
     }
