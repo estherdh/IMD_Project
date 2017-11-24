@@ -1,15 +1,15 @@
 package oose.p.c6.imd.domain;
 
-import com.sun.org.apache.regexp.internal.RE;
-import oose.p.c6.imd.persistent.dao.IUserDao;
+import oose.p.c6.imd.persistent.dao.*;
 
-import javax.inject.Inject;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class User extends Model {
-    @Inject
-    private IUserDao userDao;
+
+    private IUserDao userDao = DAOFactory.getUserDao();
+
+    private IReplicaDao replicaDao = DAOFactory.getReplicaDao();
     //private QuestLog ql;
 	private String email;
     private String password;
@@ -50,8 +50,13 @@ public class User extends Model {
     }
 
     public void removeCoins(int coins) {
-        this.coins =- coins;
+        this.coins -= coins;
+        System.out.println(this.coins);
         userDao.update(this);
+    }
+
+    public void addReplicaToInventory(Replica replica) {
+        replicaDao.giveReplicaToUser(this, replica);
     }
 
     //TODO revamp method

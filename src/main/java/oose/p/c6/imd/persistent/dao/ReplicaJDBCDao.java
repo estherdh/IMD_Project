@@ -18,7 +18,7 @@ public class ReplicaJDBCDao implements IReplicaDao {
         List<Replica> replicas = new ArrayList<>();
         try {
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM `replica`" +
-                    "WHERE `ReplicaId` NOT IN (SELECT `ReplicaId` FROM `userreplica` WHERE `UserId` = ?)");
+                    " WHERE `ReplicaId` NOT IN (SELECT `ReplicaId` FROM `userreplica` WHERE `UserId` = ?)");
             ps.setInt(1, user.getId());
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -26,7 +26,9 @@ public class ReplicaJDBCDao implements IReplicaDao {
             }
             connection.close();
         } catch (SQLException e) {
+            e.printStackTrace();
         }
+
         return replicas;
     }
 
