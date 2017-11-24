@@ -24,4 +24,8 @@ public class QuestLog {
 		}
 		return reward;
 	}
+
+	public boolean removeQuestFromQuestLog(int entryId, int userId) {
+		return dao.removeQuestFromQuestLog(entryId, userId);
+	}
 }

@@ -7,10 +7,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.booleanThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -51,16 +53,16 @@ public class UserTest {
 		assertFalse(actualResult);
 	}
 
-//TODO fix deze functie, werkt op het moment niet omdmat de rest nog niet is geïmplementeerd.
-//	@Test
-//	public void removeQuestTestSuccess() {
+	@Test
+	public void removeQuestFromBacklogSuccess() {
 		//init
-//		User user = new User();
-//		user.setId(1);
-//		when(questDao.removeQuest(1, 1)).thenReturn(true);
+		User user = new User(1, "email", "password", "fullName", 10, 1);
+		QuestLog questLog = mock(QuestLog.class);
+		user.setQuestLog(questLog);
+		when(questLog.removeQuestFromQuestLog(1, 1)).thenReturn(true);
 		//test
-//		Response actualResult = user.removeQuest(1);
+		boolean actualResult = user.removeQuestFromQuestLog(1);
 		//check
-//		assertThat(actualResult.getStatus(), is(200));
-//	}
+		assertTrue(actualResult);
+	}
 }

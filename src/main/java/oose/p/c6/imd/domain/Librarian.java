@@ -1,6 +1,7 @@
 package oose.p.c6.imd.domain;
 
 import oose.p.c6.imd.persistent.dao.IUserDao;
+import oose.p.c6.imd.service.TokenManager;
 
 import javax.inject.Inject;
 
@@ -30,9 +31,8 @@ public class Librarian {
     public User getUserByEmail(String email){
         return userDao.findUserByemail(email);
     }
-//	TODO: Aanroepen van buitenaf door REST.
-//	public Response removeQuest(int entryId, String token) {
-//		User user = TokenManager.getInstance().getUserFromToken(token);
-//		return user.removeQuest(entryId);
-//	}
+
+	public boolean removeQuestFromQuestLog(int entryId, User user) {
+		return user.removeQuestFromQuestLog(entryId);
+	}
 }

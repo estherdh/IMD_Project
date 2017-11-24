@@ -18,11 +18,6 @@ import java.util.List;
 import java.util.Map;
 
 public class QuestJDBCDao implements IDao<Quest>{
-
-	public boolean removeQuest(int entryId, int userId) {
-		return false;
-	}
-
 	public void add(Quest entity) {
 
 	}
@@ -32,16 +27,7 @@ public class QuestJDBCDao implements IDao<Quest>{
 	}
 
 	public void remove(Quest entity) {
-//		try {
-//			PreparedStatement query = conn.prepareStatement("DELETE FROM QuestLog WHERE EntryId = ? AND UserId = ?;");
-//			query.setInt(1, entryId);
-//			query.setInt(2, userId);
-//			query.executeUpdate();
-//			return true;
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//			return false;
-//		}
+
 	}
 
 	public List<Quest> list() {
@@ -90,6 +76,23 @@ public class QuestJDBCDao implements IDao<Quest>{
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;
+		}
+	}
+
+	public boolean removeQuestFromQuestLog(int entryId, int userId) {
+		Connection connection = ConnectMySQL.getInstance().getConnection();
+		try {
+			PreparedStatement query = connection.prepareStatement("DELETE FROM Questproperties WHERE EntryId = ?;");
+			query.setInt(1, entryId);
+			query.executeUpdate();
+			query = connection.prepareStatement("DELETE FROM QuestLog WHERE EntryId = ? AND UserId = ?;");
+			query.setInt(1, entryId);
+			query.setInt(2, userId);
+			query.executeUpdate();
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
 		}
 	}
 

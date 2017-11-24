@@ -6,5 +6,6 @@ import java.util.List;
 
 public interface IQuestDAO extends IDao<Quest> {
 	List<Quest> getQuestsForUser(int id, int languageID);
+	boolean removeQuestFromQuestLog(int entryId, int userId);
 	void setQuestComplete(int entryId);
 }

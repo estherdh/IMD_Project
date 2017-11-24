@@ -25,11 +25,6 @@ public class User extends Model {
 		this.questLog = new QuestLog();
 	}
 
-//	@Inject
-//	public void setDao(IUserDao dao) {
-//		this.dao = dao;
-//	}
-
 	public boolean passwordCorrect(String actual){
         return hashPassword(actual).equals(password);
     }
@@ -92,10 +87,13 @@ public class User extends Model {
     public void setDisplay_name(String display_name) {
         this.display_name = display_name;
     }
+	public boolean removeQuestFromQuestLog(int entryId) {
+		return questLog.removeQuestFromQuestLog(entryId, super.getId());
+	}
 
-    public int getCoins() {
-        return coins;
-    }
+	public int getCoins() {
+		return coins;
+	}
 
     public void setCoins(int coins) {
         this.coins = coins;

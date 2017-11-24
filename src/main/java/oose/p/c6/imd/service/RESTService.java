@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import javax.json.Json;
 import javax.json.JsonBuilderFactory;
 import javax.json.JsonObject;
+import javax.ws.rs.*;
 import javax.json.JsonObjectBuilder;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -45,5 +46,12 @@ public class RESTService {
         String qrCode = jo.getString("qrCode");
         User user = TokenManager.getInstance().getUserFromToken(token);
 		l.scanQrCode(user, qrCode);
+    }
+
+    @GET
+    @Path("/quest/remove")
+    public void removeQuestFromQuestLog(@QueryParam("entryID") int entryID, @QueryParam("token") String token) {
+        User user = TokenManager.getInstance().getUserFromToken(token);
+        l.removeQuestFromQuestLog(entryID, user);
     }
 }
