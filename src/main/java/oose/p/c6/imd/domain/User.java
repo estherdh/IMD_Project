@@ -1,5 +1,9 @@
 package oose.p.c6.imd.domain;
 
+import oose.p.c6.imd.persistent.dao.IUserDao;
+
+import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
 import oose.p.c6.imd.persistent.dao.*;
 
 import java.security.MessageDigest;
@@ -16,16 +20,18 @@ public class User extends Model {
     private String display_name;
     private int coins;
     private int languageId;
+    private QuestLog questLog;
 
     public User() { }
 
-	public User(int id, String email, String password, String display_name, int coins, int languageId){
+    public User(int id, String email, String password, String display_name, int coins, int languageId){
 		super(id);
 		this.email = email;
 		this.password = password;
 		this.display_name = display_name;
 		this.coins = coins;
 		this.languageId = languageId;
+        this.questLog = new QuestLog();
 	}
 
 	public boolean passwordCorrect(String actual){
@@ -59,6 +65,15 @@ public class User extends Model {
         replicaDao.giveReplicaToUser(this, replica);
     }
 
+    public boolean checkQuestCompleted(Action action) {
+		int newCoins = questLog.checkQuestComplete(action, super.getId(), languageId);
+		if (newCoins > 0) {
+			coins += newCoins;
+			return true;
+		}
+		return false;
+	}
+
     //TODO revamp method
 //	public Response removeQuest(int entryId) {
 //		if (questDao.removeQuest(entryId, id)) {
@@ -91,10 +106,13 @@ public class User extends Model {
     public void setDisplay_name(String display_name) {
         this.display_name = display_name;
     }
+	public boolean removeQuestFromQuestLog(int entryId) {
+		return questLog.removeQuestFromQuestLog(entryId, super.getId());
+	}
 
-    public int getCoins() {
-        return coins;
-    }
+	public int getCoins() {
+		return coins;
+	}
 
     public void setCoins(int coins) {
         this.coins = coins;
@@ -107,4 +125,8 @@ public class User extends Model {
     public void setLanguageId(int languageId) {
         this.languageId = languageId;
     }
+
+	public void setQuestLog(QuestLog questLog) {
+    	this.questLog = questLog;
+	}
 }

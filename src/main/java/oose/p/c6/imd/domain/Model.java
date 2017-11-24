@@ -10,7 +10,6 @@ public class Model {
     public Model() { }
 
     public int getId() {
-
         return id;
     }
 

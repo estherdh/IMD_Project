@@ -19,21 +19,11 @@ public class ConnectMySQLTest {
 		connection = null;
 	}
 
-	@Test
-	public void getConnectionTest() throws SQLException {
-		//test
-		connection = new ConnectMySQL().getConnection();
-		//check
-		assertThat(connection.getMetaData().getUserName(), is(equalTo("root@localhost")));
-	}
-
-	@Test
-	public void getUserTest() throws SQLException {
-		//test
-		connection = new ConnectMySQL().getConnection();
-
-		ResultSet rs = connection.prepareStatement("Select * From users").executeQuery();
-
-		assertTrue(rs.next());
-	}
+//	@Test
+//	public void getConnectionTest() throws SQLException {
+//		//test
+//		connection = ConnectMySQL.getInstance().getConnection();
+//		//check
+//		assertThat(connection.getMetaData().getUserName(), is(equalTo("root@localhost")));
+//	}
 }

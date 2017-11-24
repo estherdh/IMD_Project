@@ -8,4 +8,8 @@ public class DAOFactory {
     public static IUserDao getUserDao(){
         return new UserJDBCDao();
     }
+
+    public static IQuestDAO getQuestDao(){
+        return new QuestJDBCDao();
+    }
 }

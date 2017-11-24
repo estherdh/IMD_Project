@@ -7,19 +7,38 @@ import java.util.List;
 
 public class Librarian {
     @Inject
-    private IUserDao users;
+    private IUserDao userDao;
 
     @Inject
     private Shop shop;
 
-    public boolean verifyLogin(String email, String password) {
+    public int verifyLogin(String email, String password) {
         User u = getUserByEmail(email);
-        return u.passwordCorrect(password);
+        if(u == null) {
+            return 1;
+        }
+        if(u.passwordCorrect(password)){
+            return 0;
+        } else {
+            return 2;
+        }
     }
 
-    public User getUserByEmail(String email) {
-        return users.findUserByemail(email);
+    public void scanQrCode(User user, String qrCode) {
+        Action qrScanAction = new QrScanAction(qrCode);
+         if (user.checkQuestCompleted(qrScanAction)) {
+            userDao.update(user);
+        }
     }
+
+    public User getUserByEmail(String email){
+        return userDao.findUserByemail(email);
+    }
+
+	public boolean removeQuestFromQuestLog(int entryId, User user) {
+        System.out.println("entryId = [" + entryId + "], user = [" + user + "]");
+        return user.removeQuestFromQuestLog(entryId);
+	}
 
     public boolean buyReplica(User user, int replicaId) {
         return shop.buyReplica(user, replicaId);

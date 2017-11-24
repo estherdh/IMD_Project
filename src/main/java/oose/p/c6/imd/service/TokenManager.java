@@ -38,5 +38,17 @@ public class TokenManager {
         return null;
     }
 
+    public Token getTokenFromTokenString(String t){
+        for(Token token : tokens){
+            if(token.tokenStringCorrect(t)){
+                return token;
+            }
+        }
+        return null;
+    }
+    public static void setInstance(TokenManager newInstance) {
+    	instance = newInstance;
+	}
+
 
 }
