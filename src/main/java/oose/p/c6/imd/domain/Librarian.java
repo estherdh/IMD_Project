@@ -1,13 +1,16 @@
 package oose.p.c6.imd.domain;
 
 import oose.p.c6.imd.persistent.dao.IUserDao;
-import oose.p.c6.imd.service.TokenManager;
 
 import javax.inject.Inject;
+import java.util.List;
 
 public class Librarian {
     @Inject
     private IUserDao userDao;
+
+    @Inject
+    private Shop shop;
 
     public int verifyLogin(String email, String password) {
         User u = getUserByEmail(email);
@@ -36,4 +39,12 @@ public class Librarian {
         System.out.println("entryId = [" + entryId + "], user = [" + user + "]");
         return user.removeQuestFromQuestLog(entryId);
 	}
+
+    public boolean buyReplica(User user, int replicaId) {
+        return shop.buyReplica(user, replicaId);
+    }
+
+    public List<Replica> getAvailableReplicas(User user) {
+        return shop.getAvailableReplicas(user);
+    }
 }

@@ -7,6 +7,8 @@ public class Model {
         this.id = id;
     }
 
+    public Model() { }
+
     public int getId() {
         return id;
     }

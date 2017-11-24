@@ -4,16 +4,25 @@ import oose.p.c6.imd.persistent.dao.IUserDao;
 
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+import oose.p.c6.imd.persistent.dao.*;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class User extends Model {
+
+    private IUserDao userDao = DAOFactory.getUserDao();
+
+    private IReplicaDao replicaDao = DAOFactory.getReplicaDao();
+    //private QuestLog ql;
 	private String email;
     private String password;
     private String display_name;
     private int coins;
     private int languageId;
     private QuestLog questLog;
+
+    public User() { }
 
     public User(int id, String email, String password, String display_name, int coins, int languageId){
 		super(id);
@@ -44,6 +53,15 @@ public class User extends Model {
             e.printStackTrace();
         }
         return generatedPassword;
+    }
+
+    public void removeCoins(int coins) {
+        this.coins -= coins;
+        userDao.update(this);
+    }
+
+    public void addReplicaToInventory(Replica replica) {
+        replicaDao.giveReplicaToUser(this, replica);
     }
 
     public boolean checkQuestCompleted(Action action) {
