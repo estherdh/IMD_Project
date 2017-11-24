@@ -27,7 +27,7 @@ public class Librarian {
     }
 
     public void buyReplica(User user, int replicaId) {
-
+        shop.buyReplica(user, replicaId);
     }
 
     public List<Replica> getAvailableReplicas(User user) {

@@ -9,8 +9,10 @@ public class Shop {
     @Inject
     private IReplicaDao replicaDao;
 
-    public void buyReplica(int replicaId) {
-
+    public void buyReplica(User user, int replicaId) {
+        Replica replica = replicaDao.find(replicaId);
+        replicaDao.giveReplicaToUser(user, replica);
+        user.removeCoins(replica.getPrice());
     }
 
     public List<Replica> getAvailableReplicas(User user) {

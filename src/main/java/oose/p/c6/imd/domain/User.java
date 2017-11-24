@@ -1,15 +1,23 @@
 package oose.p.c6.imd.domain;
 
+import com.sun.org.apache.regexp.internal.RE;
+import oose.p.c6.imd.persistent.dao.IUserDao;
+
+import javax.inject.Inject;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class User extends Model {
+    @Inject
+    private IUserDao userDao;
     //private QuestLog ql;
 	private String email;
     private String password;
     private String display_name;
     private int coins;
     private int languageId;
+
+    public User() { }
 
 	public User(int id, String email, String password, String display_name, int coins, int languageId){
 		super(id);
@@ -39,6 +47,11 @@ public class User extends Model {
             e.printStackTrace();
         }
         return generatedPassword;
+    }
+
+    public void removeCoins(int coins) {
+        this.coins =- coins;
+        userDao.update(this);
     }
 
     //TODO revamp method

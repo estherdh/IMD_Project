@@ -43,4 +43,41 @@ public class ReplicaJDBCDao implements IReplicaDao {
             e.printStackTrace();
         }
     }
+
+    @Override
+    public void add(Replica entity) {
+
+    }
+
+    @Override
+    public void update(Replica updatedEntity) {
+
+    }
+
+    @Override
+    public void remove(Replica entity) {
+
+    }
+
+    @Override
+    public List<Replica> list() {
+        return null;
+    }
+
+    public Replica find(int id) {
+        Connection connection = new ConnectMySQL().getConnection();
+        ResultSet rs = null;
+        try {
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM `replica` WHERE `ReplicaId` = ? ");
+            ps.setInt(1, id);
+            rs = ps.executeQuery();
+            if(rs.next()){
+                return new Replica(rs.getInt("ReplicaId"), rs.getInt("ExhibitInfoId"), rs.getInt("Price"), rs.getString("Sprite"), rs.getString("Type"), rs.getInt("Position"));
+            }
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

@@ -5,7 +5,7 @@ import oose.p.c6.imd.domain.User;
 
 import java.util.List;
 
-public interface IReplicaDao {
+public interface IReplicaDao extends IDao<Replica> {
     List<Replica> findAvailableReplicas(User user);
     void giveReplicaToUser(User user, Replica replica);
 }
