@@ -37,8 +37,7 @@ public class RESTService {
     @Path("/shop/buy/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response buyReplica(@PathParam("id") int replicaId, @QueryParam("token") String token) {
-        //User user = TokenManager.getInstance().getUserFromToken(token);
-        User user = new User(2, "test@void", "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08", "muspi merol", 600, 1);
+        User user = TokenManager.getInstance().getUserFromToken(token);
         if(user != null)
         {
             JsonBuilderFactory factory = Json.createBuilderFactory(null);
@@ -56,8 +55,7 @@ public class RESTService {
     @Path("/shop")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getReplicas(@QueryParam("token") String token) {
-        //User user = TokenManager.getInstance().getUserFromToken(token);
-        User user = new User(2, "test@void", "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08", "muspi merol", 1000, 1);
+        User user = TokenManager.getInstance().getUserFromToken(token);
         if(user != null)
         {
             List<Replica> replicas = l.getAvailableReplicas(user);
