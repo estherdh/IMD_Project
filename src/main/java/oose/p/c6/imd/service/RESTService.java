@@ -80,7 +80,6 @@ public class RESTService {
         }
         return Response.status(403).build();
     }
-}
 
     @POST
     @Path("/quest/qr")
