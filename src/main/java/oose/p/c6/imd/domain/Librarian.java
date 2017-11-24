@@ -47,10 +47,4 @@ public class Librarian {
     public List<Replica> getAvailableReplicas(User user) {
         return shop.getAvailableReplicas(user);
     }
-
-//	TODO: Aanroepen van buitenaf door REST.
-//	public Response removeQuest(int entryId, String token) {
-//		User user = TokenManager.getInstance().getUserFromToken(token);
-//		return user.removeQuest(entryId);
-//	}
 }

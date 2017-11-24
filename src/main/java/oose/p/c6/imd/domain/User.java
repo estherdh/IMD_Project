@@ -57,7 +57,6 @@ public class User extends Model {
 
     public void removeCoins(int coins) {
         this.coins -= coins;
-        System.out.println(this.coins);
         userDao.update(this);
     }
 

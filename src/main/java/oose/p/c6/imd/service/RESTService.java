@@ -18,7 +18,9 @@ import java.util.List;
 @Path("/")
 public class RESTService {
 
+    @Inject
     private Librarian l;
+
     @GET
     @Path("/")
     public String hello(){
