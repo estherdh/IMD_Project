@@ -17,10 +17,35 @@ public class Quest {
 
 	public int checkQuestComplete(Action action) {
 		if (questStrategy.checkQuestComplete(action)) {
+			System.out.println("+=======================+ rewar: " + reward);
 			return reward;
 		} else {
 			return 0;
 		}
+	}
+
+	public int getEntryId() {
+		return entryId;
+	}
+
+	public void setEntryId(int entryId) {
+		this.entryId = entryId;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public void setReward(int reward) {
+		this.reward = reward;
+	}
+
+	public void setQuestStrategy(IQuestType questStrategy) {
+		this.questStrategy = questStrategy;
 	}
 
 	public String getName() {

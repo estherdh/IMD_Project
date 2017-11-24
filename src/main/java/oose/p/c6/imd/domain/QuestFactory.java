@@ -22,7 +22,7 @@ public class QuestFactory {
 				return new QrScanQuest(properties);
 			default:
 				System.out.println("HET QUESTTYPE " + type + " IS NIET GEVONDEN IN 'QuestFactory - generateQuests()'");
-				return null;
+				return new DummyQuest();
 		}
 	}
 

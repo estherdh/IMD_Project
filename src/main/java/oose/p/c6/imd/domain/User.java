@@ -15,14 +15,14 @@ public class User extends Model {
     private int languageId;
     private QuestLog questLog;
 
-	public User(int id, String email, String password, String display_name, int coins, int languageId){
+    public User(int id, String email, String password, String display_name, int coins, int languageId){
 		super(id);
 		this.email = email;
 		this.password = password;
 		this.display_name = display_name;
 		this.coins = coins;
 		this.languageId = languageId;
-		this.questLog = new QuestLog();
+        this.questLog = new QuestLog();
 	}
 
 	public boolean passwordCorrect(String actual){

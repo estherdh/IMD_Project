@@ -27,4 +27,8 @@ public class Token {
     public String getTokenString(){
         return string;
     }
+
+    public void DeVsetTokenString(){
+        this.string = "1234-1234-1234";
+    }
 }

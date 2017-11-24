@@ -20,7 +20,18 @@ import java.util.List;
 public class RESTService {
     @Inject
     private Librarian l;
-
+    @GET
+    @Path("/")
+    public String hello(){
+        JsonBuilderFactory factory = Json.createBuilderFactory(null);
+        JsonObjectBuilder job = factory.createObjectBuilder();
+        job.add("email", "test@void");
+        job.add("password", "test");
+        JsonObject jo = job.build();
+        String token = ((JsonObject) login(jo).getEntity()).getString("token");
+        TokenManager.getInstance().getTokenFromTokenString(token).DeVsetTokenString();
+        return "hello world";
+    }
 
     @POST
     @Path("/login")
@@ -42,11 +53,14 @@ public class RESTService {
 
     @POST
     @Path("/quest/qr")
+    @Consumes(MediaType.APPLICATION_JSON)
     public void scanQrCode(@QueryParam("token") String token, JsonObject jo){
         System.out.println("token = [" + token + "], jo = [" + jo + "]");
         String qrCode = jo.getString("qrCode");
         User user = TokenManager.getInstance().getUserFromToken(token);
-		l.scanQrCode(user, qrCode);
+        if(user != null){
+            l.scanQrCode(user, qrCode);
+        }
     }
 
     @GET

@@ -48,13 +48,14 @@ public class QuestJDBCDao implements IQuestDAO{
 					"    ON ql.QuestTypeId = qt.QuestTypeId)" +
 					"  INNER JOIN QuestTypeLanguage qtl" +
 					"    ON qt.QuestTypeId = qtl.QuestTypeId " +
-					"WHERE UserId = ?" +
+					"WHERE UserId = ? " +
 					"AND Completed = 0 " +
 					"AND LanguageId IN" +
 					"    (SELECT COALESCE(" +
 					"        (SELECT languageId FROM questtypelanguage qtl2 WHERE qtl2.LanguageId = ? AND qtl2.QuestTypeId = qt.QuestTypeId)" +
 					"        , 1)" +
 					"    );");
+			System.out.println(ps.toString());
 			ps.setInt(1, userId);
 			ps.setInt(2, languageId);
 			ResultSet rs = ps.executeQuery();
