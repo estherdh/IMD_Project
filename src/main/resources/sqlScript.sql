@@ -125,7 +125,9 @@ ALTER TABLE QuestLog ADD CONSTRAINT FK_QuestLog_QuestType
 FOREIGN KEY (QuestTypeId) REFERENCES QuestType (QuestTypeId);
 
 ALTER TABLE QuestProperties ADD CONSTRAINT FK_QuestProperties_QuestLog
-FOREIGN KEY (EntryId) REFERENCES QuestLog (EntryId);
+FOREIGN KEY (EntryId) REFERENCES QuestLog (EntryId)
+  ON DELETE CASCADE
+  ON UPDATE RESTRICT;
 
 ALTER TABLE ExhibitInfo ADD CONSTRAINT FK_ExhibitInfo_Exhibit
 FOREIGN KEY (ExhibitId) REFERENCES Exhibit (ExhibitId);

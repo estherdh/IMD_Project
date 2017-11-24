@@ -61,7 +61,7 @@ public class QuestJDBCDao implements IQuestDAO{
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
 				int questType = rs.getInt("QuestTypeId");
-				IQuestType typeStrategy = factory.generateQuest(QuestTypes.values()[questType-1], getVariablesOfQuest(questType));
+				IQuestType typeStrategy = factory.generateQuest(QuestTypes.values()[questType-1], getVariablesOfQuest(rs.getInt("EntryId")));
 				questList.add(new Quest(
 						rs.getInt("EntryId"),
 						rs.getString("Name"),
@@ -83,10 +83,7 @@ public class QuestJDBCDao implements IQuestDAO{
 	public boolean removeQuestFromQuestLog(int entryId, int userId) {
 		Connection connection = ConnectMySQL.getInstance().getConnection();
 		try {
-			PreparedStatement query = connection.prepareStatement("DELETE FROM Questproperties WHERE EntryId = ?;");
-			query.setInt(1, entryId);
-			query.executeUpdate();
-			query = connection.prepareStatement("DELETE FROM QuestLog WHERE EntryId = ? AND UserId = ?;");
+			PreparedStatement query = connection.prepareStatement("DELETE FROM QuestLog WHERE EntryId = ? AND UserId = ?;");
 			query.setInt(1, entryId);
 			query.setInt(2, userId);
 			query.executeUpdate();
