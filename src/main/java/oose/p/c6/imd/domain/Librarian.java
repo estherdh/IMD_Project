@@ -25,8 +25,7 @@ public class Librarian {
         return userDao.findUserByemail(email);
     }
 
-	public boolean removeQuestFromQuestLog(int entryId, String token) {
-		User user = TokenManager.getInstance().getUserFromToken(token);
+	public boolean removeQuestFromQuestLog(int entryId, User user) {
 		return user.removeQuestFromQuestLog(entryId);
 	}
 }

@@ -48,6 +48,7 @@ public class RESTService {
     @GET
     @Path("/quest/remove")
     public void removeQuestFromQuestLog(@QueryParam("entryID") int entryID, @QueryParam("token") String token) {
-        l.removeQuestFromQuestLog(entryID, token);
+        User user = TokenManager.getInstance().getUserFromToken(token);
+        l.removeQuestFromQuestLog(entryID, user);
     }
 }

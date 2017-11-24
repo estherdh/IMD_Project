@@ -50,9 +50,14 @@ public class RESTServiceTest {
 	@Test
 	public void removeQuestFromQuestLog() {
 		//test
+		TokenManager manager = mock(TokenManager.class);
+		User mockUser = mock(User.class);
+		TokenManager.setInstance(manager);
+		when(manager.getUserFromToken("userToken")).thenReturn(mockUser);
 		service.removeQuestFromQuestLog(1, "userToken");
 		//check
-		verify(librarian, times(1)).removeQuestFromQuestLog(1, "userToken");
+		verify(librarian, times(1)).removeQuestFromQuestLog(1, mockUser);
+		TokenManager.setInstance(null);
 	}
 
 }

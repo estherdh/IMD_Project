@@ -38,15 +38,11 @@ public class LibrarianTest {
 	@Test
 	public void removeQuestFromQuestLogTest() {
 		//init
-		TokenManager manager = mock(TokenManager.class);
 		User mockUser = mock(User.class);
-		TokenManager.setInstance(manager);
-		when(manager.getUserFromToken("userToken")).thenReturn(mockUser);
 		when(mockUser.removeQuestFromQuestLog(1)).thenReturn(true);
 		//test
-		boolean actualResult = librarian.removeQuestFromQuestLog(1, "userToken");
+		boolean actualResult = librarian.removeQuestFromQuestLog(1, mockUser);
 		//check
 		assertTrue(actualResult);
-		TokenManager.setInstance(null);
 	}
 }
