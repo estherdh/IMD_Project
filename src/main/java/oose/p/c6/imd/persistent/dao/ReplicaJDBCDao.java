@@ -14,7 +14,7 @@ import java.util.List;
 public class ReplicaJDBCDao implements IReplicaDao {
     @Override
     public List<Replica> findAvailableReplicas(User user) {
-        Connection connection = new ConnectMySQL().getConnection();
+        Connection connection = ConnectMySQL.getInstance().getConnection();
         List<Replica> replicas = new ArrayList<>();
         try {
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM `replica`" +
@@ -34,7 +34,7 @@ public class ReplicaJDBCDao implements IReplicaDao {
 
     @Override
     public void giveReplicaToUser(User user, Replica replica) {
-        Connection connection = new ConnectMySQL().getConnection();
+        Connection connection = ConnectMySQL.getInstance().getConnection();
         try{
             PreparedStatement ps = connection.prepareStatement("INSERT INTO `userreplica` (`UserId`, `ReplicaId`) VALUES (?, ?)");
             ps.setInt(1, user.getId());
@@ -67,7 +67,7 @@ public class ReplicaJDBCDao implements IReplicaDao {
     }
 
     public Replica find(int id) {
-        Connection connection = new ConnectMySQL().getConnection();
+        Connection connection = ConnectMySQL.getInstance().getConnection();
         ResultSet rs = null;
         try {
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM `replica` WHERE `ReplicaId` = ? ");
