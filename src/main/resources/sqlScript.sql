@@ -191,5 +191,6 @@ INSERT INTO librarian.exhibitinfo (`exhibitid`, `LanguageId`, `Name`, `Descripti
 INSERT INTO librarian.exhibitinfo (`exhibitid`, `LanguageId`, `Name`, `Description`, `Image`) VALUES (1, 2, 'LoLoRum Ipsum', 'TestLorumIpsumText', 'image.bmp');
 
 INSERT INTO librarian.replica(`exhibitInfoId`, `Price`, `Sprite`, `Type`, `Position`) VALUES (1, 5, 'image.png', 'boek', 0);
+INSERT INTO librarian.replica(`exhibitInfoId`, `Price`, `Sprite`, `Type`, `Position`) VALUES (1, 12, 'image.png', 'boek', 0);
 
 INSERT INTO librarian.userreplica(`UserId`, `ReplicaId`, `Position`) VALUES (2, 1, 0);
