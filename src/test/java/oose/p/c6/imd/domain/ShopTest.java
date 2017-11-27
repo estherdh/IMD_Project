@@ -14,6 +14,9 @@ import java.util.List;
 
 import static junit.framework.TestCase.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ShopTest
@@ -39,22 +42,33 @@ public class ShopTest
 
     @Test
     public void getReplicasTest() {
-        User user = new User(1, "test@test.com", "test", "peter", 200, 1);
+        User user = mock(User.class);
         List<Replica> replicaList = shop.getAvailableReplicas(user);
+
         assertEquals(result, replicaList);
     }
 
     @Test
     public void buyReplicaEnoughCoinsTest() {
-        User user = new User(1, "test@test.com", "test", "peter", 200, 1);
+        User user = mock(User.class);
+        Mockito.when(user.getCoins()).thenReturn(200);
         boolean failed = shop.buyReplica(user, 1);
+
         assertEquals(true, failed);
+        Mockito.verify(user, times(1)).addReplicaToInventory(any(Replica.class));
+        Mockito.verify(user, times(1)).getCoins();
+        Mockito.verify(user, times(1)).removeCoins(anyInt());
     }
 
     @Test
     public void buyReplicaNotEnoughCoinsTest() {
-        User user = new User(1, "test@test.com", "test", "peter", 2, 1);
+        User user = mock(User.class);
+        Mockito.when(user.getCoins()).thenReturn(2);
         boolean failed = shop.buyReplica(user, 1);
+
         assertEquals(false, failed);
+        Mockito.verify(user, times(0)).addReplicaToInventory(any(Replica.class));
+        Mockito.verify(user, times(1)).getCoins();
+        Mockito.verify(user, times(0)).removeCoins(anyInt());
     }
 }
