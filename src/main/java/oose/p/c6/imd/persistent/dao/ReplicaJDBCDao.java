@@ -46,7 +46,6 @@ public class ReplicaJDBCDao implements IReplicaDao {
             connection.close();
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, e.toString(), e);
-            e.printStackTrace();
         }
     }
 
