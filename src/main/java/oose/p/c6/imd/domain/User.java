@@ -2,33 +2,33 @@ package oose.p.c6.imd.domain;
 
 import oose.p.c6.imd.persistent.dao.IUserDao;
 
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
 import oose.p.c6.imd.persistent.dao.*;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class User extends Model {
+	private static final Logger LOGGER = Logger.getLogger(User.class.getName());
 
     private IUserDao userDao = DAOFactory.getUserDao();
 
     private IReplicaDao replicaDao = DAOFactory.getReplicaDao();
-    //private QuestLog ql;
 	private String email;
     private String password;
-    private String display_name;
+    private String displayName;
     private int coins;
     private int languageId;
     private QuestLog questLog;
 
     public User() { }
 
-    public User(int id, String email, String password, String display_name, int coins, int languageId){
+    public User(int id, String email, String password, String displayName, int coins, int languageId){
 		super(id);
 		this.email = email;
 		this.password = password;
-		this.display_name = display_name;
+		this.displayName = displayName;
 		this.coins = coins;
 		this.languageId = languageId;
         this.questLog = new QuestLog();
@@ -50,7 +50,7 @@ public class User extends Model {
             }
             generatedPassword = sb.toString();
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, e.toString(), e);
         }
         return generatedPassword;
     }
@@ -73,15 +73,6 @@ public class User extends Model {
 		return false;
 	}
 
-    //TODO revamp method
-//	public Response removeQuest(int entryId) {
-//		if (questDao.removeQuest(entryId, id)) {
-//			return Response.status(200).build();
-//		} else {
-//			return Response.status(400).build();
-//		}
-//	}
-
     public String getEmail() {
         return email;
     }
@@ -98,12 +89,12 @@ public class User extends Model {
         this.password = password;
     }
 
-    public String getDisplay_name() {
-        return display_name;
+    public String getDisplayName() {
+        return displayName;
     }
 
-    public void setDisplay_name(String display_name) {
-        this.display_name = display_name;
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
 	public boolean removeQuestFromQuestLog(int entryId) {
 		return questLog.removeQuestFromQuestLog(entryId, super.getId());

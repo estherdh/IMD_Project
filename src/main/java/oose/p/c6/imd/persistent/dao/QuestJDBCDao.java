@@ -1,12 +1,10 @@
 package oose.p.c6.imd.persistent.dao;
 
-import com.sun.org.apache.xpath.internal.SourceTree;
 import oose.p.c6.imd.domain.IQuestType;
 import oose.p.c6.imd.domain.Quest;
 import oose.p.c6.imd.domain.QuestFactory;
 import oose.p.c6.imd.domain.QuestTypes;
 import oose.p.c6.imd.persistent.ConnectMySQL;
-import org.hamcrest.Description;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -16,22 +14,27 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class QuestJDBCDao implements IQuestDAO{
-	public void add(Quest entity) {
+	private static final Logger LOGGER = Logger.getLogger(QuestJDBCDao.class.getName());
 
+
+	public void add(Quest entity) {
+		//Not yet implemented
 	}
 
 	public void update(Quest updatedEntity) {
-
+		//Not yet implemented
 	}
 
 	public void remove(Quest entity) {
-
+		//Not yet implemented
 	}
 
 	public List<Quest> list() {
-		return null;
+		return new ArrayList<Quest>();
 	}
 
 	public Quest find(int id) {
@@ -55,7 +58,6 @@ public class QuestJDBCDao implements IQuestDAO{
 					"        (SELECT languageId FROM questtypelanguage qtl2 WHERE qtl2.LanguageId = ? AND qtl2.QuestTypeId = qt.QuestTypeId)" +
 					"        , 1)" +
 					"    );");
-			System.out.println(ps.toString());
 			ps.setInt(1, userId);
 			ps.setInt(2, languageId);
 			ResultSet rs = ps.executeQuery();
@@ -75,8 +77,8 @@ public class QuestJDBCDao implements IQuestDAO{
 			}
 			return questList;
 		} catch (SQLException e) {
-			e.printStackTrace();
-			return null;
+			LOGGER.log(Level.SEVERE, e.toString(), e);
+			return questList;
 		}
 	}
 
@@ -89,7 +91,7 @@ public class QuestJDBCDao implements IQuestDAO{
 			query.executeUpdate();
 			return true;
 		} catch (SQLException e) {
-			e.printStackTrace();
+			LOGGER.log(Level.SEVERE, e.toString(), e);
 			return false;
 		}
 	}
@@ -104,7 +106,7 @@ public class QuestJDBCDao implements IQuestDAO{
 			ps.setInt(1, entryId);
 			ps.executeUpdate();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			LOGGER.log(Level.SEVERE, e.toString(), e);
 		}
 	}
 
@@ -122,6 +124,7 @@ public class QuestJDBCDao implements IQuestDAO{
 			}
 			return propertyList;
 		} catch (SQLException e) {
+			LOGGER.log(Level.SEVERE, e.toString(), e);
 			return null;
 		}
 	}

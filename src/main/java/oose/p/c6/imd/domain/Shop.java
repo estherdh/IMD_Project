@@ -1,8 +1,6 @@
 package oose.p.c6.imd.domain;
 
-import oose.p.c6.imd.persistent.dao.DAOFactory;
 import oose.p.c6.imd.persistent.dao.IReplicaDao;
-import oose.p.c6.imd.persistent.dao.ReplicaJDBCDao;
 
 import javax.inject.Inject;
 import java.util.List;

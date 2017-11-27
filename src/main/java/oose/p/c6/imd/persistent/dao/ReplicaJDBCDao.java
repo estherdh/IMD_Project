@@ -10,8 +10,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ReplicaJDBCDao implements IReplicaDao {
+    private static final Logger LOGGER = Logger.getLogger(ConnectMySQL.class.getName());
+
     @Override
     public List<Replica> findAvailableReplicas(User user) {
         Connection connection = ConnectMySQL.getInstance().getConnection();
@@ -26,9 +30,8 @@ public class ReplicaJDBCDao implements IReplicaDao {
             }
             connection.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, e.toString(), e);
         }
-
         return replicas;
     }
 
@@ -42,28 +45,29 @@ public class ReplicaJDBCDao implements IReplicaDao {
             ps.execute();
             connection.close();
         } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, e.toString(), e);
             e.printStackTrace();
         }
     }
 
     @Override
     public void add(Replica entity) {
-
+        //Not yet implemented
     }
 
     @Override
     public void update(Replica updatedEntity) {
-
+        //Not yet implemented
     }
 
     @Override
     public void remove(Replica entity) {
-
+            //Not yet implemented
     }
 
     @Override
     public List<Replica> list() {
-        return null;
+        return new ArrayList<Replica>();
     }
 
     public Replica find(int id) {
@@ -78,7 +82,7 @@ public class ReplicaJDBCDao implements IReplicaDao {
             }
             connection.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, e.toString(), e);
         }
         return null;
     }

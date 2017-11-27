@@ -1,8 +1,11 @@
 package oose.p.c6.imd.domain;
 
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class QuestFactory {
+	private static final Logger LOGGER = Logger.getLogger(QuestFactory.class.getName());
 	private static QuestFactory instance;
 
 	private QuestFactory() {
@@ -21,7 +24,7 @@ public class QuestFactory {
 			case QRCODESCAN:
 				return new QrScanQuest(properties);
 			default:
-				System.out.println("HET QUESTTYPE " + type + " IS NIET GEVONDEN IN 'QuestFactory - generateQuests()'");
+				LOGGER.log(Level.WARNING, "HET QUESTTYPE " + type + " IS NIET GEVONDEN IN 'QuestFactory - generateQuests()'");
 				return new DummyQuest();
 		}
 	}
