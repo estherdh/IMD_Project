@@ -14,7 +14,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ReplicaJDBCDao implements IReplicaDao {
-    private static final Logger LOGGER = Logger.getLogger(ConnectMySQL.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(ReplicaJDBCDao.class.getName());
 
     @Override
     public List<Replica> findAvailableReplicas(User user) {
