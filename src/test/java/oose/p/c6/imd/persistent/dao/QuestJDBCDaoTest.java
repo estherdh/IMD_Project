@@ -77,7 +77,7 @@ public class QuestJDBCDaoTest {
 	}
 
 	@Test
-	public void getQuestsFromUserTestErrorShouldReturnNull() throws Exception {
+	public void getQuestsFromUserTestErrorShouldReturnEmptyArray() throws Exception {
 		//init;
 		conn.createStatement().executeUpdate("DROP ALL OBJECTS"); //When there are not tables the query, the query will always throw an error.
 		//test
