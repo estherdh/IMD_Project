@@ -74,7 +74,7 @@ public class UserJDBCDao implements IUserDao {
         try {
             ResultSet rs = connection.prepareStatement("SELECT * FROM Users").executeQuery();
             while (rs.next()) {
-                users.add(new User(rs.getInt("UserId"), rs.getString("email"), rs.getString("Password"), rs.getString("DisplayName"), rs.getInt("Coins"), rs.getInt("LanguageId")));
+                users.add(generateNewUser(rs));
             }
             connection.close();
         } catch (SQLException e) {
@@ -90,14 +90,16 @@ public class UserJDBCDao implements IUserDao {
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM Users WHERE UserId = ?");
             ps.setInt(1, id);
             rs = ps.executeQuery();
+            User returnUser = null;
             if(rs.next()){
-                return new User(rs.getInt("UserId"), rs.getString("email"), rs.getString("Password"), rs.getString("DisplayName"), rs.getInt("Coins"), rs.getInt("LanguageId"));
+                returnUser = generateNewUser(rs);
             }
             connection.close();
+            return returnUser;
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, e.toString(), e);
+            return null;
         }
-        return null;
     }
 
     public User findUserByemail(String email) {
@@ -107,14 +109,24 @@ public class UserJDBCDao implements IUserDao {
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM Users WHERE Email = ?");
             ps.setString(1, email);
             rs = ps.executeQuery();
+            User returnUser = null;
             if(rs.next()){
-                User u = new User(rs.getInt("UserId"), rs.getString("email"), rs.getString("Password"), rs.getString("DisplayName"), rs.getInt("Coins"), rs.getInt("LanguageId"));
-                return u;
+                returnUser = generateNewUser(rs);
             }
             connection.close();
+            return returnUser;
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, e.toString(), e);
         }
         return null;
+    }
+
+    private User generateNewUser(ResultSet rs) {
+        try {
+            return new User(rs.getInt("UserId"), rs.getString("email"), rs.getString("Password"), rs.getString("DisplayName"), rs.getInt("Coins"), rs.getInt("LanguageId"));
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, e.toString(), e);
+            return null;
+        }
     }
 }

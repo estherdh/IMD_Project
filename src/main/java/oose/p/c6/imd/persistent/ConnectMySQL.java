@@ -1,7 +1,5 @@
 package oose.p.c6.imd.persistent;
 
-import oose.p.c6.imd.domain.QuestFactory;
-
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;

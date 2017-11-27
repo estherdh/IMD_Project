@@ -64,7 +64,6 @@ public class RESTService {
             JsonBuilderFactory factory = Json.createBuilderFactory(null);
             JsonObjectBuilder job = factory.createObjectBuilder();
             boolean isPurchased = l.buyReplica(user, replicaId);
-            System.out.println(isPurchased);
             job.add("isPurchased", isPurchased);
 
             return Response.status(201).entity(job.build()).build();
