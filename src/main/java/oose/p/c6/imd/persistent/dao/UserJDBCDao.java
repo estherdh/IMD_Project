@@ -109,10 +109,12 @@ public class UserJDBCDao implements IUserDao {
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM Users WHERE Email = ?");
             ps.setString(1, email);
             rs = ps.executeQuery();
+            User returnUser = null;
             if(rs.next()){
-                return generateNewUser(rs);
+                returnUser = generateNewUser(rs);
             }
             connection.close();
+            return returnUser;
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, e.toString(), e);
         }
