@@ -14,9 +14,11 @@ import javax.json.JsonObjectBuilder;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
+import java.util.logging.Logger;
 
 @Path("/")
 public class RESTService {
+    private static final Logger LOGGER = Logger.getLogger(RESTService.class.getName());
 
     @Inject
     private Librarian l;
@@ -30,7 +32,7 @@ public class RESTService {
         job.add("password", "test");
         JsonObject jo = job.build();
         String token = ((JsonObject) login(jo).getEntity()).getString("token");
-        TokenManager.getInstance().getTokenFromTokenString(token).DeVsetTokenString();
+        TokenManager.getInstance().getTokenFromTokenString(token).devSetTokenString();
         return "hello world";
     }
 
@@ -87,7 +89,6 @@ public class RESTService {
     @Path("/quest/qr")
     @Consumes(MediaType.APPLICATION_JSON)
     public void scanQrCode(@QueryParam("token") String token, JsonObject jo){
-        System.out.println("token = [" + token + "], jo = [" + jo + "]");
         String qrCode = jo.getString("qrCode");
         User user = TokenManager.getInstance().getUserFromToken(token);
         if(user != null){
@@ -98,7 +99,6 @@ public class RESTService {
     @GET
     @Path("/quest/remove")
     public void removeQuestFromQuestLog(@QueryParam("entryID") int entryID, @QueryParam("token") String token) {
-        System.out.println("entryID = [" + entryID + "], token = [" + token + "]");
         User user = TokenManager.getInstance().getUserFromToken(token);
         l.removeQuestFromQuestLog(entryID, user);
     }

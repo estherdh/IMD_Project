@@ -15,10 +15,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
@@ -80,13 +77,12 @@ public class QuestJDBCDaoTest {
 	}
 
 	@Test
-	public void getQuestsFromUserTestErrorShouldReturnNull() throws Exception {
-		//init
-		List<Quest> expectedResult = null;
+	public void getQuestsFromUserTestErrorShouldReturnEmptyArray() throws Exception {
+		//init;
 		conn.createStatement().executeUpdate("DROP ALL OBJECTS"); //When there are not tables the query, the query will always throw an error.
 		//test
 		List<Quest> actualResult = dao.getQuestsForUser(1,1);
-		assertThat(actualResult, is(expectedResult));
+		assertThat(actualResult.size(), is(0));
 	}
 
 	@Test

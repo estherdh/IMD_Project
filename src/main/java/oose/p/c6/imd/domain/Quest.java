@@ -17,7 +17,6 @@ public class Quest {
 
 	public int checkQuestComplete(Action action) {
 		if (questStrategy.checkQuestComplete(action)) {
-			System.out.println("+=======================+ rewar: " + reward);
 			return reward;
 		} else {
 			return 0;

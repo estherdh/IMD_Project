@@ -2,7 +2,6 @@ package oose.p.c6.imd.service;
 
 import oose.p.c6.imd.domain.User;
 
-import javax.ejb.Singleton;
 import java.time.Instant;
 import java.util.ArrayList;
 

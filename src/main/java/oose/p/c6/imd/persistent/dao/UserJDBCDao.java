@@ -10,18 +10,22 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @Default
 public class UserJDBCDao implements IUserDao {
+    private static final Logger LOGGER = Logger.getLogger(UserJDBCDao.class.getName());
+
     public void add(User entity) {
 		Connection connection = ConnectMySQL.getInstance().getConnection();
         try{
             PreparedStatement ps = connection.prepareStatement("INSERT INTO Users (`Email`, `Password`, `DisplayName`, `Coins`, `LanguageId`) VALUES (?, ?, ?, ?, ?)");
-            ps = fillVariables(ps, entity.getEmail(), entity.getPassword(), entity.getDisplay_name(), entity.getCoins(), entity.getLanguageId());
+            ps = fillVariables(ps, entity.getEmail(), entity.getPassword(), entity.getDisplayName(), entity.getCoins(), entity.getLanguageId());
             ps.execute();
             connection.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, e.toString(), e);
         }
     }
 
@@ -43,12 +47,12 @@ public class UserJDBCDao implements IUserDao {
                     " `Coins` = ?," +
                     " `LanguageId` = ? " +
                     "WHERE UserId = ?");
-            ps = fillVariables(ps, entity.getEmail(), entity.getPassword(), entity.getDisplay_name(), entity.getCoins(), entity.getLanguageId());
+            ps = fillVariables(ps, entity.getEmail(), entity.getPassword(), entity.getDisplayName(), entity.getCoins(), entity.getLanguageId());
             ps.setInt(6, entity.getId());
             ps.execute();
             connection.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, e.toString(), e);
         }
     }
 
@@ -60,7 +64,7 @@ public class UserJDBCDao implements IUserDao {
             ps.execute();
             connection.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, e.toString(), e);
         }
     }
 
@@ -74,6 +78,7 @@ public class UserJDBCDao implements IUserDao {
             }
             connection.close();
         } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, e.toString(), e);
         }
         return users;
     }
@@ -90,7 +95,7 @@ public class UserJDBCDao implements IUserDao {
             }
             connection.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, e.toString(), e);
         }
         return null;
     }
@@ -108,7 +113,7 @@ public class UserJDBCDao implements IUserDao {
             }
             connection.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, e.toString(), e);
         }
         return null;
     }
