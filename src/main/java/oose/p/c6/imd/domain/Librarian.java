@@ -1,5 +1,6 @@
 package oose.p.c6.imd.domain;
 
+import oose.p.c6.imd.persistent.dao.IExhibitDao;
 import oose.p.c6.imd.persistent.dao.IUserDao;
 
 import javax.inject.Inject;
@@ -11,6 +12,9 @@ public class Librarian {
 
     @Inject
     private Shop shop;
+
+    @Inject
+    private IExhibitDao exhibits;
 
     public int verifyLogin(String email, String password) {
         User u = getUserByEmail(email);
@@ -46,4 +50,6 @@ public class Librarian {
     public List<Replica> getAvailableReplicas(User user) {
         return shop.getAvailableReplicas(user);
     }
+
+
 }
