@@ -1,6 +1,8 @@
 package oose.p.c6.imd.persistent.dao;
 
+import oose.p.c6.imd.domain.Era;
 import oose.p.c6.imd.domain.Exhibit;
+import oose.p.c6.imd.domain.Museum;
 import oose.p.c6.imd.domain.User;
 import oose.p.c6.imd.persistent.ConnectMySQL;
 import org.h2.tools.RunScript;
@@ -11,14 +13,11 @@ import org.junit.Test;
 import java.io.FileReader;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Properties;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class ExhibitJDBCDaoTest {
     private Connection conn;
@@ -60,4 +59,62 @@ public class ExhibitJDBCDaoTest {
 
     }
 
+    @Test
+    public void findEra(){
+        //init
+        Era expected = new Era(1, "test era");
+
+        //test
+        Era actualResult = dao.findEra(new User(1,"1","1","1",1,2),1);
+
+        //check
+        assertThat(actualResult.getId(), is(expected.getId()));
+        assertThat(actualResult.getName(), is(expected.getName()));
+    }
+
+    @Test
+    public void findMuseum(){
+        //init
+        Museum expected = new Museum(1, "test musei", "http://google.nl", "Nederland");
+
+        //test
+        Museum actualResult = dao.findMuseum(1);
+
+        //check
+        assertThat(actualResult.getId(), is(expected.getId()));
+        assertThat(actualResult.getName(), is(expected.getName()));
+        assertThat(actualResult.getSite(), is(expected.getSite()));
+        assertThat(actualResult.getRegion(), is(expected.getRegion()));
+    }
+
+    @Test
+    public void listMuseum(){
+        Museum expected = new Museum(1, "test musei", "http://google.nl", "Nederland");
+        Museum expected2 = new Museum(2, "De verzamel schuur", "http://google.twente", "Twente");
+
+        List<Museum> list = dao.listMuseums();
+
+        assertThat(list.get(0).getId(), is(expected.getId()));
+        assertThat(list.get(0).getName(), is(expected.getName()));
+        assertThat(list.get(0).getSite(), is(expected.getSite()));
+        assertThat(list.get(0).getRegion(), is(expected.getRegion()));
+        assertThat(list.get(1).getId(), is(expected2.getId()));
+        assertThat(list.get(1).getName(), is(expected2.getName()));
+        assertThat(list.get(1).getSite(), is(expected2.getSite()));
+        assertThat(list.get(1).getRegion(), is(expected2.getRegion()));
+
+    }
+
+    @Test
+    public void listEra(){
+        //init
+        Era expected = new Era(1, "test era");
+
+        //test
+        List<Era> actualResult = dao.listEra(new User(1,"1","1","1",1,2));
+
+        //check
+        assertThat(actualResult.get(0).getId(), is(expected.getId()));
+        assertThat(actualResult.get(0).getName(), is(expected.getName()));
+    }
 }

@@ -61,7 +61,7 @@ public class ExhibitJDBCDao implements IExhibitDao {
         Connection connection = ConnectMySQL.getInstance().getConnection();
         ResultSet rs = null;
         try {
-            PreparedStatement ps = connection.prepareStatement("SELECT name FROM EraLanguage el WHERE el.EraId = ? AND LanguageId = COALESCE((SELECT el2.LanguageId FROM EraLanguage el2 WHERE el2.LanguageId = ? AND el2.EraId = el.EraId), 1)");
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM EraLanguage el WHERE el.EraId = ? AND LanguageId = COALESCE((SELECT el2.LanguageId FROM EraLanguage el2 WHERE el2.LanguageId = ? AND el2.EraId = el.EraId), 1)");
             ps.setInt(1, eraId);
             ps.setInt(2, user.getLanguageId());
             rs = ps.executeQuery();
@@ -82,10 +82,11 @@ public class ExhibitJDBCDao implements IExhibitDao {
         Connection connection = ConnectMySQL.getInstance().getConnection();
         ResultSet rs = null;
         try {
-            PreparedStatement ps = connection.prepareStatement("SELECT name FROM EraLanguage el WHERE el.EraId = ? AND LanguageId = COALESCE((SELECT el2.LanguageId FROM EraLanguage el2 WHERE el2.LanguageId = ? AND el2.EraId = el.EraId), 1)");
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM EraLanguage el WHERE LanguageId = COALESCE((SELECT el2.LanguageId FROM EraLanguage el2 WHERE el2.LanguageId = ? AND el2.EraId = el.EraId), 1)");
+            ps.setInt(1, user.getLanguageId());
             rs = ps.executeQuery();
             List<Era> list = new ArrayList<>();
-            if(rs.next()){
+            while(rs.next()){
                 Era e = new Era(rs.getInt("EraId"), rs.getString("name"));
                 list.add(e);
             }
@@ -125,7 +126,7 @@ public class ExhibitJDBCDao implements IExhibitDao {
             PreparedStatement ps = connection.prepareStatement("Select * FROM Museum");
             rs = ps.executeQuery();
             List<Museum> list = new ArrayList<>();
-            if(rs.next()){
+            while(rs.next()){
                 Museum m = new Museum(rs.getInt("MuseumId"), rs.getString("MuseumName"), rs.getString("Website"), rs.getString("Region"));
                 list.add(m);
             }

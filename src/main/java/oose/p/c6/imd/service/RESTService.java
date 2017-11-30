@@ -182,10 +182,11 @@ public class RESTService {
     @GET
     @Path("/era")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findEra(@QueryParam("token") String token){
+    public Response listEra(@QueryParam("token") String token){
         User user = TokenManager.getInstance().getUserFromToken(token);
         if(user != null){
             List<Era> list = l.listEra(user);
+
             if(list.size() > 0) {
                 JsonBuilderFactory factory = Json.createBuilderFactory(null);
                 JsonArrayBuilder jab = factory.createArrayBuilder();

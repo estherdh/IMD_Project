@@ -57,13 +57,13 @@ public class Librarian {
        return exhibits.findEra(user, eraId);
     }
     public List<Era> listEra(User user){
-        return listEra(user);
+        return exhibits.listEra(user);
     }
     public Museum findMuseum(int museumId){
-        return findMuseum(museumId);
+        return exhibits.findMuseum(museumId);
     }
     public List<Museum> listMuseums(){
-        return listMuseums();
+        return exhibits.listMuseums();
     }
 
 
