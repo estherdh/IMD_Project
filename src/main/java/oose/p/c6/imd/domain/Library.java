@@ -7,12 +7,8 @@ import java.util.List;
 
 public class Library
 {
-    //@Inject
+    @Inject
     private IReplicaDao replicaDao;
-
-    public Library(IReplicaDao replicaDao) {
-        this.replicaDao = replicaDao;
-    }
 
     public int tryPlaceReplica(User user, int replicaId, int positionId) {
         Replica replica = getReplica(replicaId);
