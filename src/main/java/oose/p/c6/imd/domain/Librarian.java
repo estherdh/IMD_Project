@@ -51,5 +51,7 @@ public class Librarian {
         return shop.getAvailableReplicas(user);
     }
 
+    public Exhibit getExhibitDetails(User user, int exhibitId){return exhibits.find(user, exhibitId);}
+
 
 }
