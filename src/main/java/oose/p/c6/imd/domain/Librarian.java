@@ -12,6 +12,9 @@ public class Librarian {
     @Inject
     private Shop shop;
 
+    @Inject
+    private Library library;
+
     public int verifyLogin(String email, String password) {
         User u = getUserByEmail(email);
         if(u == null) {
@@ -45,5 +48,9 @@ public class Librarian {
 
     public List<Replica> getAvailableReplicas(User user) {
         return shop.getAvailableReplicas(user);
+    }
+
+    public int placeReplica(int replicaId, int positionId, User user) {
+        return library.tryPlaceReplica(user, replicaId, positionId);
     }
 }

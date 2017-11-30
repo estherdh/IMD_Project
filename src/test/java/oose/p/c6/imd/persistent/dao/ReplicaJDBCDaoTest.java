@@ -49,7 +49,7 @@ public class ReplicaJDBCDaoTest
 
     @Test
     public void findReplicaTest() {
-        Replica expectedReplica = new Replica(2, 1, 12, "image.png", "boek", 0);
+        Replica expectedReplica = new Replica(2, 1, 12, "image.png", 1);
         Replica replica = dao.find(2);
 
         assertThat(replica, samePropertyValuesAs(expectedReplica));
@@ -59,8 +59,8 @@ public class ReplicaJDBCDaoTest
     public void findAvailableReplicasTest() {
         List<Replica> replicaList = dao.findAvailableReplicas(user);
         List<Replica> expectedReplicaList = new ArrayList<Replica>(){{
-            add(new Replica(1, 1, 5, "image.png", "boek", 0));
-            add(new Replica(2, 1, 12, "image.png", "boek", 0));
+            add(new Replica(1, 1, 5, "image.png", 1));
+            add(new Replica(2, 1, 12, "image.png", 1));
         }};
 
         assertThat(replicaList.get(0), samePropertyValuesAs(expectedReplicaList.get(0)));
@@ -69,7 +69,7 @@ public class ReplicaJDBCDaoTest
 
     @Test
     public void giveReplicaToUserTest() throws SQLException {
-        Replica replica = new Replica(1, 1, 12, "image.png", "boek", 0);
+        Replica replica = new Replica(1, 1, 12, "image.png", 1);
         dao.giveReplicaToUser(user, replica);
 
         Connection conn = ConnectMySQL.getInstance().getConnection();

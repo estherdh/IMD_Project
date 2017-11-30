@@ -4,16 +4,14 @@ public class Replica extends Model{
     private int exhibitInfoId;
     private int price;
     private String sprite;
-    private String type;
-    private int position;
+    private int type;
 
-    public Replica(int id, int exhibitInfoId, int price, String sprite, String type, int position) {
+    public Replica(int id, int exhibitInfoId, int price, String sprite, int type) {
         super(id);
         this.exhibitInfoId = exhibitInfoId;
         this.price = price;
         this.sprite = sprite;
         this.type = type;
-        this.position = position;
     }
 
     public int getExhibitInfoId() {
@@ -40,19 +38,11 @@ public class Replica extends Model{
         this.sprite = sprite;
     }
 
-    public String getType() {
+    public int getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(int type) {
         this.type = type;
-    }
-
-    public int getPosition() {
-        return position;
-    }
-
-    public void setPosition(int position) {
-        this.position = position;
     }
 }

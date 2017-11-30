@@ -101,4 +101,21 @@ public class RESTService {
         User user = TokenManager.getInstance().getUserFromToken(token);
         l.removeQuestFromQuestLog(entryID, user);
     }
+
+    @POST
+    @Path("/library/place")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response placeReplica(@QueryParam("token") String token, JsonObject obj) {
+        User user = TokenManager.getInstance().getUserFromToken(token);
+        if(user != null)
+        {
+            int reason = l.placeReplica(obj.getInt("replicaId"), obj.getInt("positionId"), user);
+            JsonBuilderFactory factory = Json.createBuilderFactory(null);
+            JsonObjectBuilder job = factory.createObjectBuilder();
+            job.add("reason", reason);
+            return Response.status(201).entity(reason).build();
+        }
+        return Response.status(403).build();
+    }
 }
