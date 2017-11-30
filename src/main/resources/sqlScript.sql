@@ -118,7 +118,8 @@ CREATE TABLE Replica (
   ExhibitInfoId INT NOT NULL,
   `Price` INT NOT NULL,
   Sprite VARCHAR(45) NOT NULL,
-  ReplicaTypeId INT NOT NULL
+  `Type` VARCHAR(45) NOT NULL,
+  `Position` INT NOT NULL
 );
 
 
@@ -131,7 +132,7 @@ CREATE TABLE ReplicaPositions (
 CREATE TABLE UserReplica (
   UserId INT NOT NULL,
   ReplicaId INT NOT NULL,
-  ReplicaPositionId INT NULL DEFAULT NULL
+  Position INT NOT NULL DEFAULT 0
 );
 
 -- FOREIGN KEYS
@@ -165,22 +166,11 @@ FOREIGN KEY (LanguageId) REFERENCES Language (LanguageId);
 ALTER TABLE Replica ADD CONSTRAINT FK_Replica_ExhibitInfo
 FOREIGN KEY (ExhibitInfoId) REFERENCES ExhibitInfo (ExhibitInfoId);
 
-ALTER TABLE Replica ADD CONSTRAINT FK_Replica_ReplicaType
-FOREIGN KEY (ReplicaTypeId) REFERENCES ReplicaType (ReplicaTypeId);
-
-ALTER TABLE ReplicaPositions ADD CONSTRAINT FK_ReplicaPositions_ReplicaType
-FOREIGN KEY (ReplicaTypeId) REFERENCES ReplicaType (ReplicaTypeId);
-
-
 ALTER TABLE UserReplica ADD CONSTRAINT FK_UserReplica_User
 FOREIGN KEY (UserId) REFERENCES Users (UserId);
 
 ALTER TABLE UserReplica ADD CONSTRAINT FK_UserReplica_Replica
 FOREIGN KEY (ReplicaId) REFERENCES Replica (ReplicaId);
-
-ALTER TABLE UserReplica ADD CONSTRAINT FK_UserReplica_ReplicaPositions
-FOREIGN KEY (ReplicaPositionId) REFERENCES ReplicaPositions (ReplicaPositionId);
-
 
 ALTER TABLE Exhibit ADD CONSTRAINT FK_Exhibit_Museum
 FOREIGN KEY (MuseumId) REFERENCES Museum (MuseumId);
@@ -247,32 +237,7 @@ INSERT INTO ExhibitInfo (`ExhibitId`, `languageId`, `name`, `description`, `Imag
 VALUES (4, 1, 'Voorbeeld streektaal', 'Dit papier bevat een stuk tekst in streektaal: Oet de goaldn korenaarn skeup God de Tweantenaarn, en oet t kaf en d restn de leu oet t Westn', 'object.png'),
   (4, 3, 'Lol look at tis translation', 'Possibly testing de taal', 'object.png');
 
-INSERT INTO `replicatype` (`ReplicaTypeId`, `Name`) VALUES
-  (1, 'wall'),
-  (2, 'floor'),
-  (3, 'table');
+INSERT INTO librarian.replica(`exhibitInfoId`, `Price`, `Sprite`, `Type`, `Position`) VALUES (1, 5, 'image.png', 'boek', 0);
+INSERT INTO librarian.replica(`exhibitInfoId`, `Price`, `Sprite`, `Type`, `Position`) VALUES (1, 12, 'image.png', 'boek', 0);
 
-INSERT INTO `replica` (`ReplicaId`, `ExhibitInfoId`, `Price`, `Sprite`, `ReplicaTypeId`) VALUES
-  (1, 6, 10, 'traktor', 2),
-  (2, 1, 15, 'test1', 2),
-  (3, 1, 12, 'test2', 2),
-  (4, 1, 20, 'test3', 1),
-  (5, 1, 25, 'test4', 3),
-  (6, 1, 99, 'test5', 3),
-  (7, 2, 2, 'test6', 3);
-
-INSERT INTO `replicapositions` (`ReplicaPositionId`, `ReplicaTypeId`) VALUES
-  (1, 1),
-  (2, 1),
-  (3, 1),
-  (4, 2),
-  (5, 2),
-  (6, 3),
-  (7, 3),
-  (8, 3),
-  (9, 3);
-
-INSERT INTO `userreplica` (`UserId`, `ReplicaId`, `ReplicaPositionId`) VALUES
-  (1, 2, NULL),
-  (3, 2, NULL),
-  (2, 1, NULL);
+INSERT INTO librarian.userreplica(`UserId`, `ReplicaId`, `Position`) VALUES (2, 1, 0);
