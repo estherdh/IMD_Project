@@ -60,4 +60,16 @@ public class RESTServiceTest {
 		TokenManager.setInstance(null);
 	}
 
+	@Test
+	public void getExhibitDetails(){
+		//init
+		TokenManager manager = TokenManager.getInstance();
+		User user = new User(1, "test@test", "test", "Tester test", 0, 1);
+		String token = manager.createTokenForUser(user).getTokenString();
+		//test
+		service.getExhibitDetails(1, token);
+		//check
+		verify(librarian, times(1)).getExhibitDetails(user, 1);
+	}
+
 }

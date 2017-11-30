@@ -1,6 +1,7 @@
 CREATE SCHEMA IF NOT EXISTS librarian;
 SET SCHEMA librarian;
 
+
 -- TALEN
 
 CREATE TABLE Language (
@@ -65,6 +66,7 @@ CREATE TABLE QuestProperties (
 CREATE TABLE Exhibit (
   ExhibitId INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
   MuseumId INT NOT NULL,
+  EraId INT NOT NULL,
   Year INT NOT NULL,
   `Video` VARCHAR(100)
 );
@@ -90,21 +92,46 @@ CREATE TABLE ExhibitTags (
   TagId INT NOT NULL
 );
 
+CREATE TABLE Era(
+  EraId INT AUTO_INCREMENT PRIMARY KEY
+);
+
+CREATE TABLE EraLanguage(
+  TranslationId INT AUTO_INCREMENT PRIMARY KEY,
+  LanguageId INT,
+  EraId INT,
+  `Name` VARCHAR(40) NOT NULL,
+  CONSTRAINT EraLanguage_Unique_Translation UNIQUE (LanguageId, EraId),
+  FOREIGN KEY (EraId) REFERENCES Era(EraId),
+  FOREIGN KEY (LanguageId) REFERENCES Language(LanguageId)
+);
+
 -- REPLICA'S
+
+CREATE TABLE ReplicaType (
+  ReplicaTypeId INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+  `Name` VARCHAR(45) NOT NULL
+);
 
 CREATE TABLE Replica (
   ReplicaId INT AUTO_INCREMENT PRIMARY KEY,
   ExhibitInfoId INT NOT NULL,
   `Price` INT NOT NULL,
   Sprite VARCHAR(45) NOT NULL,
-  `Type` VARCHAR(45) NOT NULL,
-  `Position` INT NOT NULL
+  ReplicaTypeId INT NOT NULL
 );
+
+
+CREATE TABLE ReplicaPositions (
+  ReplicaPositionId INT AUTO_INCREMENT PRIMARY KEY,
+  ReplicaTypeId INT NOT NULL
+);
+
 
 CREATE TABLE UserReplica (
   UserId INT NOT NULL,
   ReplicaId INT NOT NULL,
-  Position INT NOT NULL DEFAULT 0
+  ReplicaPositionId INT NULL DEFAULT NULL
 );
 
 -- FOREIGN KEYS
@@ -138,14 +165,12 @@ FOREIGN KEY (LanguageId) REFERENCES Language (LanguageId);
 ALTER TABLE Replica ADD CONSTRAINT FK_Replica_ExhibitInfo
 FOREIGN KEY (ExhibitInfoId) REFERENCES ExhibitInfo (ExhibitInfoId);
 
-ALTER TABLE Exhibit ADD CONSTRAINT FK_Exhibit_Museum
-FOREIGN KEY (MuseumId) REFERENCES Museum (MuseumId);
+ALTER TABLE Replica ADD CONSTRAINT FK_Replica_ReplicaType
+FOREIGN KEY (ReplicaTypeId) REFERENCES ReplicaType (ReplicaTypeId);
 
-ALTER TABLE ExhibitTags ADD CONSTRAINT FK_ExhibitTags_Exhibit
-FOREIGN KEY (ExhibitId) REFERENCES Exhibit (ExhibitId);
+ALTER TABLE ReplicaPositions ADD CONSTRAINT FK_ReplicaPositions_ReplicaType
+FOREIGN KEY (ReplicaTypeId) REFERENCES ReplicaType (ReplicaTypeId);
 
-ALTER TABLE ExhibitTags ADD CONSTRAINT FK_ExhibitTags_Tags
-FOREIGN KEY (TagId) REFERENCES Tags (TagId);
 
 ALTER TABLE UserReplica ADD CONSTRAINT FK_UserReplica_User
 FOREIGN KEY (UserId) REFERENCES Users (UserId);
@@ -153,6 +178,23 @@ FOREIGN KEY (UserId) REFERENCES Users (UserId);
 ALTER TABLE UserReplica ADD CONSTRAINT FK_UserReplica_Replica
 FOREIGN KEY (ReplicaId) REFERENCES Replica (ReplicaId);
 
+ALTER TABLE UserReplica ADD CONSTRAINT FK_UserReplica_ReplicaPositions
+FOREIGN KEY (ReplicaPositionId) REFERENCES ReplicaPositions (ReplicaPositionId);
+
+
+ALTER TABLE Exhibit ADD CONSTRAINT FK_Exhibit_Museum
+FOREIGN KEY (MuseumId) REFERENCES Museum (MuseumId);
+
+ALTER TABLE Exhibit ADD CONSTRAINT FK_Exhibit_Era
+FOREIGN KEY (EraId) REFERENCES Era (EraId);
+
+ALTER TABLE ExhibitTags ADD CONSTRAINT FK_ExhibitTags_Exhibit
+FOREIGN KEY (ExhibitId) REFERENCES Exhibit (ExhibitId);
+
+ALTER TABLE ExhibitTags ADD CONSTRAINT FK_ExhibitTags_Tags
+FOREIGN KEY (TagId) REFERENCES Tags (TagId);
+
+-- Hier komen de insert scripts
 -- Hier komen de insert scripts
 INSERT INTO librarian.language (Short_Code, Name) VALUES ('nl', 'Nederlands');
 INSERT INTO librarian.language (Short_Code, Name) VALUES ('en', 'English');
@@ -183,14 +225,54 @@ INSERT INTO librarian.questlog (UserId, QuestTypeId, Completed) VALUES (2, 2, 0)
 INSERT INTO librarian.questproperties(`Key`, `Value`, EntryId) VALUES ('Tekst', 'AAE', 5);
 INSERT INTO librarian.questlog (UserId, QuestTypeId, Completed) VALUES (3, 2, 0);
 
-INSERT INTO librarian.museum (`MuseumName`, `Website`, `Region`) VALUES ('De oude schatten', 'https://nope.nl', 'Niet Gelderland');
+INSERT INTO Era () VALUES ();
+INSERT INTO eralanguage (`eraId`, `name`, `languageId`) VALUES (1, 'tijdperk test', 1);
+INSERT INTO eralanguage (`eraId`, `name`, `languageId`) VALUES (1, 'test era', 2);
+INSERT INTO Museum (`MuseumName`, `website`, `Region`) VALUES ('test musei', 'http://google.nl', 'Nederland');
+INSERT INTO Exhibit (`year`, `eraId`, `museumId`) VALUES ('1999', 1, 1);
+INSERT INTO ExhibitInfo (`ExhibitId`, `languageId`, `name`, `description`, `Image`)
+VALUES (1, 1, 'Het test object', 'Dit object wordt altijd al gebruikt om te testen', 'object.png'),
+  (1, 2, 'The test object', 'Possibly used for testing', 'object.png');
+INSERT INTO Exhibit (`year`, `eraId`, `museumId`) VALUES ('2010', 1, 1);
+INSERT INTO ExhibitInfo (`ExhibitId`, `languageId`, `name`, `description`, `Image`)
+VALUES (2, 1, 'Het voorbeeld beeldje', 'Dit beeldje is ware kunst, een ideaal voorbeeld.', 'object.png'),
+  (2, 3, 'Lol look at tis translation', 'Possibly testing de taal', 'object.png');
+INSERT INTO Museum (`MuseumName`, `website`, `Region`) VALUES ('De verzamel schuur', 'http://google.twente', 'Twente');
+INSERT INTO Exhibit (`year`, `eraId`, `museumId`) VALUES ('2015', 1, 2);
+INSERT INTO ExhibitInfo (`ExhibitId`, `languageId`, `name`, `description`, `Image`)
+VALUES (3, 1, 'Trekker', 'Deze trekker is geen tractor!', 'object.png'),
+  (3, 2, 'Farmers vehicle', 'Use primarily for 14 year olds to drive around without an actual drivers license', 'object.png');
+INSERT INTO Exhibit (`year`, `eraId`, `museumId`) VALUES ('2017', 1, 2);
+INSERT INTO ExhibitInfo (`ExhibitId`, `languageId`, `name`, `description`, `Image`)
+VALUES (4, 1, 'Voorbeeld streektaal', 'Dit papier bevat een stuk tekst in streektaal: Oet de goaldn korenaarn skeup God de Tweantenaarn, en oet t kaf en d restn de leu oet t Westn', 'object.png'),
+  (4, 3, 'Lol look at tis translation', 'Possibly testing de taal', 'object.png');
 
-INSERT INTO librarian.exhibit (`MuseumId`, `Year`, `Video`) VALUES (1, 1990, 'nope.avi');
+INSERT INTO `replicatype` (`ReplicaTypeId`, `Name`) VALUES
+  (1, 'wall'),
+  (2, 'floor'),
+  (3, 'table');
 
-INSERT INTO librarian.exhibitinfo (`exhibitid`, `LanguageId`, `Name`, `Description`, `Image`) VALUES (1, 1, 'De test tekst', 'LORUM IPSUM FOR THE WIN', 'image.png');
-INSERT INTO librarian.exhibitinfo (`exhibitid`, `LanguageId`, `Name`, `Description`, `Image`) VALUES (1, 2, 'LoLoRum Ipsum', 'TestLorumIpsumText', 'image.bmp');
+INSERT INTO `replica` (`ReplicaId`, `ExhibitInfoId`, `Price`, `Sprite`, `ReplicaTypeId`) VALUES
+  (1, 6, 10, 'traktor', 2),
+  (2, 1, 15, 'test1', 2),
+  (3, 1, 12, 'test2', 2),
+  (4, 1, 20, 'test3', 1),
+  (5, 1, 25, 'test4', 3),
+  (6, 1, 99, 'test5', 3),
+  (7, 2, 2, 'test6', 3);
 
-INSERT INTO librarian.replica(`exhibitInfoId`, `Price`, `Sprite`, `Type`, `Position`) VALUES (1, 5, 'image.png', 'boek', 0);
-INSERT INTO librarian.replica(`exhibitInfoId`, `Price`, `Sprite`, `Type`, `Position`) VALUES (1, 12, 'image.png', 'boek', 0);
+INSERT INTO `replicapositions` (`ReplicaPositionId`, `ReplicaTypeId`) VALUES
+  (1, 1),
+  (2, 1),
+  (3, 1),
+  (4, 2),
+  (5, 2),
+  (6, 3),
+  (7, 3),
+  (8, 3),
+  (9, 3);
 
-INSERT INTO librarian.userreplica(`UserId`, `ReplicaId`, `Position`) VALUES (2, 1, 0);
+INSERT INTO `userreplica` (`UserId`, `ReplicaId`, `ReplicaPositionId`) VALUES
+  (1, 2, NULL),
+  (3, 2, NULL),
+  (2, 1, NULL);
