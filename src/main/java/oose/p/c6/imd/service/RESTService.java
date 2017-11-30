@@ -111,27 +111,31 @@ public class RESTService {
         if(user != null){
             Exhibit e = l.getExhibitDetails(user, exhibitId);
             if(e != null) {
-                JsonBuilderFactory factory = Json.createBuilderFactory(null);
-                JsonObjectBuilder job = factory.createObjectBuilder();
-                job.add("ExhibitId", e.getId());
-                job.add("Name", e.getName());
-
-                String image = e.getImage();
-                if(image == null){
-                    image = "undefined";
-                }
-                String video = e.getVideo();
-                if(video == null){
-                    video = "undefined";
-                }
-                job.add("Description", e.getDescription());
-                job.add("Video", video);
-                job.add("Image", image);
-                job.add("Year", e.getYear());
-                return Response.status(200).entity(job.build()).build();
+                return Response.status(200).entity(buildExhibitJson(e)).build();
             }
             return Response.status(200).build();
         }
         return Response.status(401).build();
+    }
+
+    private JsonObject buildExhibitJson(Exhibit e){
+        JsonBuilderFactory factory = Json.createBuilderFactory(null);
+        JsonObjectBuilder job = factory.createObjectBuilder();
+        job.add("ExhibitId", e.getId());
+        job.add("Name", e.getName());
+
+        String image = e.getImage();
+        if(image == null){
+            image = "undefined";
+        }
+        String video = e.getVideo();
+        if(video == null){
+            video = "undefined";
+        }
+        job.add("Description", e.getDescription());
+        job.add("Video", video);
+        job.add("Image", image);
+        job.add("Year", e.getYear());
+        return job.build();
     }
 }
