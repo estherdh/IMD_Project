@@ -5,11 +5,11 @@ import oose.p.c6.imd.domain.User;
 import oose.p.c6.imd.persistent.ConnectMySQL;
 
 import javax.el.MethodNotFoundException;
-import javax.mail.MethodNotSupportedException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -40,17 +40,17 @@ public class ExhibitJDBCDao implements IExhibitDao {
 
     @Override
     public List<Exhibit> listByMuseum(User user, int museumId) {
-        return null;
+        return new ArrayList<Exhibit>();
     }
 
     @Override
     public List<Exhibit> listByEra(User user, int eraId) {
-        return null;
+        return new ArrayList<Exhibit>();
     }
 
     @Override
     public List<Exhibit> list(User user) {
-        return null;
+        return new ArrayList<Exhibit>();
     }
 
 
@@ -64,7 +64,7 @@ public class ExhibitJDBCDao implements IExhibitDao {
 
     @Override
     public void remove(Exhibit entity) {
-
+        throw new MethodNotFoundException();
     }
 
     @Override
