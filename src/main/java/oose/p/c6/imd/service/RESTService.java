@@ -1,17 +1,11 @@
 package oose.p.c6.imd.service;
 
 
-import oose.p.c6.imd.domain.Exhibit;
-import oose.p.c6.imd.domain.Librarian;
-import oose.p.c6.imd.domain.Replica;
-import oose.p.c6.imd.domain.User;
+import oose.p.c6.imd.domain.*;
 
 import javax.inject.Inject;
-import javax.json.Json;
-import javax.json.JsonBuilderFactory;
-import javax.json.JsonObject;
+import javax.json.*;
 import javax.ws.rs.*;
-import javax.json.JsonObjectBuilder;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
@@ -136,6 +130,95 @@ public class RESTService {
         job.add("Video", video);
         job.add("Image", image);
         job.add("Year", e.getYear());
+        return job.build();
+    }
+
+    @GET
+    @Path("/museum/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response findMuseum(@PathParam("id") int museumId, @QueryParam("token") String token){
+        User user = TokenManager.getInstance().getUserFromToken(token);
+        if(user != null){
+            Museum m = l.findMuseum(museumId);
+            if(m != null) {
+                return Response.status(200).entity(createMusuemJson(m)).build();
+            }
+            return Response.status(200).build();
+        }
+        return Response.status(401).build();
+    }
+
+    @GET
+    @Path("/era/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response findEra(@PathParam("id") int eraId, @QueryParam("token") String token){
+        User user = TokenManager.getInstance().getUserFromToken(token);
+        if(user != null){
+            Era e = l.findEra(user, eraId);
+            if(e != null) {
+                return Response.status(200).entity(createEraJson(e)).build();
+            }
+            return Response.status(200).build();
+        }
+        return Response.status(401).build();
+    }
+
+    @GET
+    @Path("/museum")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response listMuseums(@QueryParam("token") String token){
+        User user = TokenManager.getInstance().getUserFromToken(token);
+        if(user != null){
+            List<Museum> list = l.listMuseums();
+            if(list.size() > 0) {
+                JsonBuilderFactory factory = Json.createBuilderFactory(null);
+                JsonArrayBuilder jab = factory.createArrayBuilder();
+                for (Museum m: list) {
+                    jab.add(createMusuemJson(m));
+                }
+                return Response.status(200).entity(jab.build()).build();
+            }
+            return Response.status(200).build();
+        }
+        return Response.status(401).build();
+    }
+
+    @GET
+    @Path("/era")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response listEra(@QueryParam("token") String token){
+        User user = TokenManager.getInstance().getUserFromToken(token);
+        if(user != null){
+            List<Era> list = l.listEra(user);
+
+            if(list.size() > 0) {
+                JsonBuilderFactory factory = Json.createBuilderFactory(null);
+                JsonArrayBuilder jab = factory.createArrayBuilder();
+                for (Era e: list) {
+                    jab.add(createEraJson(e));
+                }
+                return Response.status(200).entity(jab.build()).build();
+            }
+            return Response.status(200).build();
+        }
+        return Response.status(401).build();
+    }
+
+    private JsonObject createEraJson(Era e){
+        JsonBuilderFactory factory = Json.createBuilderFactory(null);
+        JsonObjectBuilder job = factory.createObjectBuilder();
+        job.add("EraId", e.getId());
+        job.add("Name", e.getName());
+        return job.build();
+    }
+
+    private JsonObject createMusuemJson(Museum m){
+        JsonBuilderFactory factory = Json.createBuilderFactory(null);
+        JsonObjectBuilder job = factory.createObjectBuilder();
+        job.add("MuseumId", m.getId());
+        job.add("Name", m.getName());
+        job.add("Site", m.getSite());
+        job.add("Region", m.getRegion());
         return job.build();
     }
 }
