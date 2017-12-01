@@ -17,6 +17,7 @@ import java.util.Properties;
 
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertTrue;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.beans.SamePropertyValuesAs.samePropertyValuesAs;
 
@@ -49,32 +50,82 @@ public class ReplicaJDBCDaoTest
 
     @Test
     public void findReplicaTest() {
-        Replica expectedReplica = new Replica(2, 1, 12, "image.png", 1);
+        // init
+        Replica expectedReplica = new Replica (2, 1, 15, "test1", 2);
+        // test
         Replica replica = dao.find(2);
-
+        // check result
         assertThat(replica, samePropertyValuesAs(expectedReplica));
     }
 
     @Test
     public void findAvailableReplicasTest() {
-        List<Replica> replicaList = dao.findAvailableReplicas(user);
+        // init
         List<Replica> expectedReplicaList = new ArrayList<Replica>(){{
-            add(new Replica(1, 1, 5, "image.png", 1));
-            add(new Replica(2, 1, 12, "image.png", 1));
+            add(new Replica(1, 6, 10, "traktor", 2));
         }};
+        // test
+        List<Replica> replicaList = dao.findAvailableReplicas(user);
+        // check result
+        assertThat(replicaList.size(), is(expectedReplicaList.size()));
+        for(int i = 0; i < expectedReplicaList.size(); i++) {
+            assertThat(replicaList.get(i), samePropertyValuesAs(expectedReplicaList.get(i)));
+        }
+    }
 
-        assertThat(replicaList.get(0), samePropertyValuesAs(expectedReplicaList.get(0)));
-        assertThat(replicaList.get(1), samePropertyValuesAs(expectedReplicaList.get(1)));
+    @Test
+    public void getFreePositionsTest() {
+        // init
+        List<Integer> expected = new ArrayList<Integer>() {{
+            add(3);
+            add(2);
+        }};
+        // test
+        List<Integer> actual = dao.getFreePositions(user, 2);
+        // check result
+        assertThat(actual.size(), samePropertyValuesAs(expected.size()));
+        for(int i = 0; i < expected.size(); i++) {
+            assertThat(actual.get(i), samePropertyValuesAs(expected.get(i)));
+        }
+    }
+
+    @Test
+    public void getReplicasFromUserTest() {
+        // init
+        List<Replica> expected = new ArrayList<Replica>() {{
+            add(new Replica(2, 1, 15, "test1", 2));
+        }};
+        // test
+        List<Replica> actual = dao.getReplicasFromUser(user);
+        // check result
+        assertThat(actual.size(), samePropertyValuesAs(expected.size()));
+        for(int i = 0; i < expected.size(); i++) {
+            assertThat(actual.get(i), samePropertyValuesAs(expected.get(i)));
+        }
+    }
+
+    @Test
+    public void updateReplicaPositionTest() throws SQLException {
+        // init
+        Replica replica = new Replica(3, 1, 12, "test2", 2);
+        // test
+        dao.updateReplicaPosition(user, replica, 2);
+        // check result
+        Connection conn = ConnectMySQL.getInstance().getConnection();
+        ResultSet rs = conn.prepareStatement("SELECT * FROM librarian.userreplica WHERE UserId = 1 AND ReplicaId = 3;").executeQuery();
+        rs.next();
+        assertThat(rs.getInt("ReplicaPositionId"), is(2));
     }
 
     @Test
     public void giveReplicaToUserTest() throws SQLException {
+        // init
         Replica replica = new Replica(1, 1, 12, "image.png", 1);
+        // test
         dao.giveReplicaToUser(user, replica);
-
+        // check result
         Connection conn = ConnectMySQL.getInstance().getConnection();
         ResultSet rs = conn.prepareStatement("SELECT 1 FROM librarian.userreplica WHERE UserId = 1 AND ReplicaId = 1;").executeQuery();
-
         assertTrue(rs.first());
     }
 }

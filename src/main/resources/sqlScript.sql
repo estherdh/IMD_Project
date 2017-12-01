@@ -118,8 +118,7 @@ CREATE TABLE Replica (
   ExhibitInfoId INT NOT NULL,
   `Price` INT NOT NULL,
   Sprite VARCHAR(45) NOT NULL,
-  `Type` VARCHAR(45) NOT NULL,
-  `Position` INT NOT NULL
+  `ReplicaTypeId` VARCHAR(45) NOT NULL
 );
 
 
@@ -132,7 +131,7 @@ CREATE TABLE ReplicaPositions (
 CREATE TABLE UserReplica (
   UserId INT NOT NULL,
   ReplicaId INT NOT NULL,
-  Position INT NOT NULL DEFAULT 0
+  ReplicaPositionId INT NULL DEFAULT NULL
 );
 
 -- FOREIGN KEYS
@@ -237,7 +236,22 @@ INSERT INTO ExhibitInfo (`ExhibitId`, `languageId`, `name`, `description`, `Imag
 VALUES (4, 1, 'Voorbeeld streektaal', 'Dit papier bevat een stuk tekst in streektaal: Oet de goaldn korenaarn skeup God de Tweantenaarn, en oet t kaf en d restn de leu oet t Westn', 'object.png'),
   (4, 3, 'Lol look at tis translation', 'Possibly testing de taal', 'object.png');
 
-INSERT INTO librarian.replica(`exhibitInfoId`, `Price`, `Sprite`, `Type`, `Position`) VALUES (1, 5, 'image.png', 'boek', 0);
-INSERT INTO librarian.replica(`exhibitInfoId`, `Price`, `Sprite`, `Type`, `Position`) VALUES (1, 12, 'image.png', 'boek', 0);
+INSERT INTO `replicatype` (`ReplicaTypeId`, `Name`) VALUES
+    (1, 'wall'),
+    (2, 'floor'),
+    (3, 'table');
 
-INSERT INTO librarian.userreplica(`UserId`, `ReplicaId`, `Position`) VALUES (2, 1, 0);
+INSERT INTO `replica` (`ReplicaId`, `ExhibitInfoId`, `Price`, `Sprite`, `ReplicaTypeId`) VALUES
+    (1, 6, 10, 'traktor', 2),
+    (2, 1, 15, 'test1', 2),
+    (3, 1, 12, 'test2', 2);
+
+INSERT INTO `replicapositions` (`ReplicaPositionId`, `ReplicaTypeId`) VALUES
+    (1, 2),
+    (2, 2),
+    (3, 2);
+
+INSERT INTO `userreplica` (`UserId`, `ReplicaId`, `ReplicaPositionId`) VALUES
+    (1, 2, 1),
+    (1, 3, NULL),
+    (2, 1, NULL);
