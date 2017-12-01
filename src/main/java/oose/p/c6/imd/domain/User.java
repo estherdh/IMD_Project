@@ -14,8 +14,8 @@ public class User extends Model {
 	private static final Logger LOGGER = Logger.getLogger(User.class.getName());
 
     private IUserDao userDao = DAOFactory.getUserDao();
-
     private IReplicaDao replicaDao = DAOFactory.getReplicaDao();
+
 	private String email;
     private String password;
     private String displayName;
@@ -130,4 +130,12 @@ public class User extends Model {
 	public void setQuestLog(QuestLog questLog) {
     	this.questLog = questLog;
 	}
+
+	public void setUserDao(IUserDao userDao) {
+        this.userDao = userDao;
+    }
+
+    public void setReplicaDao(IReplicaDao replicaDao) {
+        this.replicaDao = replicaDao;
+    }
 }

@@ -23,7 +23,6 @@ public class LibraryTest
     @Mock
     private IReplicaDao replicaDao;
 
-    @InjectMocks
     private User user;
 
     @InjectMocks
@@ -32,6 +31,7 @@ public class LibraryTest
     @Before
     public void setUp() {
         user = new User(1, "test@tset", "test", "test", 12, 1);
+        user.setReplicaDao(replicaDao);
 
         List<Replica> replicasFromUser = new ArrayList<Replica>() {{
             add(new Replica(1, 1, 12, "test", 1));
@@ -59,7 +59,7 @@ public class LibraryTest
 
     @Test
     public void placeReplicaTestUserDoesNotOwnReplica() {
-        Mockito.when(replicaDao.find(5)).thenReturn(new Replica(1, 1, 12, "test", 1));
+        Mockito.when(replicaDao.find(5)).thenReturn(new Replica(5, 1, 12, "test", 1));
         // test
         int result = library.tryPlaceReplica(user, 5, 1);
         // check result
@@ -72,5 +72,13 @@ public class LibraryTest
         int result = library.tryPlaceReplica(user, 1, 3);
         // check result
         assertThat(result, is(3));
+    }
+
+    @Test
+    public void placeReplicaTestSuccess() {
+        // test
+        int result = library.tryPlaceReplica(user, 1, 1);
+        // check result
+        assertThat(result, is(0));
     }
 }
