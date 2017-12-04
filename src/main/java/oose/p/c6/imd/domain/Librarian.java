@@ -56,6 +56,10 @@ public class Librarian {
 
     public Exhibit getExhibitDetails(User user, int exhibitId){return exhibits.find(user, exhibitId);}
 
+    public List<Exhibit> getAvailableExhibitsFromEra(User user, int eraId){return exhibits.listByEra(user, eraId);}
+    public List<Exhibit> getAvailableExhibitsFromMuseum(User user, int museumId){return exhibits.listByMuseum(user, museumId);}
+    public List<Exhibit> getAvailableExhibits(User user){return exhibits.list(user);}
+
     public Era findEra(User user, int eraId){
        return exhibits.findEra(user, eraId);
     }

@@ -6,13 +6,17 @@ public class Exhibit extends Model {
     private String video;
     private String image;
     private int year;
-    public Exhibit (int id, String name, String description, String video, String image, int year){
+    private int eraId;
+    private int museumId;
+    public Exhibit (int id, String name, String description, String video, String image, int year, int eraId, int museumId){
         super(id);
         this.name = name;
         this.description = description;
         this.video = video;
         this.image = image;
         this.year = year;
+        this.museumId = museumId;
+        this.eraId = eraId;
     }
 
 
@@ -56,4 +60,19 @@ public class Exhibit extends Model {
         this.year = year;
     }
 
+    public int getEraId() {
+        return eraId;
+    }
+
+    public void setEraId(int eraId) {
+        this.eraId = eraId;
+    }
+
+    public int getMuseumId() {
+        return museumId;
+    }
+
+    public void setMuseumId(int museumId) {
+        this.museumId = museumId;
+    }
 }

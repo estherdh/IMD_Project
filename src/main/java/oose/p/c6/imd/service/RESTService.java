@@ -112,6 +112,54 @@ public class RESTService {
         return Response.status(401).build();
     }
 
+    @GET
+    @Path("/exhibit")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getExhibits(@QueryParam("token") String token){
+        User user = TokenManager.getInstance().getUserFromToken(token);
+        if(user != null){
+            List<Exhibit> list = l.getAvailableExhibits(user);
+            return buildExhibitResponseArray(list);
+        }
+        return Response.status(401).build();
+    }
+
+    @GET
+    @Path("/exhibit/museum/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getExhibitsFromMuseum(@PathParam("id") int museumId, @QueryParam("token") String token){
+        User user = TokenManager.getInstance().getUserFromToken(token);
+        if(user != null){
+            List<Exhibit> list = l.getAvailableExhibitsFromMuseum(user, museumId);
+            return buildExhibitResponseArray(list);
+        }
+        return Response.status(401).build();
+    }
+
+    @GET
+    @Path("/exhibit/era/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getExhibitsFromEra(@PathParam("id") int eraId, @QueryParam("token") String token){
+        User user = TokenManager.getInstance().getUserFromToken(token);
+        if(user != null){
+            List<Exhibit> list = l.getAvailableExhibitsFromEra(user, eraId);
+            return buildExhibitResponseArray(list);
+        }
+        return Response.status(401).build();
+    }
+
+    private Response buildExhibitResponseArray(List<Exhibit> list){
+        if(list.size() > 0) {
+            JsonBuilderFactory factory = Json.createBuilderFactory(null);
+            JsonArrayBuilder jab = factory.createArrayBuilder();
+            for (Exhibit e : list) {
+                jab.add(buildExhibitJson(e));
+            }
+            return Response.status(200).entity(jab.build()).build();
+        }
+        return Response.status(200).build();
+    }
+
     private JsonObject buildExhibitJson(Exhibit e){
         JsonBuilderFactory factory = Json.createBuilderFactory(null);
         JsonObjectBuilder job = factory.createObjectBuilder();
@@ -130,6 +178,8 @@ public class RESTService {
         job.add("Video", video);
         job.add("Image", image);
         job.add("Year", e.getYear());
+        job.add("EraId", e.getEraId());
+        job.add("MuseumId", e.getMuseumId());
         return job.build();
     }
 
