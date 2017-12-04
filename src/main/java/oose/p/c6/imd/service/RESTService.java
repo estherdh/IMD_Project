@@ -133,6 +133,23 @@ public class RESTService {
         return job.build();
     }
 
+    @POST
+    @Path("/library/place")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response placeReplica(@QueryParam("token") String token, JsonObject obj) {
+        User user = TokenManager.getInstance().getUserFromToken(token);
+        if(user != null)
+        {
+            int reason = l.placeReplica(obj.getInt("replicaId"), obj.getInt("positionId"), user);
+            JsonBuilderFactory factory = Json.createBuilderFactory(null);
+            JsonObjectBuilder job = factory.createObjectBuilder();
+            job.add("reason", reason);
+            return Response.status(201).entity(job.build()).build();
+        }
+        return Response.status(403).build();
+    }
+
     @GET
     @Path("/museum/{id}")
     @Produces(MediaType.APPLICATION_JSON)

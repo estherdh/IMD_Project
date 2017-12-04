@@ -6,6 +6,7 @@ import oose.p.c6.imd.persistent.dao.*;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -13,8 +14,8 @@ public class User extends Model {
 	private static final Logger LOGGER = Logger.getLogger(User.class.getName());
 
     private IUserDao userDao = DAOFactory.getUserDao();
-
     private IReplicaDao replicaDao = DAOFactory.getReplicaDao();
+
 	private String email;
     private String password;
     private String displayName;
@@ -73,6 +74,16 @@ public class User extends Model {
 		return false;
 	}
 
+	public boolean userHasReplica(Replica replica) {
+        List<Replica> replicaList = replicaDao.getReplicasFromUser(this);
+        for (Replica r: replicaList) {
+            if(replica.getId() == r.getId()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public String getEmail() {
         return email;
     }
@@ -119,4 +130,12 @@ public class User extends Model {
 	public void setQuestLog(QuestLog questLog) {
     	this.questLog = questLog;
 	}
+
+	public void setUserDao(IUserDao userDao) {
+        this.userDao = userDao;
+    }
+
+    public void setReplicaDao(IReplicaDao replicaDao) {
+        this.replicaDao = replicaDao;
+    }
 }

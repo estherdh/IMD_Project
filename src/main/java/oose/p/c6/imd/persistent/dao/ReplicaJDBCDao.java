@@ -26,7 +26,7 @@ public class ReplicaJDBCDao implements IReplicaDao {
             ps.setInt(1, user.getId());
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                replicas.add(new Replica(rs.getInt("ReplicaId"), rs.getInt("ExhibitInfoId"), rs.getInt("Price"), rs.getString("Sprite"), rs.getString("Type"), rs.getInt("Position")));
+                replicas.add(createReplica(rs));
             }
             connection.close();
         } catch (SQLException e) {
@@ -47,6 +47,67 @@ public class ReplicaJDBCDao implements IReplicaDao {
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, e.toString(), e);
         }
+    }
+
+    @Override
+    public void updateReplicaPosition(User user, Replica replica, int position) {
+        Connection connection = ConnectMySQL.getInstance().getConnection();
+        try{
+            PreparedStatement ps = connection.prepareStatement("UPDATE `userreplica` SET `ReplicaPositionId` = ? WHERE `ReplicaId` = ? AND `UserId` = ?");
+            ps.setInt(1, position);
+            ps.setInt(2, replica.getId());
+            ps.setInt(3, user.getId());
+            ps.execute();
+            connection.close();
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, e.toString(), e);
+        }
+    }
+
+    @Override
+    public List<Integer> getFreePositions(User user, int replicaType) {
+        Connection connection = ConnectMySQL.getInstance().getConnection();
+        List<Integer> positions = new ArrayList<>();
+        try {
+            PreparedStatement ps = connection.prepareStatement(
+                    "SELECT `ReplicaPositionId` FROM replicapositions " +
+                    "WHERE `ReplicaTypeId` = ? " +
+                    "AND `ReplicaPositionId` NOT IN " +
+                    "(SELECT `ReplicaPositionId` " +
+                            "FROM userreplica " +
+                            "WHERE `UserId` = ? " +
+                            "AND `ReplicaPositionId` IS NOT NULL)");
+            ps.setInt(1, replicaType);
+            ps.setInt(2, user.getId());
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                positions.add(rs.getInt("ReplicaPositionId"));
+            }
+            connection.close();
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, e.toString(), e);
+        }
+        return positions;
+    }
+
+    @Override
+    public List<Replica> getReplicasFromUser(User user) {
+        Connection connection = ConnectMySQL.getInstance().getConnection();
+        List<Replica> replicas = new ArrayList<>();
+        try {
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM `userreplica` ur " +
+                    "INNER JOIN `replica` r ON r.ReplicaId=ur.ReplicaId " +
+                    "WHERE `UserId` = ?");
+            ps.setInt(1, user.getId());
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                replicas.add(createReplica(rs));
+            }
+            connection.close();
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, e.toString(), e);
+        }
+        return replicas;
     }
 
     @Override
@@ -73,16 +134,20 @@ public class ReplicaJDBCDao implements IReplicaDao {
         Connection connection = ConnectMySQL.getInstance().getConnection();
         ResultSet rs = null;
         try {
-            PreparedStatement ps = connection.prepareStatement("SELECT * FROM `replica` WHERE `ReplicaId` = ? ");
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM `replica` WHERE `ReplicaId` = ?");
             ps.setInt(1, id);
             rs = ps.executeQuery();
             if(rs.next()){
-                return new Replica(rs.getInt("ReplicaId"), rs.getInt("ExhibitInfoId"), rs.getInt("Price"), rs.getString("Sprite"), rs.getString("Type"), rs.getInt("Position"));
+                return createReplica(rs);
             }
             connection.close();
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, e.toString(), e);
         }
         return null;
+    }
+
+    private Replica createReplica(ResultSet rs) throws SQLException {
+        return new Replica(rs.getInt("ReplicaId"), rs.getInt("ExhibitInfoId"), rs.getInt("Price"), rs.getString("Sprite"), rs.getInt("ReplicaTypeId"));
     }
 }

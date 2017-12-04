@@ -32,12 +32,12 @@ public class ShopTest
     @Before
     public void setUp() {
         result = (new ArrayList<Replica>(){{
-            add(new Replica(1, 1, 12, "test", "boek", 1));
-            add(new Replica(3, 2, 20, "test", "boek", 2));
+            add(new Replica(1, 1, 12, "test", 1));
+            add(new Replica(3, 2, 20, "test", 1));
         }});
 
         Mockito.when(replicaDao.findAvailableReplicas(any(User.class))).thenReturn(result);
-        Mockito.when(replicaDao.find(1)).thenReturn(new Replica(1, 1, 12, "test", "boek", 1));
+        Mockito.when(replicaDao.find(1)).thenReturn(new Replica(1, 1, 12, "test", 1));
     }
 
     @Test

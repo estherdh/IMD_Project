@@ -14,6 +14,9 @@ public class Librarian {
     private Shop shop;
 
     @Inject
+    private Library library;
+
+    @Inject
     private IExhibitDao exhibits;
 
     public int verifyLogin(String email, String password) {
@@ -68,4 +71,8 @@ public class Librarian {
 
 
 
+
+    public int placeReplica(int replicaId, int positionId, User user) {
+        return library.tryPlaceReplica(user, replicaId, positionId);
+    }
 }
