@@ -24,9 +24,9 @@ public class ExhibitJDBCDao implements IExhibitDao {
         Connection connection = ConnectMySQL.getInstance().getConnection();
         ResultSet rs = null;
         try {
-            PreparedStatement ps = connection.prepareStatement("SELECT *  FROM Exhibit e  LEFT JOIN ExhibitInfo ei ON e.ExhibitId = ei.ExhibitId  WHERE e.ExhibitId = ? AND ei.languageId IN (SELECT COALESCE((SELECT languageId FROM ExhibitInfo eil WHERE eil.ExhibitId = e.ExhibitId AND languageId = ?),  1))");
-            ps.setInt(1, exhibitId);
-            ps.setInt(2, user.getLanguageId());
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM Exhibit e LEFT JOIN ExhibitInfo ei ON e.ExhibitId = ei.ExhibitId AND ei.languageId IN (SELECT COALESCE((SELECT languageId FROM ExhibitInfo eil WHERE eil.ExhibitId = e.ExhibitId AND languageId = ?), 1)) WHERE e.ExhibitId = ?");
+            ps.setInt(2, exhibitId);
+            ps.setInt(1, user.getLanguageId());
             rs = ps.executeQuery();
             Exhibit e = null;
             if(rs.next()){
@@ -45,9 +45,9 @@ public class ExhibitJDBCDao implements IExhibitDao {
         Connection connection = ConnectMySQL.getInstance().getConnection();
         ResultSet rs = null;
         try {
-            PreparedStatement ps = connection.prepareStatement("SELECT *  FROM Exhibit e  LEFT JOIN ExhibitInfo ei ON e.ExhibitId = ei.ExhibitId  WHERE e.MuseumId = ? AND ei.languageId IN (SELECT COALESCE((SELECT languageId FROM ExhibitInfo eil WHERE eil.ExhibitId = e.ExhibitId AND languageId = ?),  1))");
-            ps.setInt(1, museumId);
-            ps.setInt(2, user.getLanguageId());
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM Exhibit e LEFT JOIN ExhibitInfo ei ON e.ExhibitId = ei.ExhibitId AND ei.languageId  IN (SELECT COALESCE((SELECT languageId FROM ExhibitInfo eil WHERE eil.ExhibitId = e.ExhibitId AND languageId = ?), 1)) WHERE e.MuseumId = ?");
+            ps.setInt(2, museumId);
+            ps.setInt(1, user.getLanguageId());
             rs = ps.executeQuery();
             List<Exhibit> list = new ArrayList<Exhibit>();
             while(rs.next()){
@@ -66,9 +66,9 @@ public class ExhibitJDBCDao implements IExhibitDao {
         Connection connection = ConnectMySQL.getInstance().getConnection();
         ResultSet rs = null;
         try {
-            PreparedStatement ps = connection.prepareStatement("SELECT *  FROM Exhibit e  LEFT JOIN ExhibitInfo ei ON e.ExhibitId = ei.ExhibitId  WHERE e.EraId = ? AND ei.languageId IN (SELECT COALESCE((SELECT languageId FROM ExhibitInfo eil WHERE eil.ExhibitId = e.ExhibitId AND languageId = ?),  1))");
-            ps.setInt(1, eraId);
-            ps.setInt(2, user.getLanguageId());
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM Exhibit e LEFT JOIN ExhibitInfo ei ON e.ExhibitId = ei.ExhibitId AND ei.languageId IN (SELECT COALESCE((SELECT languageId FROM ExhibitInfo eil WHERE eil.ExhibitId = e.ExhibitId AND languageId = ?), 1)) WHERE e.EraId = ?;");
+            ps.setInt(2, eraId);
+            ps.setInt(1, user.getLanguageId());
             rs = ps.executeQuery();
             List<Exhibit> list = new ArrayList<Exhibit>();
             while(rs.next()){
@@ -91,7 +91,7 @@ public class ExhibitJDBCDao implements IExhibitDao {
         Connection connection = ConnectMySQL.getInstance().getConnection();
         ResultSet rs = null;
         try {
-            PreparedStatement ps = connection.prepareStatement("SELECT *  FROM Exhibit e  LEFT JOIN ExhibitInfo ei ON e.ExhibitId = ei.ExhibitId  WHERE ei.languageId IN (SELECT COALESCE((SELECT languageId FROM ExhibitInfo eil WHERE eil.ExhibitId = e.ExhibitId AND languageId = ?),  1))");
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM Exhibit e LEFT JOIN ExhibitInfo ei ON e.ExhibitId = ei.ExhibitId AND ei.languageId IN (SELECT COALESCE((SELECT languageId FROM ExhibitInfo eil WHERE eil.ExhibitId = e.ExhibitId AND languageId = ?), 1));");
             ps.setInt(1, user.getLanguageId());
             rs = ps.executeQuery();
             List<Exhibit> list = new ArrayList<Exhibit>();
