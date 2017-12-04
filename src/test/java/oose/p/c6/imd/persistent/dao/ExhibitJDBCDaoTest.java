@@ -44,7 +44,7 @@ public class ExhibitJDBCDaoTest {
     @Test
     public void findExhibitWithTranslation() throws Exception {
         //init
-        Exhibit expectedExhibit = new Exhibit(3, "Trekker", "Deze trekker is geen tractor!", null, "object.png", 2015);
+        Exhibit expectedExhibit = new Exhibit(3, "Trekker", "Deze trekker is geen tractor!", null, "object.png", 2015, 1, 2);
 
         //test
         Exhibit actualResult = dao.find(new User(1,"1","1","1",1,3),3);

@@ -178,6 +178,8 @@ public class RESTService {
         job.add("Video", video);
         job.add("Image", image);
         job.add("Year", e.getYear());
+        job.add("EraId", e.getEraId());
+        job.add("MuseumId", e.getMuseumId());
         return job.build();
     }
 

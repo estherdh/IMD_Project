@@ -83,7 +83,7 @@ public class ExhibitJDBCDao implements IExhibitDao {
     }
 
     private Exhibit createExhibitFromResultset(ResultSet rs) throws SQLException{
-        return new Exhibit(rs.getInt("ExhibitId"), rs.getString("name"), rs.getString("description"), rs.getString("video"), rs.getString("image"), rs.getInt("year"));
+        return new Exhibit(rs.getInt("ExhibitId"), rs.getString("name"), rs.getString("description"), rs.getString("video"), rs.getString("image"), rs.getInt("year"), rs.getInt("EraId"), rs.getInt("MuseumId"));
     }
 
     @Override
