@@ -145,7 +145,7 @@ public class RESTService {
             JsonBuilderFactory factory = Json.createBuilderFactory(null);
             JsonObjectBuilder job = factory.createObjectBuilder();
             job.add("reason", reason);
-            return Response.status(201).entity(reason).build();
+            return Response.status(201).entity(job.build()).build();
         }
         return Response.status(403).build();
     }
