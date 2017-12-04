@@ -50,7 +50,7 @@ public class ExhibitJDBCDao implements IExhibitDao {
             ps.setInt(2, user.getLanguageId());
             rs = ps.executeQuery();
             List<Exhibit> list = new ArrayList<Exhibit>();
-            if(rs.next()){
+            while(rs.next()){
                 list.add(createExhibitFromResultset(rs));
             }
             connection.close();
@@ -71,7 +71,7 @@ public class ExhibitJDBCDao implements IExhibitDao {
             ps.setInt(2, user.getLanguageId());
             rs = ps.executeQuery();
             List<Exhibit> list = new ArrayList<Exhibit>();
-            if(rs.next()){
+            while(rs.next()){
                 list.add(createExhibitFromResultset(rs));
             }
             connection.close();
@@ -95,7 +95,7 @@ public class ExhibitJDBCDao implements IExhibitDao {
             ps.setInt(1, user.getLanguageId());
             rs = ps.executeQuery();
             List<Exhibit> list = new ArrayList<Exhibit>();
-            if(rs.next()){
+            while(rs.next()){
                 list.add(createExhibitFromResultset(rs));
             }
             connection.close();
