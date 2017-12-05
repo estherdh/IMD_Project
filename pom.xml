@@ -61,6 +61,11 @@
             <version>2.22.2</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.openpojo</groupId>
+            <artifactId>openpojo</artifactId>
+            <version>0.8.6</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -162,5 +167,4 @@
             </build>
         </profile>
     </profiles>
-
 </project>

@@ -1,9 +1,9 @@
 package oose.p.c6.imd.domain;
 
 public class Museum extends Model {
-    public String name;
-    public String site;
-    public String region;
+    private String name;
+    private String site;
+    private String region;
 
     public Museum(int id, String name, String site, String region) {
         super(id);
