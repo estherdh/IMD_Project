@@ -5,18 +5,18 @@ public class Quest {
 	String name;
 	String description;
 	int reward;
-	IQuestType questStrategy;
+	IQuestType questType;
 
-	public Quest(int entryId, String name, String description, int reward, IQuestType questStrategy) {
+	public Quest(int entryId, String name, String description, int reward, IQuestType questType) {
 		this.entryId = entryId;
 		this.name = name;
 		this.description = description;
 		this.reward = reward;
-		this.questStrategy = questStrategy;
+		this.questType = questType;
 	}
 
 	public int checkQuestComplete(Action action) {
-		if (questStrategy.checkQuestComplete(action)) {
+		if (questType.checkQuestComplete(action)) {
 			return reward;
 		} else {
 			return 0;
@@ -43,10 +43,6 @@ public class Quest {
 		this.reward = reward;
 	}
 
-	public void setQuestStrategy(IQuestType questStrategy) {
-		this.questStrategy = questStrategy;
-	}
-
 	public String getName() {
 		return name;
 	}
@@ -59,7 +55,11 @@ public class Quest {
 		return reward;
 	}
 
-	public IQuestType getQuestStrategy() {
-		return questStrategy;
+	public IQuestType getQuestType() {
+		return questType;
+	}
+
+	public void setQuestType(IQuestType questType) {
+		this.questType = questType;
 	}
 }
