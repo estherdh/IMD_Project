@@ -149,7 +149,7 @@ public class RESTService {
     }
 
     private Response buildExhibitResponseArray(List<Exhibit> list){
-        if(list.size() > 0) {
+        if(!list.isEmpty()) {
             JsonBuilderFactory factory = Json.createBuilderFactory(null);
             JsonArrayBuilder jab = factory.createArrayBuilder();
             for (Exhibit e : list) {
@@ -237,7 +237,7 @@ public class RESTService {
         User user = TokenManager.getInstance().getUserFromToken(token);
         if(user != null){
             List<Museum> list = l.listMuseums();
-            if(list.size() > 0) {
+            if(!list.isEmpty()) {
                 JsonBuilderFactory factory = Json.createBuilderFactory(null);
                 JsonArrayBuilder jab = factory.createArrayBuilder();
                 for (Museum m: list) {
@@ -258,7 +258,7 @@ public class RESTService {
         if(user != null){
             List<Era> list = l.listEra(user);
 
-            if(list.size() > 0) {
+            if(!list.isEmpty()) {
                 JsonBuilderFactory factory = Json.createBuilderFactory(null);
                 JsonArrayBuilder jab = factory.createArrayBuilder();
                 for (Era e: list) {
