@@ -14,8 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.samePropertyValuesAs;
+
 import static org.junit.Assert.assertEquals;
 
 public class UserJDBCDaoTest {
@@ -76,12 +75,12 @@ public class UserJDBCDaoTest {
         matchUsers(actual.get(1), expected.get(1));
     }
 
-//    @Test
-//    public void addUser() throws SQLException {
-//        User u = new User(4, "test@user@db", "tested", "testUser", 10, 2);
-//        dao.add(u);
-//        System.out.println("user add executed");
-//        User actual = dao.find(4);
-//        matchUsers(actual, u);
-//    }
+    @Test
+    public void addUser() throws SQLException {
+        User u = new User(4, "test@user@db", "tested", "testUser", 10, 2);
+        dao.add(u);
+        System.out.println("user add executed");
+        User actual = dao.find(4);
+        matchUsers(actual, u);
+    }
 }
