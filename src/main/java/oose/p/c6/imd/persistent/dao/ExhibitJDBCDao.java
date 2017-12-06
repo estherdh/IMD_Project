@@ -179,7 +179,7 @@ public class ExhibitJDBCDao implements IExhibitDao {
             rs = ps.executeQuery();
             List<Museum> list = new ArrayList<>();
             while(rs.next()){
-                Museum m = new Museum(rs.getInt("MuseumId"), rs.getString(museumIdColomnName), rs.getString("Website"), rs.getString("Region"));
+                Museum m = new Museum(rs.getInt(museumIdColomnName), rs.getString("MuseumName"), rs.getString("Website"), rs.getString("Region"));
                 list.add(m);
             }
             connection.close();
