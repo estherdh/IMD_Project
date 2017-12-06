@@ -19,11 +19,15 @@ public class UserJDBCDao implements IUserDao {
 
     public void add(User entity) {
 		Connection connection = ConnectMySQL.getInstance().getConnection();
+
         try{
             PreparedStatement ps = connection.prepareStatement("INSERT INTO Users (`Email`, `Password`, `DisplayName`, `Coins`, `LanguageId`) VALUES (?, ?, ?, ?, ?)");
             ps = fillVariables(ps, entity.getEmail(), entity.getPassword(), entity.getDisplayName(), entity.getCoins(), entity.getLanguageId());
             ps.execute();
             connection.close();
+            connection = ConnectMySQL.getInstance().getConnection();
+            System.out.println(connection.prepareStatement("Select * FROM Users ").executeQuery().toString());
+
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, e.toString(), e);
         }
