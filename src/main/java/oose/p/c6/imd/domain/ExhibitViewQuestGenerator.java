@@ -1,15 +1,17 @@
 package oose.p.c6.imd.domain;
 
+import oose.p.c6.imd.persistent.dao.ExhibitJDBCDao;
 import oose.p.c6.imd.persistent.dao.IExhibitDao;
 import oose.p.c6.imd.persistent.dao.IQuestDAO;
+import oose.p.c6.imd.persistent.dao.QuestJDBCDao;
 
 import java.util.HashMap;
 import java.util.Random;
 
 public class ExhibitViewQuestGenerator extends IQuestGenerator {
 
-    private IQuestDAO questDAO;
-    private IExhibitDao exhibitDao;
+    private IQuestDAO questDAO = new QuestJDBCDao();
+    private IExhibitDao exhibitDao = new ExhibitJDBCDao();
 
     @Override
     public void generateQuest(int userId) {
