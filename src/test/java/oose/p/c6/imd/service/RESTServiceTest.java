@@ -1,6 +1,7 @@
 package oose.p.c6.imd.service;
 
 import oose.p.c6.imd.domain.*;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,6 +38,11 @@ public class RESTServiceTest {
 	public void setUp() {
 		TokenManager.setInstance(tokenManager);
 		when(tokenManager.createTokenForUser(any(User.class))).thenReturn(token);
+	}
+
+	@After
+	public void after() {
+		TokenManager.setInstance(null);
 	}
 
 	@Test
