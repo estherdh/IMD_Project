@@ -647,7 +647,7 @@ public class RESTServiceTest {
 		assertThat(object1.getInt("EraId"), is(1));
 		assertThat(object1.getString("Name"), is("oud"));
 		assertThat(object2.getInt("EraId"), is(2));
-		assertThat(object1.getString("Name"), is("nieuw"));
+		assertThat(object2.getString("Name"), is("nieuw"));
 	}
 
 	@Test
@@ -658,7 +658,7 @@ public class RESTServiceTest {
 		List<Era> eraList = new ArrayList<>();
 		when(librarian.listEra(mockUser)).thenReturn(eraList);
 		//test
-		Response actualResponse = service.listMuseums("token");
+		Response actualResponse = service.listEra("token");
 		//check
 		JsonArray jsonArray = (JsonArray) actualResponse.getEntity();
 		assertThat(actualResponse.getEntity(), is(nullValue()));
