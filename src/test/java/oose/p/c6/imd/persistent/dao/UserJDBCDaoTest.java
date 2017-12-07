@@ -16,6 +16,7 @@ import java.util.Properties;
 
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class UserJDBCDaoTest {
     private Connection conn;
@@ -82,5 +83,21 @@ public class UserJDBCDaoTest {
         System.out.println("user add executed");
         User actual = dao.find(4);
         matchUsers(actual, u);
+    }
+
+    @Test
+    public void update() throws SQLException {
+        User u = new User(3, "test@user@db", "tested", "testUser", 10, 2);
+        dao.update(u);
+        User actual = dao.find(3);
+        matchUsers(actual, u);
+    }
+
+    @Test
+    public void removeUser() throws SQLException {
+        User u = dao.find(3);
+        dao.remove(u);
+        User actual = dao.find(3);
+        assertNull(actual);
     }
 }

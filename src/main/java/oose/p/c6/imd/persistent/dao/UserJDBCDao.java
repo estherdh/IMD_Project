@@ -50,7 +50,6 @@ public class UserJDBCDao implements IUserDao {
             ps = fillVariables(ps, entity.getEmail(), entity.getPassword(), entity.getDisplayName(), entity.getCoins(), entity.getLanguageId());
             ps.setInt(6, entity.getId());
             ps.execute();
-            connection.close();
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, e.toString(), e);
         }
@@ -62,7 +61,6 @@ public class UserJDBCDao implements IUserDao {
             PreparedStatement ps = connection.prepareStatement("DELETE FROM Users WHERE UserId = ?");
             ps.setInt(1, entity.getId());
             ps.execute();
-            connection.close();
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, e.toString(), e);
         }
@@ -76,7 +74,6 @@ public class UserJDBCDao implements IUserDao {
             while (rs.next()) {
                 users.add(generateNewUser(rs));
             }
-            connection.close();
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, e.toString(), e);
         }
@@ -94,7 +91,6 @@ public class UserJDBCDao implements IUserDao {
             if(rs.next()){
                 returnUser = generateNewUser(rs);
             }
-            connection.close();
             return returnUser;
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, e.toString(), e);
