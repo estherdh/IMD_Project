@@ -103,7 +103,7 @@ public class RESTService {
         User user = TokenManager.getInstance().getUserFromToken(token);
         if(user != null) {
             List<Quest> questList = l.getQuestLog(user);
-            if(questList != null) {
+            if(!questList.isEmpty()) {
                 return Response.status(200).entity(questList).build();
             }
             return Response.status(200).build();
