@@ -110,6 +110,28 @@ public class QuestJDBCDaoTest {
 	}
 
 	@Test
-	public void addQuestToQuestlog() {}
+	public void addQuestToQuestlog() throws SQLException{
+		//init
+		int userId = 1;
+		HashMap<String, String> properties = new HashMap<>();
+
+		String key = "Topstuk";
+		int value = 1;
+		int questTypeId = 3;
+
+		properties.put("Key", key);
+		properties.put("Value", String.valueOf(value));
+		properties.put("questTypeId", String.valueOf(questTypeId));
+
+		//test
+		dao.addQuestToQuestlog(properties, userId);
+
+		ResultSet resultAdded = conn.createStatement().executeQuery("SELECT * FROM QuestProperties qp INNER JOIN questlog q ON " +
+				"qp.EntryId = q.EntryId WHERE q.QuestTypeId = 3 AND q.UserId = 1");
+
+		//check
+		assertThat(resultAdded.first(), is(true));
+
+	}
 
 }

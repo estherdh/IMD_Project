@@ -193,13 +193,20 @@ public class ExhibitJDBCDao implements IExhibitDao {
         Connection connection = ConnectMySQL.getInstance().getConnection();
         ResultSet rs = null;
         try {
-            PreparedStatement ps = connection.prepareStatement("");
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM exhibit e INNER JOIN exhibitinfo ei " +
+                    "ON e.ExhibitId = ei.ExhibitId WHERE e.ExhibitId " +
+                    "NOT IN(SELECT qp.Value FROM questlog ql INNER JOIN " +
+                    "questProperties qp ON ql.EntryId = qp.EntryId " +
+                    "WHERE UserId = ? AND QuestTypeId = 3) AND " +
+                    "ei.LanguageId = (SELECT u.LanguageId FROM users u " +
+                    "WHERE u.UserId = ?)");
             ps.setInt(1, userId);
+            ps.setInt(2, userId);
             rs = ps.executeQuery();
             List<Exhibit> list = new ArrayList<>();
             while (rs.next()) {
                 Exhibit e = new Exhibit(rs.getInt("ExhibitId"), rs.getString("Name"),
-                        rs.getString("Description"), null, rs.getString("Image"),
+                        rs.getString("Description"), rs.getString("Video"), rs.getString("Image"),
                         rs.getInt("Year"), rs.getInt("EraId"), rs.getInt("MuseumId"));
                 list.add(e);
             }

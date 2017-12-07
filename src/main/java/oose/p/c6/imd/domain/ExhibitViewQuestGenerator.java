@@ -14,19 +14,18 @@ public class ExhibitViewQuestGenerator extends IQuestGenerator {
     @Override
     public void generateQuest(int userId) {
         HashMap<String, String> properties = new HashMap<>();
-        questTypeId = 1;
+        questTypeId = 3;
 
         Random r = new Random(exhibitDao.findExhibitsNotYetInQuestlog(userId).size());
         Exhibit e = exhibitDao.findExhibitsNotYetInQuestlog(userId).get(r.nextInt());
 
-        int exhibitId = e.getId();
         String key = "Topstuk";
         int value = e.getId();
 
         properties.put("Key", key);
         properties.put("Value", String.valueOf(value));
-        properties.put("ExhibitId", String.valueOf(exhibitId));
+        properties.put("questTypeId", String.valueOf(questTypeId));
 
-        questDAO.addQuestToQuestlog(properties, userId, questTypeId);
+        questDAO.addQuestToQuestlog(properties, userId);
     }
 }

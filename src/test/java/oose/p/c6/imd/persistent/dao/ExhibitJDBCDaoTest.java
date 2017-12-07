@@ -169,9 +169,20 @@ public class ExhibitJDBCDaoTest {
     @Test
     public void findExhibitsNotYetInQuestlog() {
         //init
-        Exhibit expectedExhibit = new Exhibit(3, "Trekker", "Deze trekker is geen tractor!", null, "object.png", 2015, 1, 2);
+        Exhibit expectedExhibit = new Exhibit(1, "Het test object", "Dit object wordt altijd al gebruikt om te testen", null, "object.png", 1999, 1, 1);
 
         //test
+        List<Exhibit> result = dao.findExhibitsNotYetInQuestlog(1);
+
+        //check
+        assertThat(result.get(0).getId(), is(expectedExhibit.getId()));
+        assertThat(result.get(0).getYear(), is(expectedExhibit.getYear()));
+        assertThat(result.get(0).getImage(), is(expectedExhibit.getImage()));
+        assertThat(result.get(0).getVideo(), is(expectedExhibit.getVideo()));
+        assertThat(result.get(0).getDescription(), is(expectedExhibit.getDescription()));
+        assertThat(result.get(0).getName(), is(expectedExhibit.getName()));
+        assertThat(result.get(0).getEraId(), is(expectedExhibit.getEraId()));
+        assertThat(result.get(0).getMuseumId(), is(expectedExhibit.getMuseumId()));
 
     }
 }

@@ -21,28 +21,22 @@ import java.util.logging.Logger;
 public class QuestJDBCDao implements IQuestDAO {
     private static final Logger LOGGER = Logger.getLogger(QuestJDBCDao.class.getName());
 
-    public void addQuestToQuestlog(HashMap<String, String> properties, int userId, int questTypeId) {
+    public void addQuestToQuestlog(HashMap<String, String> properties, int userId) {
         Connection connection = ConnectMySQL.getInstance().getConnection();
         ResultSet rs = null;
         try {
-            PreparedStatement psInsert2 = connection.prepareStatement("INSERT INTO Questlog (UserId, QuestTypeId) VALUES (?, ?)");
-            psInsert2.setInt(1, userId);
-            psInsert2.setInt(2, questTypeId);
-            psInsert2.executeQuery();
+            PreparedStatement psInsert1 = connection.prepareStatement("INSERT INTO Questlog (UserId, QuestTypeId) VALUES (?, ?)");
+            psInsert1.setInt(1, userId);
+            psInsert1.setInt(2, Integer.parseInt(properties.get("questTypeId")));
+            psInsert1.execute();
 
-            PreparedStatement psGetId = connection.prepareStatement("SELECT LAST_INSERT_ID()");
-            rs = psGetId.executeQuery();
-            int lastId = rs.getInt(1);
+            PreparedStatement psInsert2 = connection.prepareStatement("INSERT INTO Questproperties (EntryId, Key, Value) VALUES ((SELECT LAST_INSERT_ID()), ?, ?) ");
 
-            PreparedStatement psInsert1 = connection.prepareStatement("INSERT INTO Questproperties (EntryId, Key, Value, ExhibitId) VALUES (?, ?, ?, ?) ");
+            psInsert2.setString(1, properties.get("Key"));
+            psInsert2.setString(2, properties.get("Value"));
+            psInsert2.execute();
 
-            psInsert1.setInt(1, lastId);
-            psInsert1.setString(2, properties.get("Key"));
-            psInsert1.setString(3, properties.get("Value"));
-            psInsert1.setInt(4, Integer.parseInt(properties.get("ExhibitId")));
-            psInsert1.executeQuery();
-
-            connection.close();
+//            connection.close();
 
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, e.toString(), e);

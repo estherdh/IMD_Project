@@ -202,6 +202,10 @@ INSERT INTO librarian.questtype (Reward) VALUES (15);
 INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name) VALUES (2, 1, '(NL)Stuur een bepaald stuk tekst op', '(NL)Stuur tekst');
 INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name) VALUES (2, 3, '(TESTING)TEKStQuESTREquest', '(TESTING)TEKStQuESTREquest');
 
+INSERT INTO librarian.questtype (Reward) VALUES (30);
+INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name) VALUES (3, 1, '(NL) Lees een topstuk', '(NL)Lezen topstuk');
+INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name) VALUES (3, 2, '(EN) Read an exhibit', '(EN)Read exhibit');
+
 INSERT INTO librarian.questlog (UserId, QuestTypeId, Completed) VALUES (1, 1, 0);
 INSERT INTO librarian.questproperties(`Key`, `Value`, EntryId) VALUES ('QR', 'AAA', 1);
 INSERT INTO librarian.questlog (UserId, QuestTypeId, Completed) VALUES (2, 1, 0);
@@ -255,3 +259,4 @@ INSERT INTO `userreplica` (`UserId`, `ReplicaId`, `ReplicaPositionId`) VALUES
     (1, 2, 1),
     (1, 3, NULL),
     (2, 1, NULL);
+
