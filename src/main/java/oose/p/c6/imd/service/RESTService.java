@@ -98,6 +98,20 @@ public class RESTService {
     }
 
     @GET
+    @Path("/questlog")
+    public Response getQuestLog(@QueryParam("token") String token) {
+        User user = TokenManager.getInstance().getUserFromToken(token);
+        if(user != null) {
+            List<Quest> questList = l.getQuestLog(user);
+            if(!questList.isEmpty()) {
+                return Response.status(200).entity(questList).build();
+            }
+            return Response.status(200).build();
+        }
+        return Response.status(401).build();
+    }
+
+    @GET
     @Path("/exhibit/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getExhibitDetails(@PathParam("id") int exhibitId, @QueryParam("token") String token){
@@ -149,7 +163,7 @@ public class RESTService {
     }
 
     private Response buildExhibitResponseArray(List<Exhibit> list){
-        if(list.size() > 0) {
+        if(!list.isEmpty()) {
             JsonBuilderFactory factory = Json.createBuilderFactory(null);
             JsonArrayBuilder jab = factory.createArrayBuilder();
             for (Exhibit e : list) {
@@ -237,7 +251,7 @@ public class RESTService {
         User user = TokenManager.getInstance().getUserFromToken(token);
         if(user != null){
             List<Museum> list = l.listMuseums();
-            if(list.size() > 0) {
+            if(!list.isEmpty()) {
                 JsonBuilderFactory factory = Json.createBuilderFactory(null);
                 JsonArrayBuilder jab = factory.createArrayBuilder();
                 for (Museum m: list) {
@@ -258,7 +272,7 @@ public class RESTService {
         if(user != null){
             List<Era> list = l.listEra(user);
 
-            if(list.size() > 0) {
+            if(!list.isEmpty()) {
                 JsonBuilderFactory factory = Json.createBuilderFactory(null);
                 JsonArrayBuilder jab = factory.createArrayBuilder();
                 for (Era e: list) {

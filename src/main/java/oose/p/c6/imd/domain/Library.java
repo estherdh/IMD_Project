@@ -17,14 +17,17 @@ public class Library
             if(user.userHasReplica(replica)) {
                 if(isPositionFree(user, replica, positionId)) {
                     placeReplica(user, replica, positionId);
-
-                    return 0; // success
+                    // success
+                    return 0;
                 }
-                return 3; // position is not free
+                // position is not free
+                return 3;
             }
-            return 2; // user does not own replica
+            // user does not own replica
+            return 2;
         }
-        return 1; // replica does not exist
+        // replica does not exist
+        return 1;
     }
 
     private Replica getReplica(int replicaId) {

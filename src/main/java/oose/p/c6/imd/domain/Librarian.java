@@ -1,6 +1,7 @@
 package oose.p.c6.imd.domain;
 
 import oose.p.c6.imd.persistent.dao.IExhibitDao;
+import oose.p.c6.imd.persistent.dao.IQuestDAO;
 import oose.p.c6.imd.persistent.dao.IUserDao;
 
 import javax.inject.Inject;
@@ -9,6 +10,9 @@ import java.util.List;
 public class Librarian {
     @Inject
     private IUserDao userDao;
+
+    @Inject
+    private IQuestDAO questDAO;
 
     @Inject
     private Shop shop;
@@ -78,5 +82,9 @@ public class Librarian {
 
     public int placeReplica(int replicaId, int positionId, User user) {
         return library.tryPlaceReplica(user, replicaId, positionId);
+    }
+
+    public List<Quest> getQuestLog(User user) {
+        return questDAO.getQuestsForUser(user.getId(), user.getLanguageId());
     }
 }

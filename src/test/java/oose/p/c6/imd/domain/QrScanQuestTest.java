@@ -39,6 +39,16 @@ public class QrScanQuestTest {
 		assertFalse(result);
 	}
 
+	@Test
+	public void checkQuestCompleteTestWrongAction() throws Exception {
+		//init
+		Action inputAction = new DummyAction();
+		//test
+		boolean result = quest.checkQuestComplete(inputAction);
+		//check
+		assertFalse(result);
+	}
+
 //	TODO: Wanneer er een tweede actie is hier checken of je ook false krijgt wanneer er geen qrCodeAction doorheen komt.
 //	@Test
 //	public void checkQuestCompleteTestWrongAction() throws Exception {
