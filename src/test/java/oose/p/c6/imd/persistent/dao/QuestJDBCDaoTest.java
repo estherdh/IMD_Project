@@ -108,4 +108,8 @@ public class QuestJDBCDaoTest {
 		assertThat(resultNotDeleted.next(), is(true));
 		assertThat(resultNotDeleted2.next(), is(true));
 	}
+
+	@Test
+	public void addQuestToQuestlog() {}
+
 }

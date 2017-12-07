@@ -165,4 +165,13 @@ public class ExhibitJDBCDaoTest {
         assertThat(result.get(0).getEraId(), is(expectedExhibit.getEraId()));
         assertThat(result.get(0).getMuseumId(), is(expectedExhibit.getMuseumId()));
     }
+
+    @Test
+    public void findExhibitsNotYetInQuestlog() {
+        //init
+        Exhibit expectedExhibit = new Exhibit(3, "Trekker", "Deze trekker is geen tractor!", null, "object.png", 2015, 1, 2);
+
+        //test
+
+    }
 }

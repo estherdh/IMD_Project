@@ -1,5 +1,6 @@
 package oose.p.c6.imd.persistent.dao;
 
+import com.mysql.cj.api.mysqla.result.Resultset;
 import oose.p.c6.imd.domain.IQuestType;
 import oose.p.c6.imd.domain.Quest;
 import oose.p.c6.imd.domain.QuestFactory;
@@ -17,115 +18,143 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class QuestJDBCDao implements IQuestDAO{
-	private static final Logger LOGGER = Logger.getLogger(QuestJDBCDao.class.getName());
+public class QuestJDBCDao implements IQuestDAO {
+    private static final Logger LOGGER = Logger.getLogger(QuestJDBCDao.class.getName());
 
+    public void addQuestToQuestlog(HashMap<String, String> properties, int userId, int questTypeId) {
+        Connection connection = ConnectMySQL.getInstance().getConnection();
+        ResultSet rs = null;
+        try {
+            PreparedStatement psInsert2 = connection.prepareStatement("INSERT INTO Questlog (UserId, QuestTypeId) VALUES (?, ?)");
+            psInsert2.setInt(1, userId);
+            psInsert2.setInt(2, questTypeId);
+            psInsert2.executeQuery();
 
-	public void add(Quest entity) {
-		//Not yet implemented
-	}
+            PreparedStatement psGetId = connection.prepareStatement("SELECT LAST_INSERT_ID()");
+            rs = psGetId.executeQuery();
+            int lastId = rs.getInt(1);
 
-	public void update(Quest updatedEntity) {
-		//Not yet implemented
-	}
+            PreparedStatement psInsert1 = connection.prepareStatement("INSERT INTO Questproperties (EntryId, Key, Value, ExhibitId) VALUES (?, ?, ?, ?) ");
 
-	public void remove(Quest entity) {
-		//Not yet implemented
-	}
+            psInsert1.setInt(1, lastId);
+            psInsert1.setString(2, properties.get("Key"));
+            psInsert1.setString(3, properties.get("Value"));
+            psInsert1.setInt(4, Integer.parseInt(properties.get("ExhibitId")));
+            psInsert1.executeQuery();
 
-	public List<Quest> list() {
-		return new ArrayList<Quest>();
-	}
+            connection.close();
 
-	public Quest find(int id) {
-		return null;
-	}
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, e.toString(), e);
+        }
+    }
 
-	public List<Quest> getQuestsForUser(int userId, int languageId) {
-		Connection connection = ConnectMySQL.getInstance().getConnection();
-		List<Quest> questList = new ArrayList<>();
-		QuestFactory factory = QuestFactory.getInstance();
-		try {
-			PreparedStatement ps = connection.prepareStatement("" +
-					"SELECT * FROM (questlog ql INNER JOIN QuestType qt" +
-					"    ON ql.QuestTypeId = qt.QuestTypeId)" +
-					"  INNER JOIN QuestTypeLanguage qtl" +
-					"    ON qt.QuestTypeId = qtl.QuestTypeId " +
-					"WHERE UserId = ? " +
-					"AND Completed = 0 " +
-					"AND LanguageId IN" +
-					"    (SELECT COALESCE(" +
-					"        (SELECT languageId FROM questtypelanguage qtl2 WHERE qtl2.LanguageId = ? AND qtl2.QuestTypeId = qt.QuestTypeId)" +
-					"        , 1)" +
-					"    );");
-			ps.setInt(1, userId);
-			ps.setInt(2, languageId);
-			ResultSet rs = ps.executeQuery();
-			while (rs.next()) {
-				int questType = rs.getInt("QuestTypeId");
-				IQuestType typeStrategy = factory.generateQuest(QuestTypes.values()[questType-1], getVariablesOfQuest(rs.getInt("EntryId")));
-				questList.add(new Quest(
-						rs.getInt("EntryId"),
-						rs.getString("Name"),
-						rs.getString("Description"),
-						rs.getInt("Reward"),
-						typeStrategy
-				));
-			}
-			if (!connection.isClosed()) {
-				connection.close();
-			}
-			return questList;
-		} catch (SQLException e) {
-			LOGGER.log(Level.SEVERE, e.toString(), e);
-			return questList;
-		}
-	}
+    public void add(Quest entity) {
+        //Not yet implemented
 
-	public boolean removeQuestFromQuestLog(int entryId, int userId) {
-		Connection connection = ConnectMySQL.getInstance().getConnection();
-		try {
-			PreparedStatement query = connection.prepareStatement("DELETE FROM QuestLog WHERE EntryId = ? AND UserId = ?;");
-			query.setInt(1, entryId);
-			query.setInt(2, userId);
-			query.executeUpdate();
-			return true;
-		} catch (SQLException e) {
-			LOGGER.log(Level.SEVERE, e.toString(), e);
-			return false;
-		}
-	}
+    }
 
-	public void setQuestComplete(int entryId) {
-		Connection connection = ConnectMySQL.getInstance().getConnection();
-		try {
-			PreparedStatement ps = connection.prepareStatement("" +
-					"UPDATE questlog " +
-					"SET Completed = 1 " +
-					"WHERE EntryId = ?");
-			ps.setInt(1, entryId);
-			ps.executeUpdate();
-		} catch (SQLException e) {
-			LOGGER.log(Level.SEVERE, e.toString(), e);
-		}
-	}
+    public void update(Quest updatedEntity) {
+        //Not yet implemented
+    }
 
-	private Map<String, String> getVariablesOfQuest(int entryId) {
-		Connection connection = ConnectMySQL.getInstance().getConnection();
-		Map<String, String> propertyList = new HashMap<>();
-		try {
-			PreparedStatement ps = connection.prepareStatement("SELECT * FROM questproperties WHERE EntryId = ?;");
-			ps.setInt(1, entryId);
-			ResultSet rs = ps.executeQuery();
-			while (rs.next()) {
-				String key = rs.getString("Key");
-				String value = rs.getString("Value");
-				propertyList.put(key, value);
-			}
-			return propertyList;
-		} catch (SQLException e) {
-			LOGGER.log(Level.SEVERE, e.toString(), e);
-			return null;
-		}
-	}
+    public void remove(Quest entity) {
+        //Not yet implemented
+    }
+
+    public List<Quest> list() {
+        return new ArrayList<Quest>();
+    }
+
+    public Quest find(int id) {
+        return null;
+    }
+
+    public List<Quest> getQuestsForUser(int userId, int languageId) {
+        Connection connection = ConnectMySQL.getInstance().getConnection();
+        List<Quest> questList = new ArrayList<>();
+        QuestFactory factory = QuestFactory.getInstance();
+        try {
+            PreparedStatement ps = connection.prepareStatement("" +
+                    "SELECT * FROM (questlog ql INNER JOIN QuestType qt" +
+                    "    ON ql.QuestTypeId = qt.QuestTypeId)" +
+                    "  INNER JOIN QuestTypeLanguage qtl" +
+                    "    ON qt.QuestTypeId = qtl.QuestTypeId " +
+                    "WHERE UserId = ? " +
+                    "AND Completed = 0 " +
+                    "AND LanguageId IN" +
+                    "    (SELECT COALESCE(" +
+                    "        (SELECT languageId FROM questtypelanguage qtl2 WHERE qtl2.LanguageId = ? AND qtl2.QuestTypeId = qt.QuestTypeId)" +
+                    "        , 1)" +
+                    "    );");
+            ps.setInt(1, userId);
+            ps.setInt(2, languageId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                int questType = rs.getInt("QuestTypeId");
+                IQuestType typeStrategy = factory.generateQuest(QuestTypes.values()[questType - 1], getVariablesOfQuest(rs.getInt("EntryId")));
+                questList.add(new Quest(
+                        rs.getInt("EntryId"),
+                        rs.getString("Name"),
+                        rs.getString("Description"),
+                        rs.getInt("Reward"),
+                        typeStrategy
+                ));
+            }
+            if (!connection.isClosed()) {
+                connection.close();
+            }
+            return questList;
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, e.toString(), e);
+            return questList;
+        }
+    }
+
+    public boolean removeQuestFromQuestLog(int entryId, int userId) {
+        Connection connection = ConnectMySQL.getInstance().getConnection();
+        try {
+            PreparedStatement query = connection.prepareStatement("DELETE FROM QuestLog WHERE EntryId = ? AND UserId = ?;");
+            query.setInt(1, entryId);
+            query.setInt(2, userId);
+            query.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, e.toString(), e);
+            return false;
+        }
+    }
+
+    public void setQuestComplete(int entryId) {
+        Connection connection = ConnectMySQL.getInstance().getConnection();
+        try {
+            PreparedStatement ps = connection.prepareStatement("" +
+                    "UPDATE questlog " +
+                    "SET Completed = 1 " +
+                    "WHERE EntryId = ?");
+            ps.setInt(1, entryId);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, e.toString(), e);
+        }
+    }
+
+    private Map<String, String> getVariablesOfQuest(int entryId) {
+        Connection connection = ConnectMySQL.getInstance().getConnection();
+        Map<String, String> propertyList = new HashMap<>();
+        try {
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM questproperties WHERE EntryId = ?;");
+            ps.setInt(1, entryId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                String key = rs.getString("Key");
+                String value = rs.getString("Value");
+                propertyList.put(key, value);
+            }
+            return propertyList;
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, e.toString(), e);
+            return null;
+        }
+    }
 }
