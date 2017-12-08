@@ -26,8 +26,7 @@ public class ExhibitViewQuestGenerator extends IQuestGenerator {
 
         properties.put("Key", key);
         properties.put("Value", String.valueOf(value));
-        properties.put("questTypeId", String.valueOf(questTypeId));
 
-        questDAO.addQuestToQuestlog(properties, userId);
+        questDAO.addQuestToQuestlog(properties, userId, questTypeId);
     }
 }

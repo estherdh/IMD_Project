@@ -21,13 +21,13 @@ import java.util.logging.Logger;
 public class QuestJDBCDao implements IQuestDAO {
     private static final Logger LOGGER = Logger.getLogger(QuestJDBCDao.class.getName());
 
-    public void addQuestToQuestlog(HashMap<String, String> properties, int userId) {
+    public void addQuestToQuestlog(HashMap<String, String> properties, int userId, int questTypeId) {
         Connection connection = ConnectMySQL.getInstance().getConnection();
         ResultSet rs = null;
         try {
             PreparedStatement psInsert1 = connection.prepareStatement("INSERT INTO Questlog (UserId, QuestTypeId) VALUES (?, ?)");
             psInsert1.setInt(1, userId);
-            psInsert1.setInt(2, Integer.parseInt(properties.get("questTypeId")));
+            psInsert1.setInt(2, questTypeId);
             psInsert1.execute();
 
             PreparedStatement psInsert2 = connection.prepareStatement("INSERT INTO Questproperties (EntryId, Key, Value) VALUES ((SELECT LAST_INSERT_ID()), ?, ?) ");
