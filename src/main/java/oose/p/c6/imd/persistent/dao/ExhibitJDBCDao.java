@@ -18,6 +18,8 @@ import java.util.logging.Logger;
 
 public class ExhibitJDBCDao implements IExhibitDao {
     private static final Logger LOGGER = Logger.getLogger(IExhibitDao.class.getName());
+    private String museumIdColomnName = "MuseumId";
+    private String eraIdColomnName = "EraId";
 
     @Override
     public Exhibit find(User user, int exhibitId) {
@@ -29,7 +31,7 @@ public class ExhibitJDBCDao implements IExhibitDao {
             ps.setInt(2, user.getLanguageId());
             rs = ps.executeQuery();
             Exhibit e = null;
-            if (rs.next()) {
+            if(rs.next()){
                 e = createExhibitFromResultset(rs);
             }
             connection.close();
@@ -50,14 +52,14 @@ public class ExhibitJDBCDao implements IExhibitDao {
             ps.setInt(2, user.getLanguageId());
             rs = ps.executeQuery();
             List<Exhibit> list = new ArrayList<Exhibit>();
-            while (rs.next()) {
+            while(rs.next()){
                 list.add(createExhibitFromResultset(rs));
             }
             connection.close();
             return list;
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, e.toString(), e);
-            return new ArrayList<>();
+            return (ArrayList)handleException(e, new ArrayList<Exhibit>());
+
         }
     }
 
@@ -71,19 +73,19 @@ public class ExhibitJDBCDao implements IExhibitDao {
             ps.setInt(2, user.getLanguageId());
             rs = ps.executeQuery();
             List<Exhibit> list = new ArrayList<Exhibit>();
-            while (rs.next()) {
+            while(rs.next()){
                 list.add(createExhibitFromResultset(rs));
             }
             connection.close();
             return list;
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, e.toString(), e);
-            return new ArrayList<>();
+            return (ArrayList)handleException(e, new ArrayList<Exhibit>());
+
         }
     }
 
-    private Exhibit createExhibitFromResultset(ResultSet rs) throws SQLException {
-        return new Exhibit(rs.getInt("ExhibitId"), rs.getString("name"), rs.getString("description"), rs.getString("video"), rs.getString("image"), rs.getInt("year"), rs.getInt("EraId"), rs.getInt("MuseumId"));
+    private Exhibit createExhibitFromResultset(ResultSet rs) throws SQLException{
+        return new Exhibit(rs.getInt("ExhibitId"), rs.getString("name"), rs.getString("description"), rs.getString("video"), rs.getString("image"), rs.getInt("year"), rs.getInt(eraIdColomnName), rs.getInt(museumIdColomnName));
     }
 
     @Override
@@ -95,14 +97,14 @@ public class ExhibitJDBCDao implements IExhibitDao {
             ps.setInt(1, user.getLanguageId());
             rs = ps.executeQuery();
             List<Exhibit> list = new ArrayList<Exhibit>();
-            while (rs.next()) {
+            while(rs.next()){
                 list.add(createExhibitFromResultset(rs));
             }
             connection.close();
             return list;
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, e.toString(), e);
-            return new ArrayList<>();
+            return (ArrayList)handleException(e, new ArrayList<Exhibit>());
+
         }
     }
 
@@ -116,8 +118,8 @@ public class ExhibitJDBCDao implements IExhibitDao {
             ps.setInt(2, user.getLanguageId());
             rs = ps.executeQuery();
             Era e = null;
-            if (rs.next()) {
-                e = new Era(rs.getInt("EraId"), rs.getString("name"));
+            if(rs.next()){
+                e = new Era(rs.getInt(eraIdColomnName), rs.getString("name"));
             }
             connection.close();
             return e;
@@ -136,15 +138,15 @@ public class ExhibitJDBCDao implements IExhibitDao {
             ps.setInt(1, user.getLanguageId());
             rs = ps.executeQuery();
             List<Era> list = new ArrayList<>();
-            while (rs.next()) {
-                Era e = new Era(rs.getInt("EraId"), rs.getString("name"));
+            while(rs.next()){
+                Era e = new Era(rs.getInt(eraIdColomnName), rs.getString("name"));
                 list.add(e);
             }
             connection.close();
             return list;
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, e.toString(), e);
-            return null;
+            return (ArrayList)handleException(e, new ArrayList<Era>());
+
         }
     }
 
@@ -157,8 +159,8 @@ public class ExhibitJDBCDao implements IExhibitDao {
             ps.setInt(1, museumId);
             rs = ps.executeQuery();
             Museum m = null;
-            if (rs.next()) {
-                m = new Museum(rs.getInt("MuseumId"), rs.getString("MuseumName"), rs.getString("Website"), rs.getString("Region"));
+            if(rs.next()){
+                m = new Museum(rs.getInt(museumIdColomnName), rs.getString("MuseumName"), rs.getString("Website"), rs.getString("Region"));
             }
             connection.close();
             return m;
@@ -176,15 +178,14 @@ public class ExhibitJDBCDao implements IExhibitDao {
             PreparedStatement ps = connection.prepareStatement("Select * FROM Museum");
             rs = ps.executeQuery();
             List<Museum> list = new ArrayList<>();
-            while (rs.next()) {
-                Museum m = new Museum(rs.getInt("MuseumId"), rs.getString("MuseumName"), rs.getString("Website"), rs.getString("Region"));
+            while(rs.next()){
+                Museum m = new Museum(rs.getInt(museumIdColomnName), rs.getString("MuseumName"), rs.getString("Website"), rs.getString("Region"));
                 list.add(m);
             }
             connection.close();
             return list;
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, e.toString(), e);
-            return null;
+            return (ArrayList)handleException(e, new ArrayList<Museum>());
         }
     }
 
@@ -226,9 +227,7 @@ public class ExhibitJDBCDao implements IExhibitDao {
     }
 
     @Override
-    public void update(Exhibit updatedEntity) {
-        throw new MethodNotFoundException();
-    }
+    public void update(Exhibit updatedEntity) { throw new MethodNotFoundException(); }
 
     @Override
     public void remove(Exhibit entity) {
@@ -243,5 +242,10 @@ public class ExhibitJDBCDao implements IExhibitDao {
     @Override
     public Exhibit find(int id) {
         throw new MethodNotFoundException();
+    }
+
+    protected Object handleException(Exception e, Object o){
+        LOGGER.log(Level.SEVERE, e.toString(), e);
+        return o;
     }
 }

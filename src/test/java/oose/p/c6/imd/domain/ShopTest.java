@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static junit.framework.TestCase.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.mock;
@@ -70,5 +71,14 @@ public class ShopTest
         Mockito.verify(user, times(0)).addReplicaToInventory(any(Replica.class));
         Mockito.verify(user, times(1)).getCoins();
         Mockito.verify(user, times(0)).removeCoins(anyInt());
+    }
+
+    @Test
+    public void noReplicaAvailable(){
+        Mockito.when(replicaDao.findAvailableReplicas(any(User.class))).thenReturn(new ArrayList<>());
+
+        boolean result = shop.isReplicaAvailable(mock(User.class), 1);
+
+        assertFalse(result);
     }
 }

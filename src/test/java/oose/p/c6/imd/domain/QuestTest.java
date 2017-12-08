@@ -32,4 +32,16 @@ public class QuestTest {
 		assertThat(actualResult, is(expectedResult));
 	}
 
+	@Test
+	public void checkQuestFailed() throws Exception {
+		//init
+		int expectedResult = 0;
+		Action action = mock(Action.class);
+		when(mockStrategy.checkQuestComplete(action)).thenReturn(false);
+		//test
+		int actualResult = quest.checkQuestComplete(action);
+		//check
+		assertThat(actualResult, is(expectedResult));
+	}
+
 }

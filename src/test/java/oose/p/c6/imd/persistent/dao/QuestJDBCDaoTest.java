@@ -61,11 +61,11 @@ public class QuestJDBCDaoTest {
 		assertThat(actualResult.get(0).getName(), is(expectedQuest1.getName()));
 		assertThat(actualResult.get(0).getDescription(), is(expectedQuest1.getDescription()));
 		assertThat(actualResult.get(0).getReward(), is(expectedQuest1.getReward()));
-		assertTrue(actualResult.get(0).getQuestStrategy() instanceof IQuestType);
+		assertTrue(actualResult.get(0).getQuestType() instanceof IQuestType);
 		assertThat(actualResult.get(1).getName(), is(expectedQuest2.getName()));
 		assertThat(actualResult.get(1).getDescription(), is(expectedQuest2.getDescription()));
 		assertThat(actualResult.get(1).getReward(), is(expectedQuest2.getReward()));
-		assertTrue(actualResult.get(1).getQuestStrategy() instanceof IQuestType);
+		assertTrue(actualResult.get(1).getQuestType() instanceof IQuestType);
 	}
 
 	@Test
