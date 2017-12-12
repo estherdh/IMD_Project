@@ -11,7 +11,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.FileReader;
-import java.lang.invoke.MethodHandle;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
@@ -19,7 +18,6 @@ import java.util.Properties;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.beans.SamePropertyValuesAs.samePropertyValuesAs;
-import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 
 public class ExhibitJDBCDaoTest {
