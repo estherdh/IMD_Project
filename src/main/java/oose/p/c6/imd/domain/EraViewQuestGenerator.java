@@ -6,20 +6,19 @@ import oose.p.c6.imd.persistent.dao.IQuestDAO;
 import java.util.HashMap;
 import java.util.Random;
 
-public class ExhibitViewQuestGenerator extends IQuestGenerator {
+public class EraViewQuestGenerator extends IQuestGenerator {
 
     private IQuestDAO questDAO;
     private IExhibitDao exhibitDao;
 
-    @Override
     public void generateQuest(int userId) {
         HashMap<String, String> properties = new HashMap<>();
-        questTypeId = 3;
+        questTypeId = 4;
 
-        Random r = new Random(exhibitDao.findExhibitsNotYetInQuestlog(userId).size());
-        Exhibit e = exhibitDao.findExhibitsNotYetInQuestlog(userId).get(r.nextInt());
+        Random r = new Random(exhibitDao.findErasNotYetInQuestlog(userId).size());
+        Era e = exhibitDao.findErasNotYetInQuestlog(userId).get(r.nextInt());
 
-        String key = "Topstuk";
+        String key = "Era";
         int value = e.getId();
 
         properties.put("Key", key);

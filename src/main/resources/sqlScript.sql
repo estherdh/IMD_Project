@@ -203,8 +203,12 @@ INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, N
 INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name) VALUES (2, 3, '(TESTING)TEKStQuESTREquest', '(TESTING)TEKStQuESTREquest');
 
 INSERT INTO librarian.questtype (Reward) VALUES (30);
-INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name) VALUES (3, 1, '(NL) Lees een topstuk', '(NL)Lezen topstuk');
-INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name) VALUES (3, 2, '(EN) Read an exhibit', '(EN)Read exhibit');
+INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name) VALUES (3, 1, '(NL)Lees een topstuk', '(NL)Lezen topstuk');
+INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name) VALUES (3, 2, '(EN)Read an exhibit', '(EN)Read exhibit');
+
+INSERT INTO librarian.questtype (Reward) VALUES (20);
+INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name) VALUES (4, 1, '(NL)Bekijk een tijdperk', '(NL)Tijdperk bekijken');
+INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name) VALUES (4, 2, '(EN)View an era', '(EN)View era');
 
 INSERT INTO librarian.questlog (UserId, QuestTypeId, Completed) VALUES (1, 1, 0);
 INSERT INTO librarian.questproperties(`Key`, `Value`, EntryId) VALUES ('QR', 'AAA', 1);

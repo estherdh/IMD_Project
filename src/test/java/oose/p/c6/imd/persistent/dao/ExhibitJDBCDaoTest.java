@@ -179,4 +179,17 @@ public class ExhibitJDBCDaoTest {
         //check
         assertThat(actualExhibit, samePropertyValuesAs(expectedExhibit));
     }
+
+    @Test
+    public void findErasNotYetInQuestlog() {
+        //init
+        Era expectedEra = new Era(1, "tijdperk test");
+
+        //test
+        List<Era> eras = dao.findErasNotYetInQuestlog(1);
+        Era actualEra = eras.get(0);
+
+        //check
+        assertThat(actualEra, samePropertyValuesAs(expectedEra));
+    }
 }
