@@ -31,7 +31,7 @@ public class Shop {
         return replicaDao.findAvailableReplicas(user);
     }
 
-    private boolean isReplicaAvailable(User user, int replicaId) {
+    protected boolean isReplicaAvailable(User user, int replicaId) {
         for (Replica r : getAvailableReplicas(user)) {
             if(r.getId() == replicaId) {
                return true;
