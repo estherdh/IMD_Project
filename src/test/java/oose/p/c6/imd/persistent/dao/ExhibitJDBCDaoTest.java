@@ -11,12 +11,15 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.FileReader;
+import java.lang.invoke.MethodHandle;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Properties;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.beans.SamePropertyValuesAs.samePropertyValuesAs;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 
 public class ExhibitJDBCDaoTest {
@@ -172,17 +175,10 @@ public class ExhibitJDBCDaoTest {
         Exhibit expectedExhibit = new Exhibit(1, "Het test object", "Dit object wordt altijd al gebruikt om te testen", null, "object.png", 1999, 1, 1);
 
         //test
-        List<Exhibit> result = dao.findExhibitsNotYetInQuestlog(1);
+        List<Exhibit> exhibits = dao.findExhibitsNotYetInQuestlog(1);
+        Exhibit actualExhibit = exhibits.get(0);
 
         //check
-        assertThat(result.get(0).getId(), is(expectedExhibit.getId()));
-        assertThat(result.get(0).getYear(), is(expectedExhibit.getYear()));
-        assertThat(result.get(0).getImage(), is(expectedExhibit.getImage()));
-        assertThat(result.get(0).getVideo(), is(expectedExhibit.getVideo()));
-        assertThat(result.get(0).getDescription(), is(expectedExhibit.getDescription()));
-        assertThat(result.get(0).getName(), is(expectedExhibit.getName()));
-        assertThat(result.get(0).getEraId(), is(expectedExhibit.getEraId()));
-        assertThat(result.get(0).getMuseumId(), is(expectedExhibit.getMuseumId()));
-
+        assertThat(actualExhibit, samePropertyValuesAs(expectedExhibit));
     }
 }

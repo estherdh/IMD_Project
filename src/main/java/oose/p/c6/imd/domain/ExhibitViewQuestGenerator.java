@@ -10,8 +10,8 @@ import java.util.Random;
 
 public class ExhibitViewQuestGenerator extends IQuestGenerator {
 
-    private IQuestDAO questDAO = new QuestJDBCDao();
-    private IExhibitDao exhibitDao = new ExhibitJDBCDao();
+    private IQuestDAO questDAO;
+    private IExhibitDao exhibitDao;
 
     @Override
     public void generateQuest(int userId) {

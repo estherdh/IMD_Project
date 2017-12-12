@@ -113,7 +113,7 @@ public class QuestJDBCDaoTest {
 	public void addQuestToQuestlog() throws SQLException{
 		//init
 		int userId = 1;
-		HashMap<String, String> properties = new HashMap<>();
+		Map<String, String> properties = new HashMap<>();
 
 		String key = "Topstuk";
 		int value = 1;
@@ -121,10 +121,9 @@ public class QuestJDBCDaoTest {
 
 		properties.put("Key", key);
 		properties.put("Value", String.valueOf(value));
-		properties.put("questTypeId", String.valueOf(questTypeId));
 
 		//test
-		dao.addQuestToQuestlog(properties, userId);
+		dao.addQuestToQuestlog(properties, userId, questTypeId);
 
 		ResultSet resultAdded = conn.createStatement().executeQuery("SELECT * FROM QuestProperties qp INNER JOIN questlog q ON " +
 				"qp.EntryId = q.EntryId WHERE q.QuestTypeId = 3 AND q.UserId = 1");

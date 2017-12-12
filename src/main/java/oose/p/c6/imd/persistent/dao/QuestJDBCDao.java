@@ -1,6 +1,5 @@
 package oose.p.c6.imd.persistent.dao;
 
-import com.mysql.cj.api.mysqla.result.Resultset;
 import oose.p.c6.imd.domain.IQuestType;
 import oose.p.c6.imd.domain.Quest;
 import oose.p.c6.imd.domain.QuestFactory;
@@ -21,7 +20,7 @@ import java.util.logging.Logger;
 public class QuestJDBCDao implements IQuestDAO {
     private static final Logger LOGGER = Logger.getLogger(QuestJDBCDao.class.getName());
 
-    public void addQuestToQuestlog(HashMap<String, String> properties, int userId, int questTypeId) {
+    public void addQuestToQuestlog(Map<String, String> properties, int userId, int questTypeId) {
         Connection connection = ConnectMySQL.getInstance().getConnection();
         ResultSet rs = null;
         try {

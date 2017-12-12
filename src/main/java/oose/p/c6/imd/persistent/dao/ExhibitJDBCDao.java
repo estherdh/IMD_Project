@@ -214,8 +214,7 @@ public class ExhibitJDBCDao implements IExhibitDao {
             connection.close();
             return list;
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, e.toString(), e);
-            return null;
+            return (ArrayList)handleException(e, new ArrayList<Exhibit>());
         }
     }
 
