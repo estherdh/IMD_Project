@@ -51,7 +51,8 @@ CREATE TABLE QuestLog (
   EntryId INT AUTO_INCREMENT PRIMARY KEY,
   UserId INT NOT NULL,
   QuestTypeId INT NOT NULL,
-  `Completed` BOOLEAN
+  `Completed` BOOLEAN DEFAULT 0,
+  Removed BOOLEAN DEFAULT 0
 );
 
 CREATE TABLE QuestProperties (
