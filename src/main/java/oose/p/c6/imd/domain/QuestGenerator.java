@@ -3,19 +3,18 @@ package oose.p.c6.imd.domain;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class QuestGenerator {
+    private QuestGeneratorFactory questGeneratorFactory;
 
-    private IQuestGenerator questGeneratorType;
-
-    public void setQuestGeneratorType(IQuestGenerator questGeneratorType) {
-        this.questGeneratorType = questGeneratorType;
+    public QuestGenerator() {
+        questGeneratorFactory = QuestGeneratorFactory.getInstance();
     }
 
     public void generateQuest(int userId) {
-        int random = ThreadLocalRandom.current().nextInt(1, QuestTypes.values().length);
+        int random = ThreadLocalRandom.current().nextInt(0, QuestTypes.values().length - 1);
         QuestTypes questType = QuestTypes.values()[random];
-        if(questGeneratorType == null) {
-            questGeneratorType = QuestGeneratorFactory.getInstance().getQuestGenerator(questType);
+        IQuestGenerator questGeneratorType = questGeneratorFactory.getQuestGenerator(questType);
+        if(questGeneratorType != null) {
+            questGeneratorType.generateQuest(userId);
         }
-        questGeneratorType.generateQuest(userId);
     }
 }

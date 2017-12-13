@@ -20,5 +20,15 @@ public class QuestFactoryTest {
 
         assertThat(q, instanceOf(QrScanQuest.class));
     }
+
+    @Test
+    public void QuestFactoryCreateDefault(){
+        QuestFactory qf = QuestFactory.getInstance();
+        Map<String, String> properties = new HashMap<String, String>();
+        properties.put("QR","ItWorked");
+        IQuestType q = qf.generateQuest(QuestTypes.GENERICTEXT, properties);
+
+        assertThat(q, instanceOf(DummyQuest.class));
+    }
 }
 

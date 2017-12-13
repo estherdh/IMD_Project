@@ -15,4 +15,6 @@ public class DAOFactory {
     public static IQuestDAO getQuestDao(){
         return new QuestJDBCDao();
     }
+
+    public static IExhibitDao getExhibitDao() { return new ExhibitJDBCDao(); }
 }
