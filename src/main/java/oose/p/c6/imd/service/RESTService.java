@@ -201,6 +201,28 @@ public class RESTService {
         return job.build();
     }
 
+    private JsonObject buildUserJson(User u){
+        JsonBuilderFactory factory = Json.createBuilderFactory(null);
+        JsonObjectBuilder job = factory.createObjectBuilder();
+        job.add("UserId", u.getId());
+        job.add("Name", u.getDisplayName());
+        job.add("Coins", u.getCoins());
+        job.add("Email", u.getEmail());
+        job.add("Language", u.getLanguageId());
+        return job.build();
+    }
+
+    @GET
+    @Path("/user")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getUserInfo(@QueryParam("token") String token){
+        User user = TokenManager.getInstance().getUserFromToken(token);
+        if(user != null){
+            return Response.status(200).entity(buildUserJson(user)).build();
+        }
+        return Response.status(401).build();
+    }
+
     @POST
     @Path("/library/place")
     @Consumes(MediaType.APPLICATION_JSON)
