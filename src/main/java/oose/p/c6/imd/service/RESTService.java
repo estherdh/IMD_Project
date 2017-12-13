@@ -214,6 +214,7 @@ public class RESTService {
 
     @GET
     @Path("/user")
+    @Produces(MediaType.APPLICATION_JSON)
     public Response getUserInfo(@QueryParam("token") String token){
         User user = TokenManager.getInstance().getUserFromToken(token);
         if(user != null){
