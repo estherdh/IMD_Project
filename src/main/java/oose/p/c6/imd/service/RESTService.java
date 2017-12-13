@@ -309,7 +309,6 @@ public class RESTService {
 
     @GET
     @Path("/user/verify")
-    @Produces(MediaType.APPLICATION_JSON)
     public Response verifyUser(@QueryParam("token") String token){
         User user = TokenManager.getInstance().getUserFromToken(token);
         if(user == null){
