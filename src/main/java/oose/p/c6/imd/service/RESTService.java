@@ -328,4 +328,14 @@ public class RESTService {
         job.add("Region", m.getRegion());
         return job.build();
     }
+
+    @GET
+    @Path("/user/verify")
+    public Response verifyUser(@QueryParam("token") String token){
+        User user = TokenManager.getInstance().getUserFromToken(token);
+        if(user == null){
+            return Response.status(401).build();
+        }
+        return Response.status(200).build();
+    }
 }

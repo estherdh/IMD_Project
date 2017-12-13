@@ -681,6 +681,26 @@ public class RESTServiceTest {
 		assertThat(actualResponse.getStatus(), is(401));
 	}
 
+    @Test
+    public void verifyInvalidUser() {
+        //init
+        when(tokenManager.getUserFromToken("token")).thenReturn(null);
+        //test
+        Response actualResponse = service.verifyUser("token");
+        //check
+        assertThat(actualResponse.getStatus(), is(401));
+    }
+
+    @Test
+    public void verifyValidUser() {
+        //init
+        when(tokenManager.getUserFromToken("token")).thenReturn(new User(1, "", "", "", 1, 10));
+        //test
+        Response actualResponse = service.verifyUser("token");
+        //check
+        assertThat(actualResponse.getStatus(), is(200));
+    }
+
 	@Test
 	public void getUserInfoInvalidUser() {
 		//init
