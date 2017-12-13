@@ -14,18 +14,15 @@ public class EraViewQuestGenerator extends IQuestGenerator {
     public void generateQuest(int userId) {
         HashMap<String, String> properties = new HashMap<>();
         questTypeId = 4;
-        int chanceRemovedQuest = 10;
-        int chanceQuest = 100;
-        boolean isRemoved;
+        boolean eraQuestsAvailable = true;
 
-        Random r = new Random(chanceQuest);
-        if(r.nextInt() <= chanceRemovedQuest) {
-            isRemoved = true;
-        } else {
-            isRemoved = false;
+
+        if (exhibitDao.findErasNotYetInQuestlog(userId, eraQuestsAvailable).size() <= 0) {
+            eraQuestsAvailable = false;
         }
-        r = new Random(exhibitDao.findErasNotYetInQuestlog(userId, isRemoved).size());
-        Era e = exhibitDao.findErasNotYetInQuestlog(userId, isRemoved).get(r.nextInt());
+
+        Random r = new Random(exhibitDao.findErasNotYetInQuestlog(userId, eraQuestsAvailable).size());
+        Era e = exhibitDao.findErasNotYetInQuestlog(userId, eraQuestsAvailable).get(r.nextInt());
 
         String key = "Era";
         int value = e.getId();

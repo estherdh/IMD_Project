@@ -219,20 +219,20 @@ public class ExhibitJDBCDao implements IExhibitDao {
     }
 
     @Override
-    public List<Era> findErasNotYetInQuestlog(int userId, boolean isRemoved) {
-        String checkIfRemovedQuery = "";
-        if (isRemoved) {
-            checkIfRemovedQuery = "AND Removed = 0";
+    public List<Era> findErasNotYetInQuestlog(int userId, boolean eraQuestsAvailable) {
+        String getMoreQuestsQuery = "";
+        if (!eraQuestsAvailable) {
+            getMoreQuestsQuery = " AND NOT(ql.Removed = 1 OR ql.Completed = 1)";
         }
         Connection connection = ConnectMySQL.getInstance().getConnection();
         ResultSet rs = null;
         try {
-            PreparedStatement ps = connection.prepareStatement("SELECT * FROM era e INNER JOIN eralanguage el ON " +
-                    "e.EraId = el.EraId WHERE e.EraId NOT IN " +
-                    "(SELECT qp.Value FROM questlog ql INNER JOIN " +
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM era e INNER JOIN eralanguage el " +
+                    "ON e.EraId = el.EraId WHERE el.EraId " +
+                    "NOT IN(SELECT qp.Value FROM questlog ql INNER JOIN " +
                     "questProperties qp ON ql.EntryId = qp.EntryId " +
-                    "WHERE UserId = ? AND QuestTypeId = 4 "+ checkIfRemovedQuery +") AND " +
-                    "el.LanguageId = (SELECT u.LanguageId FROM users u " +
+                    "WHERE UserId = ? AND QuestTypeId = 4 "+ getMoreQuestsQuery +") " +
+                    "AND el.LanguageId = (SELECT u.LanguageId FROM users u " +
                     "WHERE u.UserId = ?)");
             ps.setInt(1, userId);
             ps.setInt(2, userId);

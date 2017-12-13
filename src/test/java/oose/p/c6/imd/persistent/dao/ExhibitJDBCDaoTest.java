@@ -181,25 +181,25 @@ public class ExhibitJDBCDaoTest {
     }
 
     @Test
-    public void findErasNotYetInQuestlogWithRemovedEras() {
+    public void findErasNotYetInQuestlogWithRemovedAndCompletedEras() {
         //init
-        Era expectedEra = new Era(2, "tijdperk test2");
+        Era expectedEra = new Era(1, "tijdperk test");
 
         //test
-        List<Era> eras = dao.findErasNotYetInQuestlog(1, true);
-        Era actualEra = eras.get(1);
+        List<Era> eras = dao.findErasNotYetInQuestlog(1, false);
+        Era actualEra = eras.get(0);
 
         //check
         assertThat(actualEra, samePropertyValuesAs(expectedEra));
     }
 
     @Test
-    public void findErasNotYetInQuestlogWithoutRemovedEras() {
+    public void findErasNotYetInQuestlogWithoutRemovedAndCompletedEras() {
         //init
-        Era expectedEra = new Era(1, "tijdperk test");
+        Era expectedEra = new Era(4, "Middeleeuwen");
 
         //test
-        List<Era> eras = dao.findErasNotYetInQuestlog(1, false);
+        List<Era> eras = dao.findErasNotYetInQuestlog(1, true);
         Era actualEra = eras.get(0);
 
         //check

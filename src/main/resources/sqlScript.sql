@@ -1,5 +1,5 @@
 CREATE SCHEMA IF NOT EXISTS librarian;
-SET SCHEMA librarian;
+SET SCHEMA = librarian;
 
 
 -- TALEN
@@ -51,8 +51,8 @@ CREATE TABLE QuestLog (
   EntryId INT AUTO_INCREMENT PRIMARY KEY,
   UserId INT NOT NULL,
   QuestTypeId INT NOT NULL,
-  `Completed` BOOLEAN,
-  Removed INT DEFAULT 0
+  `Completed` BOOLEAN DEFAULT 0,
+  Removed BOOLEAN DEFAULT 0
 );
 
 CREATE TABLE QuestProperties (
@@ -221,14 +221,15 @@ INSERT INTO librarian.questlog (UserId, QuestTypeId, Completed) VALUES (1, 2, 0)
 INSERT INTO librarian.questproperties(`Key`, `Value`, EntryId) VALUES ('Tekst', 'AAD', 4);
 INSERT INTO librarian.questlog (UserId, QuestTypeId, Completed) VALUES (2, 2, 0);
 INSERT INTO librarian.questproperties(`Key`, `Value`, EntryId) VALUES ('Tekst', 'AAE', 5);
-INSERT INTO librarian.questlog (UserId, QuestTypeId, Completed) VALUES (3, 2, 0);
 
 INSERT INTO librarian.questlog (UserId, QuestTypeId, Removed) VALUES (1, 4, 1);
 INSERT INTO librarian.questproperties(`Key`, `Value`, EntryId) VALUES ('Era', '1', 6);
 
-INSERT INTO librarian.questlog (UserId, QuestTypeId, Removed) VALUES (1, 4, 0);
+INSERT INTO librarian.questlog (UserId, QuestTypeId) VALUES (1, 4);
 INSERT INTO librarian.questproperties(`Key`, `Value`, EntryId) VALUES ('Era', '2', 7);
 
+INSERT INTO librarian.questlog (UserId, QuestTypeId, Completed) VALUES (1, 4, 1);
+INSERT INTO librarian.questproperties(`Key`, `Value`, EntryId) VALUES ('Era', '3', 8);
 
 INSERT INTO Era () VALUES ();
 INSERT INTO eralanguage (`eraId`, `name`, `languageId`) VALUES (1, 'tijdperk test', 1);
@@ -237,6 +238,14 @@ INSERT INTO eralanguage (`eraId`, `name`, `languageId`) VALUES (1, 'test era', 2
 INSERT INTO Era () VALUES ();
 INSERT INTO eralanguage (`eraId`, `name`, `languageId`) VALUES (2, 'tijdperk test2', 1);
 INSERT INTO eralanguage (`eraId`, `name`, `languageId`) VALUES (2, 'test era2', 2);
+
+INSERT INTO Era () VALUES ();
+INSERT INTO eralanguage (`eraId`, `name`, `languageId`) VALUES (3, 'Steen tijd', 1);
+INSERT INTO eralanguage (`eraId`, `name`, `languageId`) VALUES (3, 'Stone age', 2);
+
+INSERT INTO Era () VALUES ();
+INSERT INTO eralanguage (`eraId`, `name`, `languageId`) VALUES (4, 'Middeleeuwen', 1);
+INSERT INTO eralanguage (`eraId`, `name`, `languageId`) VALUES (4, 'Middle ages', 2);
 
 INSERT INTO Museum (`MuseumName`, `website`, `Region`) VALUES ('test musei', 'http://google.nl', 'Nederland');
 INSERT INTO Exhibit (`year`, `eraId`, `museumId`) VALUES ('1999', 1, 1);
