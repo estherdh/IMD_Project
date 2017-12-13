@@ -15,7 +15,7 @@ public class EraViewQuestGenerator extends IQuestGenerator {
         HashMap<String, String> properties = new HashMap<>();
         questTypeId = 4;
 
-        Random r = new Random(exhibitDao.findErasNotYetInQuestlog(userId).size());
+        Random r = new Random(chanceQuest);
         Era e = exhibitDao.findErasNotYetInQuestlog(userId).get(r.nextInt());
 
         String key = "Era";
