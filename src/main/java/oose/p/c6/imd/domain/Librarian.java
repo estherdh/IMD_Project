@@ -87,4 +87,8 @@ public class Librarian {
     public List<Quest> getQuestLog(User user) {
         return questDAO.getQuestsForUser(user.getId(), user.getLanguageId());
     }
+
+    public List<Replica> getReplicasFromUser(User user) {
+        return user.getReplicas();
+    }
 }

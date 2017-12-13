@@ -184,6 +184,33 @@ public class RESTServiceTest {
 	}
 
 	@Test
+	public void getReplicasFromUserTestSuccess() throws Exception {
+		//init
+		List<Replica> expectedResult = new ArrayList<>();
+		expectedResult.add(mock(Replica.class));
+		expectedResult.add(mock(Replica.class));
+		User mockUser = mock(User.class);
+		when(tokenManager.getUserFromToken("token")).thenReturn(mockUser);
+		when(librarian.getReplicasFromUser(mockUser)).thenReturn(expectedResult);
+		//test
+		Response actualResponse = service.getReplicasFromUser("token");
+		//check
+		List<Replica> actualResult = (List<Replica>) actualResponse.getEntity();
+		assertThat(actualResult, is(expectedResult));
+		assertThat(actualResponse.getStatus(), is(200));
+	}
+
+	@Test
+	public void getReplicasFromUserTestIncorrectUser() throws Exception {
+		//init
+		when(tokenManager.getUserFromToken("token")).thenReturn(null);
+		//test
+		Response actualResponse = service.getReplicasFromUser("token");
+		//check
+		assertThat(actualResponse.getStatus(), is(401));
+	}
+
+	@Test
 	public void scanQrCodeTestSuccess() throws Exception {
 		//init
 		User mockUser = mock(User.class);

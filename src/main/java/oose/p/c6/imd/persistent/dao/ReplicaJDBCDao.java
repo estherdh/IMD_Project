@@ -95,13 +95,21 @@ public class ReplicaJDBCDao implements IReplicaDao {
         Connection connection = ConnectMySQL.getInstance().getConnection();
         List<Replica> replicas = new ArrayList<>();
         try {
-            PreparedStatement ps = connection.prepareStatement("SELECT * FROM `userreplica` ur " +
+            PreparedStatement ps = connection.prepareStatement("SELECT r.*, ei.Name, e.Year, erlan.Name as era, ur.ReplicaPositionId " +
+                    "FROM `userreplica` ur " +
                     "INNER JOIN `replica` r ON r.ReplicaId=ur.ReplicaId " +
-                    "WHERE `UserId` = ?");
+                    "INNER JOIN `exhibit` e ON e.ExhibitId=r.ExhibitId " +
+                    "INNER JOIN `exhibitinfo` ei ON ei.ExhibitId=e.ExhibitId " +
+                    "INNER JOIN `eralanguage` erlan ON erlan.EraId=e.EraId " +
+                    "WHERE `UserId` = ? AND erlan.`LanguageId` = (SELECT `LanguageId` FROM `users` WHERE `UserId` = ?) " +
+                    "AND ei.`LanguageId` = (SELECT `LanguageId` FROM `users` WHERE `UserId` = ?)");
             ps.setInt(1, user.getId());
+            ps.setInt(2, user.getId());
+            ps.setInt(3, user.getId());
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                replicas.add(createReplica(rs));
+                Replica replica = new Replica(rs.getInt("ReplicaId"), rs.getInt("ExhibitId"), rs.getInt("Price"), rs.getString("Sprite"), rs.getInt("ReplicaTypeId"), rs.getInt("ReplicaPositionId"), rs.getInt("Year"), rs.getString("Name"), rs.getString("era"));
+                replicas.add(replica);
             }
             connection.close();
         } catch (SQLException e) {
@@ -148,6 +156,6 @@ public class ReplicaJDBCDao implements IReplicaDao {
     }
 
     private Replica createReplica(ResultSet rs) throws SQLException {
-        return new Replica(rs.getInt("ReplicaId"), rs.getInt("ExhibitInfoId"), rs.getInt("Price"), rs.getString("Sprite"), rs.getInt("ReplicaTypeId"));
+        return new Replica(rs.getInt("ReplicaId"), rs.getInt("ExhibitId"), rs.getInt("Price"), rs.getString("Sprite"), rs.getInt("ReplicaTypeId"));
     }
 }

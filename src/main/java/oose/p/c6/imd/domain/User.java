@@ -138,4 +138,8 @@ public class User extends Model {
     public void setReplicaDao(IReplicaDao replicaDao) {
         this.replicaDao = replicaDao;
     }
+
+    public List<Replica> getReplicas() {
+        return replicaDao.getReplicasFromUser(this);
+    }
 }

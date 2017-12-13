@@ -62,7 +62,7 @@ public class ReplicaJDBCDaoTest
     public void findAvailableReplicasTest() {
         // init
         List<Replica> expectedReplicaList = new ArrayList<Replica>(){{
-            add(new Replica(1, 6, 10, "traktor", 2));
+            add(new Replica(1, 1, 10, "traktor", 2));
         }};
         // test
         List<Replica> replicaList = dao.findAvailableReplicas(user);

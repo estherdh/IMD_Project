@@ -115,7 +115,7 @@ CREATE TABLE ReplicaType (
 
 CREATE TABLE Replica (
   ReplicaId INT AUTO_INCREMENT PRIMARY KEY,
-  ExhibitInfoId INT NOT NULL,
+  ExhibitId INT NOT NULL,
   `Price` INT NOT NULL,
   Sprite VARCHAR(45) NOT NULL,
   `ReplicaTypeId` VARCHAR(45) NOT NULL
@@ -162,8 +162,8 @@ FOREIGN KEY (ExhibitId) REFERENCES Exhibit (ExhibitId);
 ALTER TABLE ExhibitInfo ADD CONSTRAINT FK_ExhibitInfo_Language
 FOREIGN KEY (LanguageId) REFERENCES Language (LanguageId);
 
-ALTER TABLE Replica ADD CONSTRAINT FK_Replica_ExhibitInfo
-FOREIGN KEY (ExhibitInfoId) REFERENCES ExhibitInfo (ExhibitInfoId);
+ALTER TABLE Replica ADD CONSTRAINT FK_Replica_Exhibit
+FOREIGN KEY (ExhibitId) REFERENCES Exhibit (ExhibitId);
 
 ALTER TABLE UserReplica ADD CONSTRAINT FK_UserReplica_User
 FOREIGN KEY (UserId) REFERENCES Users (UserId);
@@ -245,8 +245,8 @@ INSERT INTO `replicatype` (`ReplicaTypeId`, `Name`) VALUES
     (2, 'floor'),
     (3, 'table');
 
-INSERT INTO `replica` (`ReplicaId`, `ExhibitInfoId`, `Price`, `Sprite`, `ReplicaTypeId`) VALUES
-    (1, 6, 10, 'traktor', 2),
+INSERT INTO `replica` (`ReplicaId`, `ExhibitId`, `Price`, `Sprite`, `ReplicaTypeId`) VALUES
+    (1, 1, 10, 'traktor', 2),
     (2, 1, 15, 'test1', 2),
     (3, 1, 12, 'test2', 2);
 

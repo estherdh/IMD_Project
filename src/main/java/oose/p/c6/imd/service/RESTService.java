@@ -79,6 +79,19 @@ public class RESTService {
         return Response.status(401).build();
     }
 
+    @GET
+    @Path("/inventory")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getReplicasFromUser(@QueryParam("token") String token) {
+        User user = TokenManager.getInstance().getUserFromToken(token);
+        if(user != null)
+        {
+            List<Replica> replicas = l.getReplicasFromUser(user);
+            return Response.status(200).entity(replicas).build();
+        }
+        return Response.status(401).build();
+    }
+
     @POST
     @Path("/quest/qr")
     @Consumes(MediaType.APPLICATION_JSON)
