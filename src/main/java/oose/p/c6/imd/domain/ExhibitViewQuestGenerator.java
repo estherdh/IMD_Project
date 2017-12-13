@@ -6,6 +6,7 @@ import oose.p.c6.imd.persistent.dao.IQuestDAO;
 import oose.p.c6.imd.persistent.dao.QuestJDBCDao;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 public class ExhibitViewQuestGenerator extends IQuestGenerator {
@@ -15,7 +16,7 @@ public class ExhibitViewQuestGenerator extends IQuestGenerator {
 
     @Override
     public void generateQuest(int userId) {
-        HashMap<String, String> properties = new HashMap<>();
+        Map<String, String> properties = new HashMap<>();
         questTypeId = 3;
 
         Random r = new Random(exhibitDao.findExhibitsNotYetInQuestlog(userId).size());

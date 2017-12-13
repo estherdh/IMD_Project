@@ -221,20 +221,26 @@ INSERT INTO librarian.questlog (UserId, QuestTypeId, Completed) VALUES (3, 2, 0)
 INSERT INTO Era () VALUES ();
 INSERT INTO eralanguage (`eraId`, `name`, `languageId`) VALUES (1, 'tijdperk test', 1);
 INSERT INTO eralanguage (`eraId`, `name`, `languageId`) VALUES (1, 'test era', 2);
+
 INSERT INTO Museum (`MuseumName`, `website`, `Region`) VALUES ('test musei', 'http://google.nl', 'Nederland');
+
 INSERT INTO Exhibit (`year`, `eraId`, `museumId`) VALUES ('1999', 1, 1);
 INSERT INTO ExhibitInfo (`ExhibitId`, `languageId`, `name`, `description`, `Image`)
 VALUES (1, 1, 'Het test object', 'Dit object wordt altijd al gebruikt om te testen', 'object.png'),
   (1, 2, 'The test object', 'Possibly used for testing', 'object.png');
+
 INSERT INTO Exhibit (`year`, `eraId`, `museumId`) VALUES ('2010', 1, 1);
 INSERT INTO ExhibitInfo (`ExhibitId`, `languageId`, `name`, `description`, `Image`)
 VALUES (2, 1, 'Het voorbeeld beeldje', 'Dit beeldje is ware kunst, een ideaal voorbeeld.', 'object.png'),
   (2, 3, 'Lol look at tis translation', 'Possibly testing de taal', 'object.png');
+
 INSERT INTO Museum (`MuseumName`, `website`, `Region`) VALUES ('De verzamel schuur', 'http://google.twente', 'Twente');
+
 INSERT INTO Exhibit (`year`, `eraId`, `museumId`) VALUES ('2015', 1, 2);
 INSERT INTO ExhibitInfo (`ExhibitId`, `languageId`, `name`, `description`, `Image`)
 VALUES (3, 1, 'Trekker', 'Deze trekker is geen tractor!', 'object.png'),
   (3, 2, 'Farmers vehicle', 'Use primarily for 14 year olds to drive around without an actual drivers license', 'object.png');
+
 INSERT INTO Exhibit (`year`, `eraId`, `museumId`) VALUES ('2017', 1, 2);
 INSERT INTO ExhibitInfo (`ExhibitId`, `languageId`, `name`, `description`, `Image`)
 VALUES (4, 1, 'Voorbeeld streektaal', 'Dit papier bevat een stuk tekst in streektaal: Oet de goaldn korenaarn skeup God de Tweantenaarn, en oet t kaf en d restn de leu oet t Westn', 'object.png'),
