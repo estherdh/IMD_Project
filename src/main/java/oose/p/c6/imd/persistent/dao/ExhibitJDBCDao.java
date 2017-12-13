@@ -219,7 +219,11 @@ public class ExhibitJDBCDao implements IExhibitDao {
     }
 
     @Override
-    public List<Era> findErasNotYetInQuestlog(int userId) {
+    public List<Era> findErasNotYetInQuestlog(int userId, boolean isRemoved) {
+        String checkIfRemovedQuery = "";
+        if (isRemoved) {
+            checkIfRemovedQuery = "AND Removed = 0";
+        }
         Connection connection = ConnectMySQL.getInstance().getConnection();
         ResultSet rs = null;
         try {
@@ -227,7 +231,7 @@ public class ExhibitJDBCDao implements IExhibitDao {
                     "e.EraId = el.EraId WHERE e.EraId NOT IN " +
                     "(SELECT qp.Value FROM questlog ql INNER JOIN " +
                     "questProperties qp ON ql.EntryId = qp.EntryId " +
-                    "WHERE UserId = ? AND QuestTypeId = 4) AND " +
+                    "WHERE UserId = ? AND QuestTypeId = 4 "+ checkIfRemovedQuery +") AND " +
                     "el.LanguageId = (SELECT u.LanguageId FROM users u " +
                     "WHERE u.UserId = ?)");
             ps.setInt(1, userId);
