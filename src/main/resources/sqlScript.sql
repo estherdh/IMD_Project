@@ -228,9 +228,6 @@ INSERT INTO librarian.questproperties(`Key`, `Value`, EntryId) VALUES ('Era', '1
 INSERT INTO librarian.questlog (UserId, QuestTypeId) VALUES (1, 4);
 INSERT INTO librarian.questproperties(`Key`, `Value`, EntryId) VALUES ('Era', '2', 7);
 
-INSERT INTO librarian.questlog (UserId, QuestTypeId, Completed) VALUES (1, 4, 1);
-INSERT INTO librarian.questproperties(`Key`, `Value`, EntryId) VALUES ('Era', '3', 8);
-
 INSERT INTO Era () VALUES ();
 INSERT INTO eralanguage (`eraId`, `name`, `languageId`) VALUES (1, 'tijdperk test', 1);
 INSERT INTO eralanguage (`eraId`, `name`, `languageId`) VALUES (1, 'test era', 2);

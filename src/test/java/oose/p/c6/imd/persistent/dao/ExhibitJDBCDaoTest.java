@@ -196,7 +196,7 @@ public class ExhibitJDBCDaoTest {
     @Test
     public void findErasNotYetInQuestlogWithoutRemovedAndCompletedEras() {
         //init
-        Era expectedEra = new Era(4, "Middeleeuwen");
+        Era expectedEra = new Era(3, "Steen tijd");
 
         //test
         List<Era> eras = dao.findErasNotYetInQuestlog(1, true);
