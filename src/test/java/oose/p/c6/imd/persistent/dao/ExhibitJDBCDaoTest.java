@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Properties;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.beans.SamePropertyValuesAs.samePropertyValuesAs;
 import static org.junit.Assert.assertThat;
 
 public class ExhibitJDBCDaoTest {
@@ -164,5 +165,18 @@ public class ExhibitJDBCDaoTest {
         assertThat(result.get(0).getName(), is(expectedExhibit.getName()));
         assertThat(result.get(0).getEraId(), is(expectedExhibit.getEraId()));
         assertThat(result.get(0).getMuseumId(), is(expectedExhibit.getMuseumId()));
+    }
+
+    @Test
+    public void findExhibitsNotYetInQuestlog() {
+        //init
+        Exhibit expectedExhibit = new Exhibit(1, "Het test object", "Dit object wordt altijd al gebruikt om te testen", null, "object.png", 1999, 1, 1);
+
+        //test
+        List<Exhibit> exhibits = dao.findExhibitsNotYetInQuestlog(1);
+        Exhibit actualExhibit = exhibits.get(0);
+
+        //check
+        assertThat(actualExhibit, samePropertyValuesAs(expectedExhibit));
     }
 }
