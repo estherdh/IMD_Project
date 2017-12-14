@@ -223,10 +223,10 @@ INSERT INTO librarian.questlog (UserId, QuestTypeId, Completed) VALUES (2, 2, 0)
 INSERT INTO librarian.questproperties(`Key`, `Value`, EntryId) VALUES ('Tekst', 'AAE', 5);
 
 INSERT INTO librarian.questlog (UserId, QuestTypeId, Removed) VALUES (1, 4, 1);
-INSERT INTO librarian.questproperties(`Key`, `Value`, EntryId) VALUES ('Era', '1', 6);
+INSERT INTO librarian.questproperties(`Key`, `Value`, EntryId) VALUES ('Tijdperk', '1', 6);
 
 INSERT INTO librarian.questlog (UserId, QuestTypeId) VALUES (1, 4);
-INSERT INTO librarian.questproperties(`Key`, `Value`, EntryId) VALUES ('Era', '2', 7);
+INSERT INTO librarian.questproperties(`Key`, `Value`, EntryId) VALUES ('Tijdperk', '2', 7);
 
 INSERT INTO Era () VALUES ();
 INSERT INTO eralanguage (`eraId`, `name`, `languageId`) VALUES (1, 'tijdperk test', 1);
