@@ -16,28 +16,15 @@ public class Replica extends Model{
         this.type = type;
     }
 
-    public Replica(int id, Exhibit exhibit, int price, String sprite, int type, int position) {
-        super(id);
-        this.exhibit = exhibit;
-        this.price = price;
-        this.sprite = sprite;
-        this.type = type;
-        this.position = position;
-        this.exhibit = exhibit;
-    }
-
-    /*
-    public Replica(int id, int exhibitId, int price, String sprite, int type, int position, int year, String title, String era) {
+    public Replica(int id, int exhibitId, int price, String sprite, int type, int position, Exhibit exhibit) {
         super(id);
         this.exhibitId = exhibitId;
         this.price = price;
         this.sprite = sprite;
         this.type = type;
         this.position = position;
-        this.year = year;
-        this.title = title;
-        this.era = era;
-    }*/
+        this.exhibit = exhibit;
+    }
 
     public int getExhibitId() {
         return exhibitId;

@@ -96,8 +96,8 @@ public class ReplicaJDBCDaoTest
         Era era = new Era(1, "tijdperk test");
         Exhibit exhibit = new Exhibit(1, "Het test object",
                 "Dit object wordt altijd al gebruikt om te testen", null, "object.png",
-                1999, era, 1);
-        Replica replica = new Replica(2, exhibit, 15, "test1", 2, 1);
+                1999, 1, 1, era);
+        Replica replica = new Replica(2, 1, 15, "test1", 2, 1, exhibit);
         // init
         List<Replica> expected = new ArrayList<Replica>() {{
             add(replica);
