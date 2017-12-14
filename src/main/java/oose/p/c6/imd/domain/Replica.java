@@ -5,10 +5,8 @@ public class Replica extends Model{
     private int price;
     private String sprite;
     private int type;
+    private Exhibit exhibit;
     private int position;
-    private int year;
-    private String title;
-    private String era;
 
     public Replica(int id, int exhibitId, int price, String sprite, int type) {
         super(id);
@@ -18,6 +16,17 @@ public class Replica extends Model{
         this.type = type;
     }
 
+    public Replica(int id, Exhibit exhibit, int price, String sprite, int type, int position) {
+        super(id);
+        this.exhibit = exhibit;
+        this.price = price;
+        this.sprite = sprite;
+        this.type = type;
+        this.position = position;
+        this.exhibit = exhibit;
+    }
+
+    /*
     public Replica(int id, int exhibitId, int price, String sprite, int type, int position, int year, String title, String era) {
         super(id);
         this.exhibitId = exhibitId;
@@ -28,7 +37,7 @@ public class Replica extends Model{
         this.year = year;
         this.title = title;
         this.era = era;
-    }
+    }*/
 
     public int getExhibitId() {
         return exhibitId;
@@ -70,27 +79,11 @@ public class Replica extends Model{
         this.position = position;
     }
 
-    public int getYear() {
-        return year;
+    public Exhibit getExhibit() {
+        return exhibit;
     }
 
-    public void setYear(int year) {
-        this.year = year;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getEra() {
-        return era;
-    }
-
-    public void setEra(String era) {
-        this.era = era;
+    public void setExhibit(Exhibit exhibit) {
+        this.exhibit = exhibit;
     }
 }

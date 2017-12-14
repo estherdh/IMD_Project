@@ -1,5 +1,7 @@
 package oose.p.c6.imd.persistent.dao;
 
+import oose.p.c6.imd.domain.Era;
+import oose.p.c6.imd.domain.Exhibit;
 import oose.p.c6.imd.domain.Replica;
 import oose.p.c6.imd.domain.User;
 import oose.p.c6.imd.persistent.ConnectMySQL;
@@ -91,16 +93,34 @@ public class ReplicaJDBCDaoTest
 
     @Test
     public void getReplicasFromUserTest() {
+        Era era = new Era(1, "tijdperk test");
+        Exhibit exhibit = new Exhibit(1, "Het test object",
+                "Dit object wordt altijd al gebruikt om te testen", null, "object.png",
+                1999, era, 1);
+        Replica replica = new Replica(2, exhibit, 15, "test1", 2, 1);
         // init
         List<Replica> expected = new ArrayList<Replica>() {{
-            add(new Replica(2, 1, 15, "test1", 2, 1, 1999, "Het test object", "tijdperk test"));
+            add(replica);
         }};
         // test
         List<Replica> actual = dao.getReplicasFromUser(user);
         // check result
         assertThat(actual.size(), samePropertyValuesAs(expected.size()));
         for(int i = 0; i < expected.size(); i++) {
-            assertThat(actual.get(i), samePropertyValuesAs(expected.get(i)));
+            //check replica
+            assertThat(actual.get(i).getId(), is(expected.get(i).getId()));
+            assertThat(actual.get(i).getPrice(), is(expected.get(i).getPrice()));
+            assertThat(actual.get(i).getType(), is(expected.get(i).getType()));
+            assertThat(actual.get(i).getPosition(), is(expected.get(i).getPosition()));
+            assertThat(actual.get(i).getSprite(), is(expected.get(i).getSprite()));
+            //check exhibit
+            assertThat(actual.get(i).getExhibit().getDescription(), is(expected.get(i).getExhibit().getDescription()));
+            assertThat(actual.get(i).getExhibit().getImage(), is(expected.get(i).getExhibit().getImage()));
+            assertThat(actual.get(i).getExhibit().getName(), is(expected.get(i).getExhibit().getName()));
+            assertThat(actual.get(i).getExhibit().getVideo(), is(expected.get(i).getExhibit().getVideo()));
+            assertThat(actual.get(i).getExhibit().getYear(), is(expected.get(i).getExhibit().getYear()));
+            //check era
+            assertThat(actual.get(i).getExhibit().getEra().getName(), is(expected.get(i).getExhibit().getEra().getName()));
         }
     }
 

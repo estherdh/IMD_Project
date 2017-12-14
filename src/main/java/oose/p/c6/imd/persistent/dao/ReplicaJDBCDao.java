@@ -1,5 +1,7 @@
 package oose.p.c6.imd.persistent.dao;
 
+import oose.p.c6.imd.domain.Era;
+import oose.p.c6.imd.domain.Exhibit;
 import oose.p.c6.imd.domain.Replica;
 import oose.p.c6.imd.domain.User;
 import oose.p.c6.imd.persistent.ConnectMySQL;
@@ -95,7 +97,7 @@ public class ReplicaJDBCDao implements IReplicaDao {
         Connection connection = ConnectMySQL.getInstance().getConnection();
         List<Replica> replicas = new ArrayList<>();
         try {
-            PreparedStatement ps = connection.prepareStatement("SELECT r.*, ei.Name, e.Year, erlan.Name as era, ur.ReplicaPositionId " +
+            PreparedStatement ps = connection.prepareStatement("SELECT ur.ReplicaPositionId, r.*, e.*, ei.*, erlan.Name as EraName " +
                     "FROM `userreplica` ur " +
                     "INNER JOIN `replica` r ON r.ReplicaId=ur.ReplicaId " +
                     "INNER JOIN `exhibit` e ON e.ExhibitId=r.ExhibitId " +
@@ -108,7 +110,11 @@ public class ReplicaJDBCDao implements IReplicaDao {
             ps.setInt(3, user.getId());
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                Replica replica = new Replica(rs.getInt("ReplicaId"), rs.getInt("ExhibitId"), rs.getInt("Price"), rs.getString("Sprite"), rs.getInt("ReplicaTypeId"), rs.getInt("ReplicaPositionId"), rs.getInt("Year"), rs.getString("Name"), rs.getString("era"));
+                Era era = new Era(rs.getInt("EraId"), rs.getString("EraName"));
+                Exhibit exhibit = new Exhibit(rs.getInt("ExhibitId"), rs.getString("Name"),
+                        rs.getString("Description"), rs.getString("Video"), rs.getString("Image"),
+                        rs.getInt("Year"), era, rs.getInt("MuseumId"));
+                Replica replica = new Replica(rs.getInt("ReplicaId"), exhibit, rs.getInt("Price"), rs.getString("Sprite"), rs.getInt("ReplicaTypeId"), rs.getInt("ReplicaPositionId"));
                 replicas.add(replica);
             }
             connection.close();
