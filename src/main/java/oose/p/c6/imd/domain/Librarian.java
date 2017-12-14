@@ -76,6 +76,9 @@ public class Librarian {
     public List<Museum> listMuseums(){
         return exhibits.listMuseums();
     }
+    public void removeUser(User user) {
+        userDao.remove(user);
+    }
 
 
 

@@ -338,4 +338,16 @@ public class RESTService {
         }
         return Response.status(200).build();
     }
+
+    @GET
+    @Path("/user/delete")
+    public Response deleteUser(@QueryParam("token") String token){
+        User user = TokenManager.getInstance().getUserFromToken(token);
+        if(user != null){
+            l.removeUser(user);
+            TokenManager.getInstance().removeUserByToken(token);
+            return Response.status(200).build();
+        }
+        return Response.status(401).build();
+    }
 }
