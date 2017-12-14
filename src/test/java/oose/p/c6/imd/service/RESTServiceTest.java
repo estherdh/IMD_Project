@@ -728,4 +728,27 @@ public class RESTServiceTest {
 		assertEquals(joResponse.getInt("Language"), user.getLanguageId());
 		assertThat(actualResponse.getStatus(), is(200));
 	}
+
+	@Test
+	public void removeAccountTestInvalidUser() {
+		//test
+		Response actualResponse = service.removeAccount("token");
+		//check
+		verify(tokenManager, times(0)).removeUserByToken("token");
+		verify(librarian, times(0)).removeUser(any());
+		assertThat(actualResponse.getStatus(), is(401));
+	}
+
+	@Test
+	public void removeAccountTestSuccess() {
+		//test
+		User mockUser = mock(User.class);
+		when(tokenManager.getUserFromToken("token")).thenReturn(mockUser);
+		Response actualResponse = service.removeAccount("token");
+		//check
+		verify(tokenManager, times(1)).removeUserByToken("token");
+		verify(librarian, times(1)).removeUser(any());
+		assertThat(actualResponse.getStatus(), is(200));
+	}
+
 }

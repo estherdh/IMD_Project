@@ -340,8 +340,8 @@ public class RESTService {
     }
 
     @GET
-    @Path("/user/delete")
-    public Response deleteUser(@QueryParam("token") String token){
+    @Path("/user/remove")
+    public Response removeAccount(@QueryParam("token") String token){
         User user = TokenManager.getInstance().getUserFromToken(token);
         if(user != null){
             l.removeUser(user);
