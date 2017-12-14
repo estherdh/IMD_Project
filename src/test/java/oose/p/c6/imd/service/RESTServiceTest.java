@@ -707,4 +707,52 @@ public class RESTServiceTest {
 		assertThat(actualResponse.getEntity(), is(nullValue()));
 		assertThat(actualResponse.getStatus(), is(401));
 	}
+
+    @Test
+    public void verifyInvalidUser() {
+        //init
+        when(tokenManager.getUserFromToken("token")).thenReturn(null);
+        //test
+        Response actualResponse = service.verifyUser("token");
+        //check
+        assertThat(actualResponse.getStatus(), is(401));
+    }
+
+    @Test
+    public void verifyValidUser() {
+        //init
+        when(tokenManager.getUserFromToken("token")).thenReturn(new User(1, "", "", "", 1, 10));
+        //test
+        Response actualResponse = service.verifyUser("token");
+        //check
+        assertThat(actualResponse.getStatus(), is(200));
+    }
+
+	@Test
+	public void getUserInfoInvalidUser() {
+		//init
+		when(tokenManager.getUserFromToken("token")).thenReturn(null);
+		//test
+		Response actualResponse = service.getUserInfo("token");
+		//check
+		assertThat(actualResponse.getEntity(), is(nullValue()));
+		assertThat(actualResponse.getStatus(), is(401));
+	}
+
+	@Test
+	public void getUserInfoValidUser() {
+		//init
+		User user = new User(1, "test@email", "HASHEDPASSWORD", "John Doe", 1337, 2);
+		when(tokenManager.getUserFromToken("token")).thenReturn(user);
+		//test
+		Response actualResponse = service.getUserInfo("token");
+		//check
+		JsonObject joResponse = (JsonObject) actualResponse.getEntity();
+		assertEquals(joResponse.getInt("UserId"), user.getId());
+		assertEquals(joResponse.getString("Name"), user.getDisplayName());
+		assertEquals(joResponse.getString("Email"), user.getEmail());
+		assertEquals(joResponse.getInt("Coins"), user.getCoins());
+		assertEquals(joResponse.getInt("Language"), user.getLanguageId());
+		assertThat(actualResponse.getStatus(), is(200));
+	}
 }
