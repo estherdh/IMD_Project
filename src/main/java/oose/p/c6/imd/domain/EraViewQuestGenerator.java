@@ -14,15 +14,9 @@ public class EraViewQuestGenerator extends IQuestGenerator {
     public void generateQuest(int userId) {
         HashMap<String, String> properties = new HashMap<>();
         questTypeId = 4;
-        boolean eraQuestsAvailable = true;
 
-
-        if (exhibitDao.findErasNotYetInQuestlog(userId, eraQuestsAvailable).size() <= 0) {
-            eraQuestsAvailable = false;
-        }
-
-        Random r = new Random(exhibitDao.findErasNotYetInQuestlog(userId, eraQuestsAvailable).size());
-        Era e = exhibitDao.findErasNotYetInQuestlog(userId, eraQuestsAvailable).get(r.nextInt());
+        Random r = new Random(exhibitDao.findErasNotYetInQuestlog(userId, areErasAvailable(userId)).size());
+        Era e = exhibitDao.findErasNotYetInQuestlog(userId, areErasAvailable(userId)).get(r.nextInt());
 
         String key = "Era";
         int value = e.getId();
@@ -31,5 +25,12 @@ public class EraViewQuestGenerator extends IQuestGenerator {
         properties.put("Value", String.valueOf(value));
 
         questDAO.addQuestToQuestlog(properties, userId, questTypeId);
+    }
+
+    private boolean areErasAvailable(int userId) {
+        if (exhibitDao.findErasNotYetInQuestlog(userId, true).size() <= 0) {
+            return false;
+        }
+        else return true;
     }
 }
