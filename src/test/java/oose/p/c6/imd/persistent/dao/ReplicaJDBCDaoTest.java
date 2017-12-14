@@ -93,7 +93,7 @@ public class ReplicaJDBCDaoTest
     public void getReplicasFromUserTest() {
         // init
         List<Replica> expected = new ArrayList<Replica>() {{
-            add(new Replica(2, 1, 15, "test1", 2));
+            add(new Replica(2, 1, 15, "test1", 2, 1, 1999, "Het test object", "tijdperk test"));
         }};
         // test
         List<Replica> actual = dao.getReplicasFromUser(user);
