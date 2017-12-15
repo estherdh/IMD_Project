@@ -87,9 +87,34 @@ public class RESTService {
         if(user != null)
         {
             List<Replica> replicas = l.getReplicasFromUser(user);
-            return Response.status(200).entity(replicas).build();
+
+            if(!replicas.isEmpty()) {
+                JsonBuilderFactory factory = Json.createBuilderFactory(null);
+                JsonArrayBuilder job = factory.createArrayBuilder();
+
+                for (Replica r:replicas) {
+                    job.add(buildReplicaJson(r));
+                }
+
+                return Response.status(200).entity(job.build()).build();
+            }
+            return Response.status(200).build();
         }
         return Response.status(401).build();
+    }
+
+    private JsonObject buildReplicaJson(Replica r){
+        JsonBuilderFactory factory = Json.createBuilderFactory(null);
+        JsonObjectBuilder job = factory.createObjectBuilder();
+        job.add("ReplicaId", r.getId());
+        job.add("PlacementCategoryId", r.getType());
+        job.add("Image", r.getSprite());
+        job.add("Price", r.getPrice());
+        job.add("Position", r.getPosition());
+
+        job.add("Exhibit", buildExhibitJson(r.getExhibit()));
+
+        return job.build();
     }
 
     @POST
@@ -209,7 +234,13 @@ public class RESTService {
         job.add("Video", video);
         job.add("Image", image);
         job.add("Year", e.getYear());
-        job.add("EraId", e.getEraId());
+        if(e.getEra() != null) {
+            job.add("Era", createEraJson(e.getEra()));
+        }
+        else
+        {
+            job.add("EraId", e.getEraId());
+        }
         job.add("MuseumId", e.getMuseumId());
         return job.build();
     }
