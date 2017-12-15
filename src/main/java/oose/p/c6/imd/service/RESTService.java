@@ -343,7 +343,7 @@ public class RESTService {
     public Response updateUser(@QueryParam("token") String token, JsonObject obj) {
         User user = TokenManager.getInstance().getUserFromToken(token);
         if (user != null) {
-            int reason = user.updateUser(obj.getString("email"), obj.getString("displayName"), obj.getString("password"), obj.getInt("languageId"), user);
+            int reason = l.updateUser(obj.getString("email"), obj.getString("displayName"), obj.getString("password"), obj.getInt("languageId"), user);
             JsonBuilderFactory factory = Json.createBuilderFactory(null);
             JsonObjectBuilder job = factory.createObjectBuilder();
             job.add("reason", reason);

@@ -37,7 +37,7 @@ public class Librarian {
 
     public void scanQrCode(User user, String qrCode) {
         Action qrScanAction = new QrScanAction(qrCode);
-         if (user.checkQuestCompleted(qrScanAction)) {
+        if (user.checkQuestCompleted(qrScanAction)) {
             userDao.update(user);
         }
     }
@@ -46,9 +46,9 @@ public class Librarian {
         return userDao.findUserByemail(email);
     }
 
-	public boolean removeQuestFromQuestLog(int entryId, User user) {
+    public boolean removeQuestFromQuestLog(int entryId, User user) {
         return user.removeQuestFromQuestLog(entryId);
-	}
+    }
 
     public boolean buyReplica(User user, int replicaId) {
         return shop.buyReplica(user, replicaId);
@@ -65,7 +65,7 @@ public class Librarian {
     public List<Exhibit> getAvailableExhibits(User user){return exhibits.list(user);}
 
     public Era findEra(User user, int eraId){
-       return exhibits.findEra(user, eraId);
+        return exhibits.findEra(user, eraId);
     }
     public List<Era> listEra(User user){
         return exhibits.listEra(user);
@@ -76,9 +76,10 @@ public class Librarian {
     public List<Museum> listMuseums(){
         return exhibits.listMuseums();
     }
-
-
-
+    
+    public int updateUser(String email, String displayName, String password, int languageId,User user) {
+        return user.updateUser(email, displayName, password, languageId, user);
+    }
 
     public int placeReplica(int replicaId, int positionId, User user) {
         return library.tryPlaceReplica(user, replicaId, positionId);
