@@ -3,6 +3,7 @@ package oose.p.c6.imd.persistent.dao;
 import oose.p.c6.imd.domain.Notification;
 import oose.p.c6.imd.domain.User;
 import oose.p.c6.imd.persistent.ConnectMySQL;
+import oose.p.c6.imd.persistent.NotificationCreator;
 
 import javax.enterprise.inject.Default;
 import java.sql.Connection;
@@ -123,7 +124,7 @@ public class UserJDBCDao implements IUserDao {
             List<Notification> notifications = new ArrayList<Notification>();
             ResultSet rs = connection.prepareStatement("SELECT * FROM Users").executeQuery();
             while (rs.next()) {
-
+                Notification n = NotificationCreator.createNotification(u, "MESSAGE", new, 1, 1, 1, 1)
             }
             return notifications;
         } catch (Exception e) {

@@ -3,9 +3,9 @@ package oose.p.c6.imd.domain;
 public class Notification extends Model {
     private String time;
     private String text;
-    private String read;
+    private Boolean read;
 
-    public Notification(int id, String time, String text, String read) {
+    public Notification(int id, String time, String text, Boolean read) {
         super(id);
         this.time = time;
         this.text = text;
@@ -28,11 +28,11 @@ public class Notification extends Model {
         this.text = text;
     }
 
-    public String getRead() {
+    public Boolean getRead() {
         return read;
     }
 
-    public void setRead(String read) {
+    public void setRead(Boolean read) {
         this.read = read;
     }
 }
