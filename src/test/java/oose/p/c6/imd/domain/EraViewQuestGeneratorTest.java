@@ -25,13 +25,10 @@ import static org.mockito.Mockito.when;
 public class EraViewQuestGeneratorTest {
 
     private Connection conn;
-    private ExhibitJDBCDao dao;
 
     private int userId;
     private List<Era> expectedEras;
 
-    @Mock
-    private IQuestDAO questDAO;
     @Mock
     private IExhibitDao exhibitDao;
 
@@ -46,7 +43,6 @@ public class EraViewQuestGeneratorTest {
         ConnectMySQL.getInstance().getConnection().close();
         this.conn = ConnectMySQL.getInstance().getConnection();
         RunScript.execute(conn, new FileReader("src/main/resources/sqlScript.sql"));
-        dao = new ExhibitJDBCDao();
         userId = 1;
 
         expectedEras = (new ArrayList<Era>() {{
