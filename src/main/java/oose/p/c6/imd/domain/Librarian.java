@@ -76,6 +76,9 @@ public class Librarian {
     public List<Museum> listMuseums(){
         return exhibits.listMuseums();
     }
+    public void removeUser(User user) {
+        userDao.remove(user);
+    }
 
     public int updateUser(String email, String displayName, String password, int languageId,User user) {
         return user.updateUser(email, displayName, password, languageId, user);
