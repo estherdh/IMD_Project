@@ -18,7 +18,7 @@ public class ExhibitViewQuestGenerator extends IQuestGenerator {
 
         List<Exhibit> exhibits = findExhibitsNotYetInQuestlog(userId);
 
-        if(exhibits.size() > 0) {
+        if (exhibits.size() > 0) {
             Exhibit e = exhibits.get(new Random().nextInt(exhibits.size()));
 
             String key = "Topstuk";
@@ -31,7 +31,7 @@ public class ExhibitViewQuestGenerator extends IQuestGenerator {
 
     List<Exhibit> findExhibitsNotYetInQuestlog(int userId) {
         IExhibitDao exhibitDao = DAOFactory.getExhibitDao();
-        return   exhibitDao.findExhibitsNotYetInQuestlog(userId);
+        return exhibitDao.findExhibitsNotYetInQuestlog(userId);
     }
 
     void addQuestToQuestlog(Map<String, String> properties, int userId, int questTypeId) {

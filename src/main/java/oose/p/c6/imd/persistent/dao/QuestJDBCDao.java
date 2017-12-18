@@ -33,14 +33,14 @@ public class QuestJDBCDao implements IQuestDAO {
             int entryId = rs1.getInt(1);
 
             String sql = "INSERT INTO Questproperties (EntryId, `Key`, `Value`) VALUES ";
-            for(int i = 0; i < properties.size(); i++){
+            for (int i = 0; i < properties.size(); i++) {
                 sql = sql + "(? , ?, ?), ";
             }
             sql = sql.replaceAll(", $", "");
             PreparedStatement psInsert2 = connection.prepareStatement(sql);
 
             int j = 1;
-            for (Map.Entry<String, String> entry: properties.entrySet()) {
+            for (Map.Entry<String, String> entry : properties.entrySet()) {
                 psInsert2.setInt(j++, entryId);
                 psInsert2.setString(j++, entry.getKey());
                 psInsert2.setString(j++, entry.getValue());
