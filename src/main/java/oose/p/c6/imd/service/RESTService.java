@@ -20,7 +20,7 @@ public class RESTService {
 
     @GET
     @Path("/")
-    public String hello(){
+    public String hello() {
         JsonBuilderFactory factory = Json.createBuilderFactory(null);
         JsonObjectBuilder job = factory.createObjectBuilder();
         job.add("email", "test@void");
@@ -34,17 +34,17 @@ public class RESTService {
     @POST
     @Path("/login")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response login(JsonObject jo){
+    public Response login(JsonObject jo) {
         String email = jo.getString("email");
         JsonBuilderFactory factory = Json.createBuilderFactory(null);
         JsonObjectBuilder job = factory.createObjectBuilder();
         int loginState = l.verifyLogin(email, jo.getString("password"));
-        if(loginState == 0){
+        if (loginState == 0) {
             Token t = TokenManager.getInstance().createTokenForUser(l.getUserByEmail(email));
             job.add("token", t.getTokenString());
             return Response.status(201).entity(job.build()).build();
         } else {
-            job.add("reason", loginState );
+            job.add("reason", loginState);
             return Response.status(401).entity(job.build()).build();
         }
     }
@@ -54,8 +54,7 @@ public class RESTService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response buyReplica(@PathParam("id") int replicaId, @QueryParam("token") String token) {
         User user = TokenManager.getInstance().getUserFromToken(token);
-        if(user != null)
-        {
+        if (user != null) {
             JsonBuilderFactory factory = Json.createBuilderFactory(null);
             JsonObjectBuilder job = factory.createObjectBuilder();
             boolean isPurchased = l.buyReplica(user, replicaId);
@@ -71,8 +70,7 @@ public class RESTService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getReplicas(@QueryParam("token") String token) {
         User user = TokenManager.getInstance().getUserFromToken(token);
-        if(user != null)
-        {
+        if (user != null) {
             List<Replica> replicas = l.getAvailableReplicas(user);
             return Response.status(200).entity(replicas).build();
         }
@@ -82,10 +80,10 @@ public class RESTService {
     @POST
     @Path("/quest/qr")
     @Consumes(MediaType.APPLICATION_JSON)
-    public void scanQrCode(@QueryParam("token") String token, JsonObject jo){
+    public void scanQrCode(@QueryParam("token") String token, JsonObject jo) {
         String qrCode = jo.getString("qrCode");
         User user = TokenManager.getInstance().getUserFromToken(token);
-        if(user != null){
+        if (user != null) {
             l.scanQrCode(user, qrCode);
         }
     }
@@ -105,9 +103,9 @@ public class RESTService {
     @Path("/questlog")
     public Response getQuestLog(@QueryParam("token") String token) {
         User user = TokenManager.getInstance().getUserFromToken(token);
-        if(user != null) {
+        if (user != null) {
             List<Quest> questList = l.getQuestLog(user);
-            if(!questList.isEmpty()) {
+            if (!questList.isEmpty()) {
                 return Response.status(200).entity(questList).build();
             }
             return Response.status(200).build();
@@ -118,11 +116,11 @@ public class RESTService {
     @GET
     @Path("/exhibit/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getExhibitDetails(@PathParam("id") int exhibitId, @QueryParam("token") String token){
+    public Response getExhibitDetails(@PathParam("id") int exhibitId, @QueryParam("token") String token) {
         User user = TokenManager.getInstance().getUserFromToken(token);
-        if(user != null){
+        if (user != null) {
             Exhibit e = l.getExhibitDetails(user, exhibitId);
-            if(e != null) {
+            if (e != null) {
                 return Response.status(200).entity(buildExhibitJson(e)).build();
             }
             return Response.status(200).build();
@@ -133,9 +131,9 @@ public class RESTService {
     @GET
     @Path("/exhibit")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getExhibits(@QueryParam("token") String token){
+    public Response getExhibits(@QueryParam("token") String token) {
         User user = TokenManager.getInstance().getUserFromToken(token);
-        if(user != null){
+        if (user != null) {
             List<Exhibit> list = l.getAvailableExhibits(user);
             return buildExhibitResponseArray(list);
         }
@@ -145,9 +143,9 @@ public class RESTService {
     @GET
     @Path("/exhibit/museum/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getExhibitsFromMuseum(@PathParam("id") int museumId, @QueryParam("token") String token){
+    public Response getExhibitsFromMuseum(@PathParam("id") int museumId, @QueryParam("token") String token) {
         User user = TokenManager.getInstance().getUserFromToken(token);
-        if(user != null){
+        if (user != null) {
             List<Exhibit> list = l.getAvailableExhibitsFromMuseum(user, museumId);
             return buildExhibitResponseArray(list);
         }
@@ -157,17 +155,17 @@ public class RESTService {
     @GET
     @Path("/exhibit/era/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getExhibitsFromEra(@PathParam("id") int eraId, @QueryParam("token") String token){
+    public Response getExhibitsFromEra(@PathParam("id") int eraId, @QueryParam("token") String token) {
         User user = TokenManager.getInstance().getUserFromToken(token);
-        if(user != null){
+        if (user != null) {
             List<Exhibit> list = l.getAvailableExhibitsFromEra(user, eraId);
             return buildExhibitResponseArray(list);
         }
         return Response.status(401).build();
     }
 
-    private Response buildExhibitResponseArray(List<Exhibit> list){
-        if(!list.isEmpty()) {
+    private Response buildExhibitResponseArray(List<Exhibit> list) {
+        if (!list.isEmpty()) {
             JsonBuilderFactory factory = Json.createBuilderFactory(null);
             JsonArrayBuilder jab = factory.createArrayBuilder();
             for (Exhibit e : list) {
@@ -178,18 +176,18 @@ public class RESTService {
         return Response.status(200).build();
     }
 
-    private JsonObject buildExhibitJson(Exhibit e){
+    private JsonObject buildExhibitJson(Exhibit e) {
         JsonBuilderFactory factory = Json.createBuilderFactory(null);
         JsonObjectBuilder job = factory.createObjectBuilder();
         job.add("ExhibitId", e.getId());
         job.add("Name", e.getName());
 
         String image = e.getImage();
-        if(image == null){
+        if (image == null) {
             image = "undefined";
         }
         String video = e.getVideo();
-        if(video == null){
+        if (video == null) {
             video = "undefined";
         }
         job.add("Description", e.getDescription());
@@ -201,7 +199,7 @@ public class RESTService {
         return job.build();
     }
 
-    private JsonObject buildUserJson(User u){
+    private JsonObject buildUserJson(User u) {
         JsonBuilderFactory factory = Json.createBuilderFactory(null);
         JsonObjectBuilder job = factory.createObjectBuilder();
         job.add("UserId", u.getId());
@@ -215,9 +213,9 @@ public class RESTService {
     @GET
     @Path("/user")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getUserInfo(@QueryParam("token") String token){
+    public Response getUserInfo(@QueryParam("token") String token) {
         User user = TokenManager.getInstance().getUserFromToken(token);
-        if(user != null){
+        if (user != null) {
             return Response.status(200).entity(buildUserJson(user)).build();
         }
         return Response.status(401).build();
@@ -229,8 +227,7 @@ public class RESTService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response placeReplica(@QueryParam("token") String token, JsonObject obj) {
         User user = TokenManager.getInstance().getUserFromToken(token);
-        if(user != null)
-        {
+        if (user != null) {
             int reason = l.placeReplica(obj.getInt("replicaId"), obj.getInt("positionId"), user);
             JsonBuilderFactory factory = Json.createBuilderFactory(null);
             JsonObjectBuilder job = factory.createObjectBuilder();
@@ -243,11 +240,11 @@ public class RESTService {
     @GET
     @Path("/museum/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findMuseum(@PathParam("id") int museumId, @QueryParam("token") String token){
+    public Response findMuseum(@PathParam("id") int museumId, @QueryParam("token") String token) {
         User user = TokenManager.getInstance().getUserFromToken(token);
-        if(user != null){
+        if (user != null) {
             Museum m = l.findMuseum(museumId);
-            if(m != null) {
+            if (m != null) {
                 return Response.status(200).entity(createMusuemJson(m)).build();
             }
             return Response.status(200).build();
@@ -258,11 +255,11 @@ public class RESTService {
     @GET
     @Path("/era/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findEra(@PathParam("id") int eraId, @QueryParam("token") String token){
+    public Response findEra(@PathParam("id") int eraId, @QueryParam("token") String token) {
         User user = TokenManager.getInstance().getUserFromToken(token);
-        if(user != null){
+        if (user != null) {
             Era e = l.findEra(user, eraId);
-            if(e != null) {
+            if (e != null) {
                 return Response.status(200).entity(createEraJson(e)).build();
             }
             return Response.status(200).build();
@@ -273,14 +270,14 @@ public class RESTService {
     @GET
     @Path("/museum")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response listMuseums(@QueryParam("token") String token){
+    public Response listMuseums(@QueryParam("token") String token) {
         User user = TokenManager.getInstance().getUserFromToken(token);
-        if(user != null){
+        if (user != null) {
             List<Museum> list = l.listMuseums();
-            if(!list.isEmpty()) {
+            if (!list.isEmpty()) {
                 JsonBuilderFactory factory = Json.createBuilderFactory(null);
                 JsonArrayBuilder jab = factory.createArrayBuilder();
-                for (Museum m: list) {
+                for (Museum m : list) {
                     jab.add(createMusuemJson(m));
                 }
                 return Response.status(200).entity(jab.build()).build();
@@ -293,15 +290,15 @@ public class RESTService {
     @GET
     @Path("/era")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response listEra(@QueryParam("token") String token){
+    public Response listEra(@QueryParam("token") String token) {
         User user = TokenManager.getInstance().getUserFromToken(token);
-        if(user != null){
+        if (user != null) {
             List<Era> list = l.listEra(user);
 
-            if(!list.isEmpty()) {
+            if (!list.isEmpty()) {
                 JsonBuilderFactory factory = Json.createBuilderFactory(null);
                 JsonArrayBuilder jab = factory.createArrayBuilder();
-                for (Era e: list) {
+                for (Era e : list) {
                     jab.add(createEraJson(e));
                 }
                 return Response.status(200).entity(jab.build()).build();
@@ -311,7 +308,7 @@ public class RESTService {
         return Response.status(401).build();
     }
 
-    private JsonObject createEraJson(Era e){
+    private JsonObject createEraJson(Era e) {
         JsonBuilderFactory factory = Json.createBuilderFactory(null);
         JsonObjectBuilder job = factory.createObjectBuilder();
         job.add("EraId", e.getId());
@@ -319,7 +316,7 @@ public class RESTService {
         return job.build();
     }
 
-    private JsonObject createMusuemJson(Museum m){
+    private JsonObject createMusuemJson(Museum m) {
         JsonBuilderFactory factory = Json.createBuilderFactory(null);
         JsonObjectBuilder job = factory.createObjectBuilder();
         job.add("MuseumId", m.getId());
@@ -331,12 +328,28 @@ public class RESTService {
 
     @GET
     @Path("/user/verify")
-    public Response verifyUser(@QueryParam("token") String token){
+    public Response verifyUser(@QueryParam("token") String token) {
         User user = TokenManager.getInstance().getUserFromToken(token);
-        if(user == null){
+        if (user == null) {
             return Response.status(401).build();
         }
         return Response.status(200).build();
+    }
+
+    @POST
+    @Path("/user/update")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateUser(@QueryParam("token") String token, JsonObject obj) {
+        User user = TokenManager.getInstance().getUserFromToken(token);
+        if (user != null) {
+            int reason = l.updateUser(obj.getString("email"), obj.getString("displayName"), obj.getString("password"), obj.getInt("languageId"), user);
+            JsonBuilderFactory factory = Json.createBuilderFactory(null);
+            JsonObjectBuilder job = factory.createObjectBuilder();
+            job.add("reason", reason);
+            return Response.status(200).entity(job.build()).build();
+        }
+        return Response.status(401).build();
     }
 
     @DELETE
@@ -351,3 +364,4 @@ public class RESTService {
         return Response.status(401).build();
     }
 }
+
