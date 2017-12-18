@@ -20,6 +20,7 @@ import static org.mockito.Mockito.when;
 public class UserTest {
 	@Mock
 	private QuestJDBCDao questDao;
+	@Mock
 	private UserJDBCDao userDao;
 	@InjectMocks
 	private User user = new User(0, "mail", "password", "fullname", 0, 1);
