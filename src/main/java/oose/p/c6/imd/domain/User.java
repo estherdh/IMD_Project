@@ -90,7 +90,6 @@ public class User extends Model {
                 if (isValidPassword(password)) {
                     user.setEmail(email);
                     user.setDisplayName(name);
-                    System.out.println("name: " + name);
                     user.setPassword(user.hashPassword(password));
                     user.setLanguageId(languageId);
                     userDao.update(user);
@@ -108,15 +107,15 @@ public class User extends Model {
     }
 
     public boolean isValidEmailAddress(String email) {
-        String ePattern = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,45}))$";
+        String ePattern = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,100}))$";
         java.util.regex.Pattern p = java.util.regex.Pattern.compile(ePattern);
         java.util.regex.Matcher m = p.matcher(email);
-        return m.matches();
+        return m.matches() && email.length() <= 100;
     }
 
     public boolean isValidDisplayName(String name) {
         if (!name.trim().isEmpty()) {
-            String ePattern = "^[a-zA-Z0-9_ ]{2,50}+$";
+            String ePattern = "^[-a-zA-Z0-9_ ]{2,50}+$";
             java.util.regex.Pattern p = java.util.regex.Pattern.compile(ePattern);
             java.util.regex.Matcher m = p.matcher(name);
             return m.matches();
@@ -125,10 +124,7 @@ public class User extends Model {
     }
 
     public boolean isValidPassword(String password) {
-        if (!password.trim().isEmpty() && password.length() <= 128) {
-            return true;
-        }
-        return false;
+        return !password.trim().isEmpty() && password.length() <= 128 && password.length() >= 6;
     }
 
     public String getEmail() {

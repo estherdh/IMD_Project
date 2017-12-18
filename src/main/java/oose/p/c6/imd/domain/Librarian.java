@@ -76,7 +76,7 @@ public class Librarian {
     public List<Museum> listMuseums(){
         return exhibits.listMuseums();
     }
-    
+
     public int updateUser(String email, String displayName, String password, int languageId,User user) {
         return user.updateUser(email, displayName, password, languageId, user);
     }
