@@ -11,4 +11,5 @@ public interface IReplicaDao extends IDao<Replica> {
     void updateReplicaPosition(User user, Replica replica, int position);
     List<Integer> getFreePositions(User user, int replicaType);
     List<Replica> getReplicasFromUser(User user);
+    List<Integer> getPositionsForReplicaType(int replicaType);
 }
