@@ -22,10 +22,10 @@ public class Library
                         return 0;
                     }
                     // position is not free
-                    return 4;
+                    return 3;
                 }
                 // position is not available for this type
-                return 3;
+                return 4;
             }
             // user does not own replica
             return 2;

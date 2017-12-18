@@ -77,7 +77,7 @@ public class LibraryTest
         // test
         int result = library.tryPlaceReplica(user, 1, 2);
         // check result
-        assertThat(result, is(3));
+        assertThat(result, is(4));
     }
 
     @Test
@@ -85,7 +85,7 @@ public class LibraryTest
         // test
         int result = library.tryPlaceReplica(user, 1, 3);
         // check result
-        assertThat(result, is(4));
+        assertThat(result, is(3));
     }
 
     @Test
