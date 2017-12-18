@@ -166,7 +166,9 @@ ALTER TABLE Replica ADD CONSTRAINT FK_Replica_ExhibitInfo
 FOREIGN KEY (ExhibitInfoId) REFERENCES ExhibitInfo (ExhibitInfoId);
 
 ALTER TABLE UserReplica ADD CONSTRAINT FK_UserReplica_User
-FOREIGN KEY (UserId) REFERENCES Users (UserId);
+FOREIGN KEY (UserId) REFERENCES Users (UserId)
+  ON DELETE CASCADE
+  ON UPDATE RESTRICT;
 
 ALTER TABLE UserReplica ADD CONSTRAINT FK_UserReplica_Replica
 FOREIGN KEY (ReplicaId) REFERENCES Replica (ReplicaId);
