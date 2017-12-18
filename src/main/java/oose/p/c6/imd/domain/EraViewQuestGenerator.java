@@ -1,36 +1,41 @@
 package oose.p.c6.imd.domain;
 
+import oose.p.c6.imd.persistent.dao.DAOFactory;
 import oose.p.c6.imd.persistent.dao.IExhibitDao;
 import oose.p.c6.imd.persistent.dao.IQuestDAO;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 public class EraViewQuestGenerator extends IQuestGenerator {
 
-    private IQuestDAO questDAO;
-    private IExhibitDao exhibitDao;
-
     public void generateQuest(int userId) {
-        HashMap<String, String> properties = new HashMap<>();
+        Map<String, String> properties = new HashMap<>();
         questTypeId = 4;
 
-        Random r = new Random(exhibitDao.findErasNotYetInQuestlog(userId, areErasAvailable(userId)).size());
-        Era e = exhibitDao.findErasNotYetInQuestlog(userId, areErasAvailable(userId)).get(r.nextInt());
+        List<Era> eras = findErasNotYetInQuestlog(userId);
 
-        String key = "Era";
-        int value = e.getId();
+        if(eras.size() > 0) {
+            Era e = eras.get(new Random().nextInt(eras.size()));
 
-        properties.put("Key", key);
-        properties.put("Value", String.valueOf(value));
+            String key = "Era";
+            int value = e.getId();
 
-        questDAO.addQuestToQuestlog(properties, userId, questTypeId);
+            properties.put(key, String.valueOf(value));
+
+            addQuestToQuestlog(properties, userId);
+        }
     }
 
-    private boolean areErasAvailable(int userId) {
-        if (exhibitDao.findErasNotYetInQuestlog(userId, true).size() <= 0) {
-            return false;
-        }
-        else return true;
+    private List<Era> findErasNotYetInQuestlog(int userId) {
+        IExhibitDao exhibitDao = DAOFactory.getExhibitDao();
+        return exhibitDao.findErasNotYetInQuestlog(userId);
+    }
+
+    private void addQuestToQuestlog(Map<String, String> properties, int userId) {
+        IQuestDAO questDAO = DAOFactory.getQuestDao();
+        questDAO.addQuestToQuestlog(properties, userId, questTypeId);
     }
 }

@@ -1,29 +1,34 @@
 package oose.p.c6.imd.domain;
 
-import oose.p.c6.imd.persistent.dao.IExhibitDao;
-import oose.p.c6.imd.persistent.dao.IQuestDAO;
+import oose.p.c6.imd.persistent.ConnectMySQL;
+import oose.p.c6.imd.persistent.dao.*;
+import org.h2.tools.RunScript;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.FileReader;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.*;
 
-import static junit.framework.TestCase.assertEquals;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
+
 
 @RunWith(MockitoJUnitRunner.class)
 public class EraViewQuestGeneratorTest {
 
-    private List<Era> actualEras;
-    private List<Era> expectedEras;
-    private Map<String, String> actualProperties;
-    private Map<String, String> expectedProperties;
+    private Connection conn;
+    private ExhibitJDBCDao dao;
+
     private int userId;
+    private List<Era> expectedEras;
 
     @Mock
     private IQuestDAO questDAO;
@@ -33,158 +38,44 @@ public class EraViewQuestGeneratorTest {
     @InjectMocks
     private EraViewQuestGenerator eraQuest;
 
-    @Test
-    public void getEraListWhenNoQuestsAreAvailableTest() {
-        //init
-        userId = 1;
-
-        expectedEras = (new ArrayList<Era>() {{
-            add(new Era(1, "tijdperk topstuk"));
-            add(new Era(3, "Steen tijd"));
-            add(new Era(4, "Middeleeuwen"));
-        }});
-        Mockito.when(exhibitDao.findErasNotYetInQuestlog(userId, false)).thenReturn(expectedEras);
-
-        //test
-        actualEras = exhibitDao.findErasNotYetInQuestlog(userId, false);
-
-        //check
-        assertEquals(expectedEras, actualEras);
-    }
-
-    @Test
-    public void getEraListWhenQuestsAreAvailableTest() {
-        //init
+    @Before
+    public void setUp() throws Exception {
+        Properties properties = new Properties();
+        properties.load(getClass().getClassLoader().getResourceAsStream("testDatabase.properties"));
+        ConnectMySQL.getInstance().setProperties(properties);
+        ConnectMySQL.getInstance().getConnection().close();
+        this.conn = ConnectMySQL.getInstance().getConnection();
+        RunScript.execute(conn, new FileReader("src/main/resources/sqlScript.sql"));
+        dao = new ExhibitJDBCDao();
         userId = 1;
 
         expectedEras = (new ArrayList<Era>() {{
             add(new Era(3, "Steen tijd"));
-            add(new Era(4, "Middeleeuwen"));
         }});
-        Mockito.when(exhibitDao.findErasNotYetInQuestlog(userId, true)).thenReturn(expectedEras);
 
+        when(exhibitDao.findErasNotYetInQuestlog(userId)).thenReturn(expectedEras);
+        DAOFactory.setExhibitDao(exhibitDao);
+    }
+
+    @After
+    public void closeConn() throws SQLException {
+        Connection conn = ConnectMySQL.getInstance().getConnection();
+        conn.createStatement().executeUpdate("DROP ALL OBJECTS");
+        conn.close();
+    }
+
+    @Test
+    public void questIsGeneratedTest() throws SQLException {
         //test
-        actualEras = exhibitDao.findErasNotYetInQuestlog(userId, true);
+        eraQuest.generateQuest(userId);
 
         //check
-        assertEquals(expectedEras, actualEras);
+        ResultSet rs = conn.prepareStatement("SELECT * FROM questproperties WHERE EntryId = 8").executeQuery();
+        rs.next();
+        int i = Integer.parseInt((rs.getString(3)));
+
+        assertEquals(i, expectedEras.get(0).getId());
     }
 
-    @Test
-    public void propertiesFromExhibitsWhenNoQuestsAvailableTest() {
-        //init
-        userId = 1;
-        actualProperties = new HashMap<>();
-        expectedProperties = new HashMap<>();
 
-        expectedEras = (new ArrayList<Era>() {{
-            add(new Era(1, "tijdperk topstuk"));
-            add(new Era(3, "Steen tijd"));
-            add(new Era(4, "Middeleeuwen"));
-        }});
-        Mockito.when(exhibitDao.findErasNotYetInQuestlog(userId, false)).thenReturn(expectedEras);
-        actualEras = exhibitDao.findErasNotYetInQuestlog(userId, false);
-
-        //test
-        expectedProperties.put("Key", "Tijdperk");
-        expectedProperties.put("Value", expectedEras.get(0).getId() + "");
-
-        String key = "Tijdperk";
-        int value = actualEras.get(0).getId();
-        actualProperties.put("Key", key);
-        actualProperties.put("Value", String.valueOf(value));
-
-        assertEquals(expectedProperties, actualProperties);
-    }
-
-    @Test
-    public void propertiesFromExhibitsWhenQuestsAvailableTest() {
-        //init
-        userId = 1;
-        actualProperties = new HashMap<>();
-        expectedProperties = new HashMap<>();
-
-        expectedEras = (new ArrayList<Era>() {{
-            add(new Era(3, "Steen tijd"));
-            add(new Era(4, "Middeleeuwen"));
-        }});
-        Mockito.when(exhibitDao.findErasNotYetInQuestlog(userId, true)).thenReturn(expectedEras);
-        actualEras = exhibitDao.findErasNotYetInQuestlog(userId, true);
-
-        //test
-        expectedProperties.put("Key", "Tijdperk");
-        expectedProperties.put("Value", expectedEras.get(0).getId() + "");
-
-        String key = "Tijdperk";
-        int value = actualEras.get(0).getId();
-        actualProperties.put("Key", key);
-        actualProperties.put("Value", String.valueOf(value));
-
-        assertEquals(expectedProperties, actualProperties);
-    }
-
-    @Test
-    public void addQuestsToQuestlogWhenNoQuestsAvailableTest() {
-        //init
-        eraQuest.questTypeId = 4;
-        actualProperties = new HashMap<>();
-
-        List<Era> expectedErasNotAdded = (new ArrayList<Era>() {{
-            add(new Era(3, "Steen tijd"));
-            add(new Era(4, "Middeleeuwen"));
-        }});
-        Mockito.when(exhibitDao.findErasNotYetInQuestlog(userId, false)).thenReturn(expectedErasNotAdded);
-
-        actualEras = exhibitDao.findErasNotYetInQuestlog(userId, false);
-        String key = "Tijdperk";
-        int value = actualEras.get(0).getId();
-        actualProperties.put("Key", key);
-        actualProperties.put("Value", String.valueOf(value));
-
-        //test
-        questDAO.addQuestToQuestlog(actualProperties, userId, eraQuest.questTypeId);
-        List<Era> actualErasNotAdded = exhibitDao.findErasNotYetInQuestlog(userId, false);
-
-        //check
-        assertEquals(expectedErasNotAdded, actualErasNotAdded);
-    }
-
-    @Test
-    public void addQuestsToQuestlogWhenQuestsAvailableTest() {
-        //init
-        eraQuest.questTypeId = 4;
-        actualProperties = new HashMap<>();
-
-        List<Era> expectedErasNotAdded = (new ArrayList<Era>() {{
-            add(new Era(4, "Middeleeuwen"));
-        }});
-        Mockito.when(exhibitDao.findErasNotYetInQuestlog(userId, true)).thenReturn(expectedErasNotAdded);
-
-        actualEras = exhibitDao.findErasNotYetInQuestlog(userId, true);
-        String key = "Tijdperk";
-        int value = actualEras.get(0).getId();
-        actualProperties.put("Key", key);
-        actualProperties.put("Value", String.valueOf(value));
-
-        //test
-        questDAO.addQuestToQuestlog(actualProperties, userId, eraQuest.questTypeId);
-        List<Era> actualErasNotAdded = exhibitDao.findErasNotYetInQuestlog(userId, true);
-
-        //check
-        assertEquals(expectedErasNotAdded, actualErasNotAdded);
-    }
-
-    @Test
-    public void areQuestsAvailableTest() {
-        //init
-        userId = 1;
-        boolean questsAreActuallyAvailable;
-        boolean questsAreExpectedAvailable = true;
-
-        //test
-        questsAreActuallyAvailable = (exhibitDao.findErasNotYetInQuestlog(userId, true).size() <= 0);
-
-        //check
-        assertEquals(questsAreExpectedAvailable, questsAreActuallyAvailable);
-    }
 }

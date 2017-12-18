@@ -12,7 +12,6 @@ import org.junit.Test;
 
 import java.io.FileReader;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Properties;
@@ -182,41 +181,16 @@ public class ExhibitJDBCDaoTest {
     }
 
     @Test
-    public void findErasNotYetInQuestlogWithRemovedAndCompletedEras() throws SQLException {
+    public void findErasNotYetInQuestlog() throws SQLException {
         //init
-        PreparedStatement psInsert1 = conn.prepareStatement("INSERT INTO Questlog (UserId, QuestTypeId) VALUES (1, 4)");
-        PreparedStatement psInsert2 = conn.prepareStatement("INSERT INTO Questproperties (EntryId, Key, Value, Completed) VALUES ((SELECT LAST_INSERT_ID()), 'Tijdperk', '3', 1) ");
-
-        psInsert1.execute();
-        psInsert2.execute();
-
-        Era expectedEra = new Era(1, "tijdperk test");
+        Era expectedEra = new Era(3, "Steen tijd");
 
         //test
-        List<Era> eras = dao.findErasNotYetInQuestlog(1, false);
+        List<Era> eras = dao.findErasNotYetInQuestlog(1);
         Era actualEra = eras.get(0);
 
         //check
         assertThat(actualEra, samePropertyValuesAs(expectedEra));
     }
 
-    @Test
-    public void findErasNotYetInQuestlogWithoutRemovedAndCompletedEras() throws SQLException {
-        //init
-        PreparedStatement psInsert1 = conn.prepareStatement("INSERT INTO Questlog (UserId, QuestTypeId) VALUES (1, 4)");
-        PreparedStatement psInsert2 = conn.prepareStatement("INSERT INTO Questproperties (EntryId, Key, Value, Completed) VALUES ((SELECT LAST_INSERT_ID()), 'Tijdperk', '3', 1) ");
-
-        psInsert1.execute();
-        psInsert2.execute();
-
-        QuestJDBCDao questDao;
-        Era expectedEra = new Era(4, "Middeleeuwen");
-
-        //test
-        List<Era> eras = dao.findErasNotYetInQuestlog(1, true);
-        Era actualEra = eras.get(0);
-
-        //check
-        assertThat(actualEra, samePropertyValuesAs(expectedEra));
-    }
 }
