@@ -15,12 +15,16 @@ public class Library
 
         if(replica != null) {
             if(user.userHasReplica(replica)) {
-                if(isPositionFree(user, replica, positionId)) {
-                    placeReplica(user, replica, positionId);
-                    // success
-                    return 0;
+                if(isPositionForType(positionId, replica.getType())) {
+                    if(isPositionFree(user, replica, positionId)) {
+                        placeReplica(user, replica, positionId);
+                        // success
+                        return 0;
+                    }
+                    // position is not free
+                    return 4;
                 }
-                // position is not free
+                // position is not available for this type
                 return 3;
             }
             // user does not own replica
@@ -37,6 +41,16 @@ public class Library
     private boolean isPositionFree(User user, Replica replica, int positionId) {
         List<Integer> replicaList = replicaDao.getFreePositions(user, replica.getType());
         for (int i: replicaList) {
+            if(i == positionId) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isPositionForType(int positionId, int replicaTypeId) {
+        List<Integer> positions = replicaDao.getPositionsForReplicaType(replicaTypeId);
+        for (Integer i:positions) {
             if(i == positionId) {
                 return true;
             }

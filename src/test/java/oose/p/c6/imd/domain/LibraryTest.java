@@ -44,8 +44,14 @@ public class LibraryTest
            add(2);
         }};
 
+        List<Integer> AvailablePositions = new ArrayList<Integer>() {{
+            add(3);
+            add(1);
+        }};
+
         Mockito.when(replicaDao.getReplicasFromUser(any(User.class))).thenReturn(replicasFromUser);
         Mockito.when(replicaDao.getFreePositions(any(User.class), anyInt())).thenReturn(freePositions);
+        Mockito.when(replicaDao.getPositionsForReplicaType(anyInt())).thenReturn(AvailablePositions);
         Mockito.when(replicaDao.find(1)).thenReturn(new Replica(1, 1, 12, "test", 1));
     }
 
@@ -67,11 +73,19 @@ public class LibraryTest
     }
 
     @Test
+    public void placeReplicaTestPositionIsNotAvailableForReplicaType() {
+        // test
+        int result = library.tryPlaceReplica(user, 1, 2);
+        // check result
+        assertThat(result, is(3));
+    }
+
+    @Test
     public void placeReplicaTestPositionIsNotFree() {
         // test
         int result = library.tryPlaceReplica(user, 1, 3);
         // check result
-        assertThat(result, is(3));
+        assertThat(result, is(4));
     }
 
     @Test
