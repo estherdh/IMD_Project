@@ -10,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -115,6 +116,47 @@ public class UserJDBCDao implements IUserDao {
             LOGGER.log(Level.SEVERE, e.toString(), e);
         }
         return null;
+    }
+
+    @Override
+    public void addNotification(int typeId, Map<String, String> properties, User user) {
+        int notificationId = addNotificationToUsernotificationAndGetId(typeId, user.getId());
+        if (notificationId > 0) {
+            properties.forEach((k,v)-> addPropertiesToNotification(notificationId, k, v));
+        }
+
+    }
+
+    private void addPropertiesToNotification(int notificationId, String key, String value) {
+        Connection connection = ConnectMySQL.getInstance().getConnection();
+        try {
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO notificationproperties (UserNotificationId, Key, Value) VALUES (?,?,?);");
+            ps.setInt(1, notificationId);
+            ps.setString(2, key);
+            ps.setString(3, value);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, e.toString(), e);
+        }
+    }
+
+    private int addNotificationToUsernotificationAndGetId(int typeId,  int userId) {
+        Connection connection = ConnectMySQL.getInstance().getConnection();
+        try {
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO usernotification(NotificationId, UserId) VALUES (? , ?)");
+            ps.setInt(1, typeId);
+            ps.setInt(2, userId);
+            ps.executeUpdate();
+            ResultSet rs = ps.getGeneratedKeys();
+            if(rs.next()){
+                return rs.getInt(1);
+            } else {
+                return 0;
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, e.toString(), e);
+            return 0;
+        }
     }
 
     private User generateNewUser(ResultSet rs) {
