@@ -1,5 +1,6 @@
 package oose.p.c6.imd.persistent.dao;
 
+import oose.p.c6.imd.domain.Notification;
 import oose.p.c6.imd.domain.User;
 import oose.p.c6.imd.persistent.ConnectMySQL;
 
@@ -67,17 +68,17 @@ public class UserJDBCDao implements IUserDao {
     }
 
     public List<User> list() {
-        Connection connection = ConnectMySQL.getInstance().getConnection();
-        List<User> users = new ArrayList<User>();
         try {
+            Connection connection = ConnectMySQL.getInstance().getConnection();
+            List<User> users = new ArrayList<User>();
             ResultSet rs = connection.prepareStatement("SELECT * FROM Users").executeQuery();
             while (rs.next()) {
                 users.add(generateNewUser(rs));
             }
-        } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, e.toString(), e);
+            return users;
+        } catch (Exception e) {
+            return (List<User>) handleException(e, new ArrayList<User>());
         }
-        return users;
     }
 
     public User find(int id) {
@@ -93,12 +94,11 @@ public class UserJDBCDao implements IUserDao {
             }
             return returnUser;
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, e.toString(), e);
-            return null;
+            return (User) handleException(e, null);
         }
     }
 
-    public User findUserByemail(String email) {
+    public User findUserByEmail(String email) {
         Connection connection = ConnectMySQL.getInstance().getConnection();
         ResultSet rs = null;
         try {
@@ -112,17 +112,35 @@ public class UserJDBCDao implements IUserDao {
             connection.close();
             return returnUser;
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, e.toString(), e);
+            return (User) handleException(e, null);
         }
-        return null;
+    }
+
+    @Override
+    public List<Notification> listNotification(User u) {
+        try {
+            Connection connection = ConnectMySQL.getInstance().getConnection();
+            List<Notification> notifications = new ArrayList<Notification>();
+            ResultSet rs = connection.prepareStatement("SELECT * FROM Users").executeQuery();
+            while (rs.next()) {
+
+            }
+            return notifications;
+        } catch (Exception e) {
+            return (List<Notification>) handleException(e, new ArrayList<Notification>());
+        }
     }
 
     private User generateNewUser(ResultSet rs) {
         try {
             return new User(rs.getInt("UserId"), rs.getString("email"), rs.getString("Password"), rs.getString("DisplayName"), rs.getInt("Coins"), rs.getInt("LanguageId"));
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, e.toString(), e);
-            return null;
+            return (User) handleException(e, null);
         }
+    }
+
+    protected Object handleException(Exception e, Object o){
+        LOGGER.log(Level.SEVERE, e.toString(), e);
+        return o;
     }
 }

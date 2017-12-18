@@ -182,4 +182,6 @@ public class User extends Model {
     public void setReplicaDao(IReplicaDao replicaDao) {
         this.replicaDao = replicaDao;
     }
+
+    public List<Notification> getNotifications() {return userDao.listNotification(this); }
 }

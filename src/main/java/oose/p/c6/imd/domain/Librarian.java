@@ -43,7 +43,7 @@ public class Librarian {
     }
 
     public User getUserByEmail(String email){
-        return userDao.findUserByemail(email);
+        return userDao.findUserByEmail(email);
     }
 
     public boolean removeQuestFromQuestLog(int entryId, User user) {
