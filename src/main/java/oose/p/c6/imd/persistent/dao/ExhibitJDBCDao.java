@@ -198,7 +198,7 @@ public class ExhibitJDBCDao implements IExhibitDao {
                     "ON e.ExhibitId = ei.ExhibitId WHERE e.ExhibitId " +
                     "NOT IN(SELECT qp.Value FROM questlog ql INNER JOIN " +
                     "questProperties qp ON ql.EntryId = qp.EntryId " +
-                    "WHERE UserId = ? AND QuestTypeId = 3) AND " +
+                    "WHERE UserId = ? AND QuestTypeId = 3 AND Removed = 0 AND Completed = 0) AND " +
                     "ei.LanguageId = (SELECT u.LanguageId FROM users u " +
                     "WHERE u.UserId = ?)");
             ps.setInt(1, userId);

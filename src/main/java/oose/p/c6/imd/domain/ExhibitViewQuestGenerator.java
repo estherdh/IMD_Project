@@ -1,35 +1,43 @@
 package oose.p.c6.imd.domain;
 
-import oose.p.c6.imd.persistent.dao.ExhibitJDBCDao;
+import oose.p.c6.imd.persistent.dao.DAOFactory;
 import oose.p.c6.imd.persistent.dao.IExhibitDao;
 import oose.p.c6.imd.persistent.dao.IQuestDAO;
-import oose.p.c6.imd.persistent.dao.QuestJDBCDao;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
 public class ExhibitViewQuestGenerator extends IQuestGenerator {
-
-    private IQuestDAO questDAO;
-    private IExhibitDao exhibitDao;
 
     @Override
     public void generateQuest(int userId) {
         Map<String, String> properties = new HashMap<>();
         questTypeId = 3;
 
+        List<Exhibit> exhibits = findExhibitsNotYetInQuestlog(userId);
 
+        if(exhibits.size() > 0) {
+            Exhibit e = exhibits.get(new Random().nextInt(exhibits.size()));
 
-        Random r = new Random();
-        Exhibit e = exhibitDao.findExhibitsNotYetInQuestlog(userId).get(r.nextInt(exhibitDao.findExhibitsNotYetInQuestlog(userId).size()));
+            String key = "Topstuk";
+            int value = e.getId();
+            properties.put(key, value + "");
 
-        String key = "Topstuk";
-        int value = e.getId();
+            addQuestToQuestlog(properties, userId, questTypeId);
+        }
+    }
 
-        properties.put("Key", key);
-        properties.put("Value", String.valueOf(value));
+    List<Exhibit> findExhibitsNotYetInQuestlog(int userId) {
+        IExhibitDao exhibitDao = DAOFactory.getExhibitDao();
+        return   exhibitDao.findExhibitsNotYetInQuestlog(userId);
+    }
 
+    void addQuestToQuestlog(Map<String, String> properties, int userId, int questTypeId) {
+        IQuestDAO questDAO = DAOFactory.getQuestDao();
         questDAO.addQuestToQuestlog(properties, userId, questTypeId);
     }
+
+
 }

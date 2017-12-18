@@ -18,9 +18,7 @@ import java.sql.SQLException;
 import java.util.*;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -115,21 +113,26 @@ public class QuestJDBCDaoTest {
 		int userId = 1;
 		Map<String, String> properties = new HashMap<>();
 
-		String key = "Topstuk";
+		String key = "TopstukNaam";
 		int value = 1;
-		int questTypeId = 3;
+		int questTypeId = 2;
 
-		properties.put("Key", key);
-		properties.put("Value", String.valueOf(value));
+		properties.put("TestKey", key);
+		properties.put("TestKey2", String.valueOf(value));
 
 		//test
 		dao.addQuestToQuestlog(properties, userId, questTypeId);
 
-		ResultSet resultAdded = conn.createStatement().executeQuery("SELECT * FROM QuestProperties qp INNER JOIN questlog q ON " +
-				"qp.EntryId = q.EntryId WHERE q.QuestTypeId = 3 AND q.UserId = 1");
+		ResultSet resultAdded = conn.createStatement().executeQuery("SELECT qp.Key, qp.Value FROM QuestProperties qp " +
+				"WHERE EntryId = 8 ORDER BY qp.Key ASC");
+		resultAdded.next();
+		assertEquals("TestKey", resultAdded.getString(1));
+		assertEquals(key, resultAdded.getString(2));
 
-		//check
-		assertThat(resultAdded.first(), is(true));
+		resultAdded.next();
+		assertEquals("TestKey2", resultAdded.getString(1));
+		assertEquals( String.valueOf(value), resultAdded.getString(2));
+
 
 	}
 

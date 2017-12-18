@@ -51,7 +51,8 @@ CREATE TABLE QuestLog (
   EntryId INT AUTO_INCREMENT PRIMARY KEY,
   UserId INT NOT NULL,
   QuestTypeId INT NOT NULL,
-  `Completed` BOOLEAN
+  `Completed` BOOLEAN,
+  Removed BOOLEAN DEFAULT 0
 );
 
 CREATE TABLE QuestProperties (
@@ -216,7 +217,12 @@ INSERT INTO librarian.questlog (UserId, QuestTypeId, Completed) VALUES (1, 2, 0)
 INSERT INTO librarian.questproperties(`Key`, `Value`, EntryId) VALUES ('Tekst', 'AAD', 4);
 INSERT INTO librarian.questlog (UserId, QuestTypeId, Completed) VALUES (2, 2, 0);
 INSERT INTO librarian.questproperties(`Key`, `Value`, EntryId) VALUES ('Tekst', 'AAE', 5);
-INSERT INTO librarian.questlog (UserId, QuestTypeId, Completed) VALUES (3, 2, 0);
+
+
+INSERT INTO librarian.questlog (UserId, QuestTypeId, Completed) VALUES (1, 3, 0);
+INSERT INTO librarian.questproperties(`Key`, `Value`, EntryId) VALUES ('Topstuk', '2', 6);
+INSERT INTO librarian.questlog (UserId, QuestTypeId, Completed) VALUES (1, 3, 0);
+INSERT INTO librarian.questproperties(`Key`, `Value`, EntryId) VALUES ('Topstuk', '3', 7);
 
 INSERT INTO Era () VALUES ();
 INSERT INTO eralanguage (`eraId`, `name`, `languageId`) VALUES (1, 'tijdperk test', 1);
