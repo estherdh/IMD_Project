@@ -11,7 +11,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -122,9 +124,12 @@ public class UserJDBCDao implements IUserDao {
         try {
             Connection connection = ConnectMySQL.getInstance().getConnection();
             List<Notification> notifications = new ArrayList<Notification>();
-            ResultSet rs = connection.prepareStatement("SELECT * FROM Users").executeQuery();
+            ResultSet rs = connection.prepareStatement("SELECT 'Hello {{{1}}} World {{{2}}}' AS notificationText, '2012' AS date, '1' AS `read`, '1' AS `id`").executeQuery();
+            Map<String, String> properties = new HashMap<String, String>();
+            properties.put("QuestId", "1");
+            properties.put("Coins", "200");
             while (rs.next()) {
-                Notification n = NotificationCreator.createNotification(u, "MESSAGE", new, 1, 1, 1, 1)
+                notifications.add(NotificationCreator.createNotification(u, rs.getString("notificationText"), properties, 1, rs.getString("date"), rs.getBoolean("read"), rs.getInt("id")));
             }
             return notifications;
         } catch (Exception e) {

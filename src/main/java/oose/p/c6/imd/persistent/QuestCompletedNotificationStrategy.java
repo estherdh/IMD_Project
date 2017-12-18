@@ -15,10 +15,10 @@ public class QuestCompletedNotificationStrategy implements INotificationStrategy
     @Override
     public String createNotificationText(User u, String s, Map<String, String> properties) {
         int questId = Integer.parseInt(properties.get("QuestId"));
-        int coins = Integer.parseInt(properties.get("coins"));
+        int coins = Integer.parseInt(properties.get("Coins"));
         Quest completed = questDAO.find(questId);
         String result = s;
-        result = s.replace("{{{1}}}", completed.getName());
+        result = result.replace("{{{1}}}", completed.getName());
         result = result.replace("{{{2}}}", coins + "");
         return result;
     }
