@@ -25,16 +25,16 @@ public class ExhibitViewQuestGenerator extends IQuestGenerator {
             int value = e.getId();
             properties.put(key, value + "");
 
-            addQuestToQuestlog(properties, userId, questTypeId);
+            addQuestToQuestlog(properties, userId);
         }
     }
 
-    List<Exhibit> findExhibitsNotYetInQuestlog(int userId) {
+    private List<Exhibit> findExhibitsNotYetInQuestlog(int userId) {
         IExhibitDao exhibitDao = DAOFactory.getExhibitDao();
         return exhibitDao.findExhibitsNotYetInQuestlog(userId);
     }
 
-    void addQuestToQuestlog(Map<String, String> properties, int userId, int questTypeId) {
+    private void addQuestToQuestlog(Map<String, String> properties, int userId) {
         IQuestDAO questDAO = DAOFactory.getQuestDao();
         questDAO.addQuestToQuestlog(properties, userId, questTypeId);
     }
