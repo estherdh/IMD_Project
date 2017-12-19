@@ -92,6 +92,23 @@ public class ReplicaJDBCDaoTest
     }
 
     @Test
+    public void getPositionsForReplicaTypeTest() {
+        // init
+        List<Integer> expected = new ArrayList<Integer>() {{
+            add(1);
+            add(2);
+            add(3);
+        }};
+        // test
+        List<Integer> actual = dao.getPositionsForReplicaType(2);
+        // check result
+        assertThat(actual.size(), samePropertyValuesAs(expected.size()));
+        for(int i = 0; i < expected.size(); i++) {
+            assertThat(actual.get(i), samePropertyValuesAs(expected.get(i)));
+        }
+    }
+
+    @Test
     public void getReplicasFromUserTest() {
         Era era = new Era(1, "tijdperk test");
         Exhibit exhibit = new Exhibit(1, "Het test object",
