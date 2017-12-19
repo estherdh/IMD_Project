@@ -15,6 +15,8 @@ import java.sql.SQLException;
 import java.util.*;
 
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -123,5 +125,18 @@ public class UserJDBCDaoTest {
         rs = conn.prepareStatement("SELECT * FROM notificationproperties WHERE Key = 'key2' AND Value = 'value2';").executeQuery();
         assertTrue(rs.next());
         assertFalse(rs.next());
+    }
+
+    @Test
+    public void findUserTestSuccess() {
+        //test
+        User actualResult = dao.getUserByQuestId(5);
+        //verify
+        assertThat(actualResult.getId(), is(2));
+        assertThat(actualResult.getEmail(), is(equalTo("test@void")));
+        assertThat(actualResult.getPassword(), is(equalTo("9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08")));
+        assertThat(actualResult.getDisplayName(), is(equalTo("muspi merol")));
+        assertThat(actualResult.getCoins(), is(0));
+        assertThat(actualResult.getLanguageId(), is(2));
     }
 }

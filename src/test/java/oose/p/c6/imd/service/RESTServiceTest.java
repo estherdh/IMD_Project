@@ -9,9 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonObject;
+import javax.json.*;
 import javax.ws.rs.core.Response;
 
 import java.util.ArrayList;
@@ -744,6 +742,84 @@ public class RESTServiceTest {
         Response actualResponse = service.updateUser("token", jo);
         //check
         assertThat(actualResponse.getEntity(), is(nullValue()));
+        assertThat(actualResponse.getStatus(), is(401));
+    }
+
+    @Test
+    public void newExhibitNotificationTestSuccess() {
+        //init
+        User mockUser = mock(User.class);
+        when(tokenManager.getUserFromToken("token")).thenReturn(mockUser);
+        JsonBuilderFactory factory = Json.createBuilderFactory(null);
+        JsonObjectBuilder job = factory.createObjectBuilder();
+        job.add("exhibitId", "test");
+        JsonObject jo = job.build();
+        //test
+        Response actualResponse = service.newExhibitNotification("token", jo);
+        //check
+        assertThat(actualResponse.getStatus(), is(200));
+        verify(librarian, times(1)).addNotificationToEveryUser(any(), anyInt());
+    }
+
+    @Test
+    public void newExhibitNotificationTestInvalidUser() {
+        //init
+        when(tokenManager.getUserFromToken("token")).thenReturn(null);
+        //test
+        Response actualResponse = service.newExhibitNotification("token", mock(JsonObject.class));
+        //check
+        assertThat(actualResponse.getStatus(), is(401));
+    }
+
+    @Test
+    public void newReplicaNotificationTestSuccess() {
+        //init
+        User mockUser = mock(User.class);
+        when(tokenManager.getUserFromToken("token")).thenReturn(mockUser);
+        JsonBuilderFactory factory = Json.createBuilderFactory(null);
+        JsonObjectBuilder job = factory.createObjectBuilder();
+        job.add("replicaId", "test");
+        JsonObject jo = job.build();
+        //test
+        Response actualResponse = service.newReplicaNotification("token", jo);
+        //check
+        assertThat(actualResponse.getStatus(), is(200));
+        verify(librarian, times(1)).addNotificationToEveryUser(any(), anyInt());
+    }
+
+    @Test
+    public void newReplicaNotificationTestInvalidUser() {
+        //init
+        when(tokenManager.getUserFromToken("token")).thenReturn(null);
+        //test
+        Response actualResponse = service.newReplicaNotification("token", mock(JsonObject.class));
+        //check
+        assertThat(actualResponse.getStatus(), is(401));
+    }
+
+    @Test
+    public void newVideoNotificationTestSuccess() {
+        //init
+        User mockUser = mock(User.class);
+        when(tokenManager.getUserFromToken("token")).thenReturn(mockUser);
+        JsonBuilderFactory factory = Json.createBuilderFactory(null);
+        JsonObjectBuilder job = factory.createObjectBuilder();
+        job.add("videoId", "test");
+        JsonObject jo = job.build();
+        //test
+        Response actualResponse = service.newVideoNotification("token", jo);
+        //check
+        assertThat(actualResponse.getStatus(), is(200));
+        verify(librarian, times(1)).addNotificationToEveryUser(any(), anyInt());
+    }
+
+    @Test
+    public void newVideoNotificationTestInvalidUser() {
+        //init
+        when(tokenManager.getUserFromToken("token")).thenReturn(null);
+        //test
+        Response actualResponse = service.newVideoNotification("token" , mock(JsonObject.class));
+        //check
         assertThat(actualResponse.getStatus(), is(401));
     }
 }

@@ -6,6 +6,7 @@ import oose.p.c6.imd.persistent.dao.IUserDao;
 
 import javax.inject.Inject;
 import java.util.List;
+import java.util.Map;
 
 public class Librarian {
     @Inject
@@ -87,5 +88,13 @@ public class Librarian {
 
     public List<Quest> getQuestLog(User user) {
         return questDAO.getQuestsForUser(user.getId(), user.getLanguageId());
+    }
+
+    public void addNotificationToEveryUser(Map<String, String> variables, int typeId) {
+        List<User> allUsers = userDao.list();
+        for (User user:allUsers) {
+            user.addNotification(typeId, variables);
+        }
+
     }
 }

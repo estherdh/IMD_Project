@@ -17,6 +17,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
@@ -130,7 +131,5 @@ public class QuestJDBCDaoTest {
 
 		//check
 		assertThat(resultAdded.first(), is(true));
-
 	}
-
 }

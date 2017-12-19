@@ -159,6 +159,31 @@ public class UserJDBCDao implements IUserDao {
         }
     }
 
+    @Override
+    public User getUserByQuestId(int id) {
+        Connection connection = ConnectMySQL.getInstance().getConnection();
+        try {
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM questlog q JOIN users u ON q.UserId = u.UserId WHERE q.EntryId = ?;");
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return new User(
+                        rs.getInt("UserId"),
+                        rs.getString("Email"),
+                        rs.getString("Password"),
+                        rs.getString("DisplayName"),
+                        rs.getInt("Coins"),
+                        rs.getInt("LanguageId")
+                );
+            } else {
+                return null;
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, e.toString(), e);
+            return null;
+        }
+    }
+
     private User generateNewUser(ResultSet rs) {
         try {
             return new User(rs.getInt("UserId"), rs.getString("email"), rs.getString("Password"), rs.getString("DisplayName"), rs.getInt("Coins"), rs.getInt("LanguageId"));
