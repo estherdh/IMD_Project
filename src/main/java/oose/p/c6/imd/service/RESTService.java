@@ -370,7 +370,7 @@ public class RESTService {
     }
 
     @POST
-    @Path("/notification/newExhibit")
+    @Path("/notification/newReplica")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response newReplicaNotification(@QueryParam("token") String token, JsonObject obj) {
         //TODO: In latere sprint checken of de gebruiker permissie heeft om deze functie uit te voeren.
@@ -385,7 +385,7 @@ public class RESTService {
     }
 
     @POST
-    @Path("/notification/newExhibit")
+    @Path("/notification/newVideo")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response newVideoNotification(@QueryParam("token") String token, JsonObject obj) {
         //TODO: In latere sprint checken of de gebruiker permissie heeft om deze functie uit te voeren.
