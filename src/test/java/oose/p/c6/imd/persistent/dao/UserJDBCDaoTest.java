@@ -9,14 +9,14 @@ import org.junit.Test;
 
 import java.io.FileReader;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class UserJDBCDaoTest {
     private Connection conn;
@@ -99,5 +99,29 @@ public class UserJDBCDaoTest {
         dao.remove(u);
         User actual = dao.find(3);
         assertNull(actual);
+    }
+
+    @Test
+    public void addNotificationTestSuccess() throws Exception {
+        //init
+        Map<String, String> variables = new HashMap<>();
+        variables.put("key1", "value1");
+        variables.put("key2", "value2");
+        User mockUser = mock(User.class);
+        when(mockUser.getId()).thenReturn(2);
+        Connection connSpy = spy(conn);
+        //test
+        dao.addNotification(1, variables, mockUser);
+        //check
+        verify(mockUser, times(1)).getId();
+        ResultSet rs = conn.prepareStatement("SELECT * FROM usernotification WHERE NotificationId = 1 AND UserId = 2;").executeQuery();
+        assertTrue(rs.next());
+        assertFalse(rs.next());
+        rs = conn.prepareStatement("SELECT * FROM notificationproperties WHERE Key = 'key1' AND Value = 'value1';").executeQuery();
+        assertTrue(rs.next());
+        assertFalse(rs.next());
+        rs = conn.prepareStatement("SELECT * FROM notificationproperties WHERE Key = 'key2' AND Value = 'value2';").executeQuery();
+        assertTrue(rs.next());
+        assertFalse(rs.next());
     }
 }
