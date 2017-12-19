@@ -91,6 +91,25 @@ public class ReplicaJDBCDao implements IReplicaDao {
     }
 
     @Override
+    public List<Integer> getPositionsForReplicaType(int replicaType) {
+        Connection connection = ConnectMySQL.getInstance().getConnection();
+        List<Integer> positions = new ArrayList<>();
+        try {
+            PreparedStatement ps = connection.prepareStatement(
+                    "SELECT `ReplicaPositionId` FROM replicapositions WHERE `ReplicaTypeId` = ?");
+            ps.setInt(1, replicaType);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                positions.add(rs.getInt("ReplicaPositionId"));
+            }
+            connection.close();
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, e.toString(), e);
+        }
+        return positions;
+    }
+
+    @Override
     public List<Replica> getReplicasFromUser(User user) {
         Connection connection = ConnectMySQL.getInstance().getConnection();
         List<Replica> replicas = new ArrayList<>();

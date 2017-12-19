@@ -1,6 +1,5 @@
 package oose.p.c6.imd.domain;
 
-import oose.p.c6.imd.persistent.dao.IQuestDAO;
 import oose.p.c6.imd.persistent.dao.QuestJDBCDao;
 import oose.p.c6.imd.persistent.dao.UserJDBCDao;
 import org.junit.Test;
@@ -9,11 +8,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import javax.json.Json;
+import javax.json.JsonObject;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.booleanThat;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -21,6 +20,7 @@ import static org.mockito.Mockito.when;
 public class UserTest {
 	@Mock
 	private QuestJDBCDao questDao;
+	@Mock
 	private UserJDBCDao userDao;
 	@InjectMocks
 	private User user = new User(0, "mail", "password", "fullname", 0, 1);
@@ -64,5 +64,66 @@ public class UserTest {
 		boolean actualResult = user.removeQuestFromQuestLog(1);
 		//check
 		assertTrue(actualResult);
+	}
+
+	@Test
+	public void updateUserSuccess() {
+		//init
+		JsonObject jo = Json.createObjectBuilder()
+				.add("email", "test@mail.com")
+				.add("displayName", "testUser")
+				.add("password", "testPassword")
+				.add("languageId", 2)
+				.build();
+		//test
+		int actualResponse =   user.updateUser(jo.getString("email"), jo.getString("displayName"), jo.getString("password"), jo.getInt("languageId"), user);
+		//check
+		assertThat(actualResponse, is(0));
+		assertEquals("test@mail.com", jo.getString("email"));
+		assertEquals("testUser", jo.getString("displayName"));
+		assertEquals("testPassword", jo.getString("password"));
+		assertEquals(2,jo.getInt("languageId"));
+	}
+
+	@Test
+	public void updateUserInvalidEmail() {
+		JsonObject jo = Json.createObjectBuilder()
+				.add("email", "------")
+				.add("displayName", "testUser")
+				.add("password", "testPassword")
+				.add("languageId", 1)
+				.build();
+		//test
+		int actualResponse =   user.updateUser(jo.getString("email"), jo.getString("displayName"), jo.getString("password"), jo.getInt("languageId"), user);
+		//check
+		assertThat(actualResponse, is(3));
+	}
+
+	@Test
+	public void updateUserInvalidDisplayName() {
+		JsonObject jo = Json.createObjectBuilder()
+				.add("email", "test@mail.com")
+				.add("displayName", "")
+				.add("password", "testPassword")
+				.add("languageId", 1)
+				.build();
+		//test
+		int actualResponse =   user.updateUser(jo.getString("email"), jo.getString("displayName"), jo.getString("password"), jo.getInt("languageId"), user);
+		//check
+		assertThat(actualResponse, is(2));
+	}
+
+	@Test
+	public void updateUserInvalidPassword() {
+		JsonObject jo = Json.createObjectBuilder()
+				.add("email", "test@mail.com")
+				.add("displayName", "testUser")
+				.add("password", "")
+				.add("languageId", 1)
+				.build();
+		//test
+		int actualResponse =   user.updateUser(jo.getString("email"), jo.getString("displayName"), jo.getString("password"), jo.getInt("languageId"), user);
+		//check
+		assertThat(actualResponse, is(1));
 	}
 }

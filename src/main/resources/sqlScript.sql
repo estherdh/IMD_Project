@@ -1,5 +1,6 @@
 CREATE SCHEMA IF NOT EXISTS librarian;
-SET SCHEMA = librarian;
+SET SCHEMA librarian;
+
 
 -- TALEN
 
@@ -12,22 +13,23 @@ CREATE TABLE Language (
 -- GEBRUIKER
 
 CREATE TABLE Users (
-  UserId        INT                   AUTO_INCREMENT PRIMARY KEY,
-  `Email`       VARCHAR(100) NOT NULL UNIQUE,
-  `Password`    VARCHAR(128) NOT NULL,
-  Coins         INT,
+  UserId INT AUTO_INCREMENT PRIMARY KEY,
+  `Email` VARCHAR(100) NOT NULL UNIQUE,
+  `Password` VARCHAR(128) NOT NULL,
+  Coins INT,
   `DisplayName` VARCHAR(50),
-  LanguageId    INT          NOT NULL DEFAULT 1
+  LanguageId INT NOT NULL DEFAULT 1
 );
 
 -- MUSEA
 
 CREATE TABLE Museum (
-  MuseumId     INT AUTO_INCREMENT PRIMARY KEY,
+  MuseumId INT AUTO_INCREMENT PRIMARY KEY,
   `MuseumName` VARCHAR(50) NOT NULL,
-  `Website`    VARCHAR(50),
-  `Region`     VARCHAR(45)
+  `Website` VARCHAR(50),
+  `Region` VARCHAR(45)
 );
+
 
 -- QUEST SYSTEEM
 
@@ -175,9 +177,10 @@ ALTER TABLE Replica
   ADD CONSTRAINT FK_Replica_ExhibitInfo
 FOREIGN KEY (ExhibitInfoId) REFERENCES ExhibitInfo (ExhibitInfoId);
 
-ALTER TABLE UserReplica
-  ADD CONSTRAINT FK_UserReplica_User
-FOREIGN KEY (UserId) REFERENCES Users (UserId);
+ALTER TABLE UserReplica ADD CONSTRAINT FK_UserReplica_User
+FOREIGN KEY (UserId) REFERENCES Users (UserId)
+  ON DELETE CASCADE
+  ON UPDATE RESTRICT;
 
 ALTER TABLE UserReplica
   ADD CONSTRAINT FK_UserReplica_Replica
@@ -205,38 +208,22 @@ INSERT INTO librarian.language (Short_Code, Name) VALUES ('nl', 'Nederlands');
 INSERT INTO librarian.language (Short_Code, Name) VALUES ('en', 'English');
 INSERT INTO librarian.language (Short_Code, Name) VALUES ('TESTING', 'Lorem ipsum');
 
-INSERT INTO librarian.users (Email, Password, Coins, DisplayName, LanguageId)
-VALUES ('mail', 'password', 0, 'DeNaam', 1);
-INSERT INTO librarian.users (Email, Password, Coins, DisplayName, LanguageId)
-VALUES ('test@void', '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08', 0, 'muspi merol', 2);
-INSERT INTO librarian.users (Email, Password, Coins, DisplayName, LanguageId) VALUES
-  ('Nope.avi@youtube.com', '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08', 200, 'MONEYBAGS', 3);
+INSERT INTO librarian.users (Email, Password, Coins, DisplayName, LanguageId) VALUES ('mail', 'password', 0, 'DeNaam', 1);
+INSERT INTO librarian.users (Email, Password, Coins, DisplayName, LanguageId) VALUES ('test@void', '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08', 0, 'muspi merol', 2);
+INSERT INTO librarian.users (Email, Password, Coins, DisplayName, LanguageId) VALUES ('Nope.avi@youtube.com', '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08', 200, 'MONEYBAGS', 3);
 
 INSERT INTO librarian.questtype (Reward) VALUES (10);
-INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name)
-VALUES (1, 1, '(NL)Scan een qr code', '(NL)Scannen qr code');
-INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name)
-VALUES (1, 2, '(EN)Scan a qr code', '(EN)Scan qr code');
-INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name)
-VALUES (1, 3, '(TESTING)Scan a qr code', '(TESTING)edoc rq nasc');
+INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name) VALUES (1, 1, '(NL)Scan een qr code', '(NL)Scannen qr code');
+INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name) VALUES (1, 2, '(EN)Scan a qr code', '(EN)Scan qr code');
+INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name) VALUES (1, 3, '(TESTING)Scan a qr code', '(TESTING)edoc rq nasc');
 
 INSERT INTO librarian.questtype (Reward) VALUES (15);
-INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name)
-VALUES (2, 1, '(NL)Stuur een bepaald stuk tekst op', '(NL)Stuur tekst');
-INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name)
-VALUES (2, 3, '(TESTING)TEKStQuESTREquest', '(TESTING)TEKStQuESTREquest');
+INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name) VALUES (2, 1, '(NL)Stuur een bepaald stuk tekst op', '(NL)Stuur tekst');
+INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name) VALUES (2, 3, '(TESTING)TEKStQuESTREquest', '(TESTING)TEKStQuESTREquest');
 
 INSERT INTO librarian.questtype (Reward) VALUES (30);
-INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name)
-VALUES (3, 1, '(NL)Lees een topstuk', '(NL)Lezen topstuk');
-INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name)
-VALUES (3, 2, '(EN)Read an exhibit', '(EN)Read exhibit');
-
-INSERT INTO librarian.questtype (Reward) VALUES (20);
-INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name)
-VALUES (4, 1, '(NL)Bekijk een tijdperk', '(NL)Tijdperk bekijken');
-INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name)
-VALUES (4, 2, '(EN)View an era', '(EN)View era');
+INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name) VALUES (3, 1, '(NL) Lees een topstuk', '(NL)Lezen topstuk');
+INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name) VALUES (3, 2, '(EN) Read an exhibit', '(EN)Read exhibit');
 
 INSERT INTO librarian.questlog (UserId, QuestTypeId, Completed) VALUES (1, 1, 0);
 INSERT INTO librarian.questproperties (`Key`, `Value`, EntryId) VALUES ('QR', 'AAA', 1);
@@ -249,11 +236,16 @@ INSERT INTO librarian.questproperties (`Key`, `Value`, EntryId) VALUES ('Tekst',
 INSERT INTO librarian.questlog (UserId, QuestTypeId, Completed) VALUES (2, 2, 0);
 INSERT INTO librarian.questproperties (`Key`, `Value`, EntryId) VALUES ('Tekst', 'AAE', 5);
 
-INSERT INTO librarian.questlog (UserId, QuestTypeId) VALUES (1, 4);
-INSERT INTO librarian.questproperties (`Key`, `Value`, EntryId) VALUES ('Tijdperk', '1', 6);
+INSERT INTO librarian.questlog (UserId, QuestTypeId, Completed) VALUES (1, 3, 0);
+INSERT INTO librarian.questproperties(`Key`, `Value`, EntryId) VALUES ('Topstuk', '2', 6);
+INSERT INTO librarian.questlog (UserId, QuestTypeId, Completed) VALUES (1, 3, 0);
+INSERT INTO librarian.questproperties(`Key`, `Value`, EntryId) VALUES ('Topstuk', '3', 7);
 
 INSERT INTO librarian.questlog (UserId, QuestTypeId) VALUES (1, 4);
-INSERT INTO librarian.questproperties (`Key`, `Value`, EntryId) VALUES ('Tijdperk', '2', 7);
+INSERT INTO librarian.questproperties (`Key`, `Value`, EntryId) VALUES ('Tijdperk', '1', 8);
+INSERT INTO librarian.questlog (UserId, QuestTypeId) VALUES (1, 4);
+INSERT INTO librarian.questproperties (`Key`, `Value`, EntryId) VALUES ('Tijdperk', '2', 9);
+
 
 INSERT INTO Era () VALUES ();
 INSERT INTO eralanguage (`eraId`, `name`, `languageId`) VALUES (1, 'tijdperk test', 1);
@@ -269,20 +261,24 @@ INSERT INTO eralanguage (`eraId`, `name`, `languageId`) VALUES (3, 'Stone age', 
 
 
 INSERT INTO Museum (`MuseumName`, `website`, `Region`) VALUES ('test musei', 'http://google.nl', 'Nederland');
+
 INSERT INTO Exhibit (`year`, `eraId`, `museumId`) VALUES ('1999', 1, 1);
 INSERT INTO ExhibitInfo (`ExhibitId`, `languageId`, `name`, `description`, `Image`)
 VALUES (1, 1, 'Het test object', 'Dit object wordt altijd al gebruikt om te testen', 'object.png'),
   (1, 2, 'The test object', 'Possibly used for testing', 'object.png');
+
 INSERT INTO Exhibit (`year`, `eraId`, `museumId`) VALUES ('2010', 1, 1);
 INSERT INTO ExhibitInfo (`ExhibitId`, `languageId`, `name`, `description`, `Image`)
 VALUES (2, 1, 'Het voorbeeld beeldje', 'Dit beeldje is ware kunst, een ideaal voorbeeld.', 'object.png'),
   (2, 3, 'Lol look at tis translation', 'Possibly testing de taal', 'object.png');
+
 INSERT INTO Museum (`MuseumName`, `website`, `Region`) VALUES ('De verzamel schuur', 'http://google.twente', 'Twente');
+
 INSERT INTO Exhibit (`year`, `eraId`, `museumId`) VALUES ('2015', 1, 2);
 INSERT INTO ExhibitInfo (`ExhibitId`, `languageId`, `name`, `description`, `Image`)
 VALUES (3, 1, 'Trekker', 'Deze trekker is geen tractor!', 'object.png'),
-  (3, 2, 'Farmers vehicle', 'Use primarily for 14 year olds to drive around without an actual drivers license',
-   'object.png');
+  (3, 2, 'Farmers vehicle', 'Use primarily for 14 year olds to drive around without an actual drivers license', 'object.png');
+
 INSERT INTO Exhibit (`year`, `eraId`, `museumId`) VALUES ('2017', 1, 2);
 INSERT INTO ExhibitInfo (`ExhibitId`, `languageId`, `name`, `description`, `Image`)
 VALUES (4, 1, 'Voorbeeld streektaal',
