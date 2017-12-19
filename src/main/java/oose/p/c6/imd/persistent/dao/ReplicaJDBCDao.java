@@ -23,12 +23,25 @@ public class ReplicaJDBCDao implements IReplicaDao {
         Connection connection = ConnectMySQL.getInstance().getConnection();
         List<Replica> replicas = new ArrayList<>();
         try {
-            PreparedStatement ps = connection.prepareStatement("SELECT * FROM `replica`" +
-                    " WHERE `ReplicaId` NOT IN (SELECT `ReplicaId` FROM `userreplica` WHERE `UserId` = ?)");
+            PreparedStatement ps = connection.prepareStatement("SELECT r.*, e.*, ei.*, erlan.Name as EraName " +
+                    "FROM `replica` r " +
+                    "INNER JOIN `exhibit` e ON e.ExhibitId=r.ExhibitId " +
+                    "INNER JOIN `exhibitinfo` ei ON ei.ExhibitId=e.ExhibitId " +
+                    "INNER JOIN `eralanguage` erlan ON erlan.EraId=e.EraId " +
+                    "WHERE r.ReplicaId NOT IN (SELECT `ReplicaId` FROM `userreplica` WHERE `UserId` = ?) " +
+                    "AND erlan.`LanguageId` IN (SELECT COALESCE((SELECT `LanguageId` FROM `eralanguage` WHERE `EraId` = e.EraId AND `LanguageId` = ?), 1)) " +
+                    "AND ei.`LanguageId` IN (SELECT COALESCE((SELECT `LanguageId` FROM `exhibitinfo` WHERE `ExhibitId` = e.ExhibitId AND `LanguageId` = ?), 1))");
             ps.setInt(1, user.getId());
+            ps.setInt(2, user.getLanguageId());
+            ps.setInt(3, user.getLanguageId());
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                replicas.add(createReplica(rs));
+                Era era = new Era(rs.getInt("EraId"), rs.getString("EraName"));
+                Exhibit exhibit = new Exhibit(rs.getInt("ExhibitId"), rs.getString("Name"),
+                        rs.getString("Description"), rs.getString("Video"), rs.getString("Image"),
+                        rs.getInt("Year"), rs.getInt("EraId"), rs.getInt("MuseumId"), era);
+                Replica replica = new Replica(rs.getInt("ReplicaId"), rs.getInt("ExhibitId"), rs.getInt("Price"), rs.getString("Sprite"), rs.getInt("ReplicaTypeId"), 0, exhibit);
+                replicas.add(replica);
             }
             connection.close();
         } catch (SQLException e) {
@@ -114,6 +127,8 @@ public class ReplicaJDBCDao implements IReplicaDao {
     @Override
     public List<Replica> getReplicasFromUser(User user) {
         Connection connection = ConnectMySQL.getInstance().getConnection();
+        user.setId(1);
+        user.setLanguageId(2);
         List<Replica> replicas = new ArrayList<>();
         try {
             PreparedStatement ps = connection.prepareStatement("SELECT ur.ReplicaPositionId, r.*, e.*, ei.*, erlan.Name as EraName " +

@@ -72,7 +72,10 @@ public class RESTService {
         User user = TokenManager.getInstance().getUserFromToken(token);
         if (user != null) {
             List<Replica> replicas = l.getAvailableReplicas(user);
-            return Response.status(200).entity(replicas).build();
+            if(!replicas.isEmpty()) {
+                return Response.status(200).entity(buildReplicaList(replicas, false)).build();
+            }
+            return Response.status(200).build();
         }
         return Response.status(401).build();
     }
@@ -85,30 +88,35 @@ public class RESTService {
         if(user != null)
         {
             List<Replica> replicas = l.getReplicasFromUser(user);
-
             if(!replicas.isEmpty()) {
-                JsonBuilderFactory factory = Json.createBuilderFactory(null);
-                JsonArrayBuilder job = factory.createArrayBuilder();
-
-                for (Replica r:replicas) {
-                    job.add(buildReplicaJson(r));
-                }
-
-                return Response.status(200).entity(job.build()).build();
+                return Response.status(200).entity(buildReplicaList(replicas, true)).build();
             }
             return Response.status(200).build();
         }
         return Response.status(401).build();
     }
 
-    private JsonObject buildReplicaJson(Replica r){
+    private JsonArray buildReplicaList(List<Replica> replicas, boolean forUser) {
+        JsonBuilderFactory factory = Json.createBuilderFactory(null);
+        JsonArrayBuilder job = factory.createArrayBuilder();
+
+        for (Replica r:replicas) {
+            job.add(buildReplicaJson(r, forUser));
+        }
+
+        return job.build();
+    }
+
+    private JsonObject buildReplicaJson(Replica r, boolean forUser){
         JsonBuilderFactory factory = Json.createBuilderFactory(null);
         JsonObjectBuilder job = factory.createObjectBuilder();
         job.add("ReplicaId", r.getId());
         job.add("PlacementCategoryId", r.getType());
         job.add("Image", r.getSprite());
         job.add("Price", r.getPrice());
-        job.add("Position", r.getPosition());
+        if(forUser) {
+            job.add("Position", r.getPosition());
+        }
 
         job.add("Exhibit", buildExhibitJson(r.getExhibit()));
 
