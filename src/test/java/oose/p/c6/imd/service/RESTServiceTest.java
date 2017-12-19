@@ -775,7 +775,7 @@ public class RESTServiceTest {
         when(tokenManager.getUserFromToken("token")).thenReturn(mockUser);
         JsonBuilderFactory factory = Json.createBuilderFactory(null);
         JsonObjectBuilder job = factory.createObjectBuilder();
-        job.add("exhibitId", "test");
+        job.add("exhibitId", 12);
         JsonObject jo = job.build();
         //test
         Response actualResponse = service.newExhibitNotification("token", jo);
@@ -801,7 +801,7 @@ public class RESTServiceTest {
         when(tokenManager.getUserFromToken("token")).thenReturn(mockUser);
         JsonBuilderFactory factory = Json.createBuilderFactory(null);
         JsonObjectBuilder job = factory.createObjectBuilder();
-        job.add("replicaId", "test");
+        job.add("replicaId", 12);
         JsonObject jo = job.build();
         //test
         Response actualResponse = service.newReplicaNotification("token", jo);
@@ -827,7 +827,7 @@ public class RESTServiceTest {
         when(tokenManager.getUserFromToken("token")).thenReturn(mockUser);
         JsonBuilderFactory factory = Json.createBuilderFactory(null);
         JsonObjectBuilder job = factory.createObjectBuilder();
-        job.add("videoId", "test");
+        job.add("exhibitId", 12);
         JsonObject jo = job.build();
         //test
         Response actualResponse = service.newVideoNotification("token", jo);

@@ -362,7 +362,7 @@ public class RESTService {
         User user = TokenManager.getInstance().getUserFromToken(token);
         if (user != null) {
             Map<String, String> variables = new HashMap<String, String>();
-            variables.put("exhibitId", obj.getString("exhibitId"));
+            variables.put("exhibitId", Integer.toString(obj.getInt("exhibitId")));
             l.addNotificationToEveryUser(variables, 3);
             return Response.status(200).build();
         }
@@ -377,7 +377,7 @@ public class RESTService {
         User user = TokenManager.getInstance().getUserFromToken(token);
         if (user != null) {
             Map<String, String> variables = new HashMap<String, String>();
-            variables.put("replicaId", obj.getString("replicaId"));
+            variables.put("replicaId", Integer.toString(obj.getInt("replicaId")));
             l.addNotificationToEveryUser(variables, 4);
             return Response.status(200).build();
         }
@@ -392,7 +392,7 @@ public class RESTService {
         User user = TokenManager.getInstance().getUserFromToken(token);
         if (user != null) {
             Map<String, String> variables = new HashMap<String, String>();
-            variables.put("exhibitId", obj.getString("exhibitId"));
+            variables.put("exhibitId", Integer.toString(obj.getInt("exhibitId")));
             l.addNotificationToEveryUser(variables, 5);
             return Response.status(200).build();
         }
