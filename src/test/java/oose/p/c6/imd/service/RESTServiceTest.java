@@ -1,6 +1,8 @@
 package oose.p.c6.imd.service;
 
 import oose.p.c6.imd.domain.*;
+import oose.p.c6.imd.persistent.dao.DAOFactory;
+import oose.p.c6.imd.persistent.dao.IUserDao;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -746,5 +748,33 @@ public class RESTServiceTest {
         //check
         assertThat(actualResponse.getEntity(), is(nullValue()));
         assertThat(actualResponse.getStatus(), is(401));
+    }
+
+    @Test
+    public void getNotificationsInvalidUser(){
+        Response actualResponse = service.getNotifications("token");
+        //check
+        assertThat(actualResponse.getEntity(), is(nullValue()));
+        assertThat(actualResponse.getStatus(), is(401));
+    }
+
+    @Test
+    public void getNotificationsValidUser(){
+        //init
+        IUserDao dao = mock(IUserDao.class);
+        DAOFactory.setUserDao(dao);
+        User user = new User(1, "test@email", "HASHEDPASSWORD", "John Doe", 1337, 2);
+        when(tokenManager.getUserFromToken("token")).thenReturn(user);
+        List<Notification> expected = new ArrayList<Notification>();
+        Notification n = new Notification(1, "NOW", "This test totally works", false,5);
+        expected.add(n);
+        when(dao.listNotification(user)).thenReturn(expected);
+        //test
+
+        Response actualResponse = service.getNotifications("token");
+        //check
+        JsonArray joResponse = (JsonArray) actualResponse.getEntity();
+        JsonObject jo = joResponse.getJsonObject(0);
+        assertEquals("This test totally works", jo.getString("Text"));
     }
 }

@@ -33,7 +33,7 @@ CREATE TABLE UserNotification (
   NotificationId INT NOT NULL,
   UserId INT NOT NULL,
   `Read` TINYINT NOT NULL DEFAULT 0,
-  `Date` DATETIME NOT NULL
+  `Date` DATETIME NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE NotificationProperties (
@@ -314,3 +314,12 @@ INSERT INTO `userreplica` (`UserId`, `ReplicaId`, `ReplicaPositionId`) VALUES
     (1, 3, NULL),
     (2, 1, NULL);
 
+INSERT INTO `Notification` (`LanguageId`, `NotificationText`) VALUES (1, 'Quest `{{{1}}}` voltooid! Je hebt nu {{{2}}} munten');
+INSERT INTO `UserNotification` (NotificationId, UserId) VALUES (1, 2);
+INSERT INTO `NotificationProperties` (`Key`, `Value`, `UserNotificationId`) VALUES ('QuestId', '2', 1);
+INSERT INTO `NotificationProperties` (`Key`, `Value`, `UserNotificationId`) VALUES ('Coins', '2000', 1);
+
+
+INSERT INTO `Notification` (`LanguageId`, `NotificationText`) VALUES (1, 'Quest `{{{1}}}` verwijderd');
+INSERT INTO `UserNotification` (NotificationId, UserId) VALUES (2, 2);
+INSERT INTO `NotificationProperties` (`Key`, `Value`, `UserNotificationId`) VALUES ('QuestId', '2', 2);

@@ -1,5 +1,6 @@
 package oose.p.c6.imd.persistent.dao;
 
+import oose.p.c6.imd.domain.Notification;
 import oose.p.c6.imd.domain.User;
 import oose.p.c6.imd.persistent.ConnectMySQL;
 import org.h2.tools.RunScript;
@@ -99,5 +100,14 @@ public class UserJDBCDaoTest {
         dao.remove(u);
         User actual = dao.find(3);
         assertNull(actual);
+    }
+
+    @Test
+    public void listNotifications(){
+        DAOFactory.setQuestDao(new QuestJDBCDao());
+        DAOFactory.setUserDao(new UserJDBCDao());
+        List<Notification> list = dao.listNotification(dao.find(2));
+        assertEquals(2, list.size());
+        assertEquals("Quest `(EN)Scan qr code` voltooid! Je hebt nu 2000 munten", list.get(0).getText());
     }
 }

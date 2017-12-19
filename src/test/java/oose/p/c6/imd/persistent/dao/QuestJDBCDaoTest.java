@@ -18,9 +18,7 @@ import java.sql.SQLException;
 import java.util.*;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -131,6 +129,14 @@ public class QuestJDBCDaoTest {
 		//check
 		assertThat(resultAdded.first(), is(true));
 
+	}
+
+	@Test
+	public void findQuest(){
+		User test2 = new User(2, "test@void", "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08", "muspi merol", 0, 2);
+		Quest q = dao.find(1 , test2);
+		assertEquals(q.getName(), "(EN)Scan qr code");
+		assertEquals(q.getReward(), 10);
 	}
 
 }
