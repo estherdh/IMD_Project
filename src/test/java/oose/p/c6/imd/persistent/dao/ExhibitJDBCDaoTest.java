@@ -48,7 +48,7 @@ public class ExhibitJDBCDaoTest {
         Exhibit expectedExhibit = new Exhibit(3, "Trekker", "Deze trekker is geen tractor!", null, "object.png", 2015, 1, 2);
 
         //test
-        Exhibit actualResult = dao.find(new User(1,"1","1","1",1,3),3);
+        Exhibit actualResult = dao.find(new User(1, "1", "1", "1", 1, 3), 3);
 
         //check
         assertThat(actualResult.getId(), is(expectedExhibit.getId()));
@@ -61,12 +61,12 @@ public class ExhibitJDBCDaoTest {
     }
 
     @Test
-    public void findEra(){
+    public void findEra() {
         //init
         Era expected = new Era(1, "test era");
 
         //test
-        Era actualResult = dao.findEra(new User(1,"1","1","1",1,2),1);
+        Era actualResult = dao.findEra(new User(1, "1", "1", "1", 1, 2), 1);
 
         //check
         assertThat(actualResult.getId(), is(expected.getId()));
@@ -74,7 +74,7 @@ public class ExhibitJDBCDaoTest {
     }
 
     @Test
-    public void findMuseum(){
+    public void findMuseum() {
         //init
         Museum expected = new Museum(1, "test musei", "http://google.nl", "Nederland");
 
@@ -89,7 +89,7 @@ public class ExhibitJDBCDaoTest {
     }
 
     @Test
-    public void listMuseum(){
+    public void listMuseum() {
         Museum expected = new Museum(1, "test musei", "http://google.nl", "Nederland");
         Museum expected2 = new Museum(2, "De verzamel schuur", "http://google.twente", "Twente");
 
@@ -107,12 +107,12 @@ public class ExhibitJDBCDaoTest {
     }
 
     @Test
-    public void listEra(){
+    public void listEra() {
         //init
         Era expected = new Era(1, "test era");
 
         //test
-        List<Era> actualResult = dao.listEra(new User(1,"1","1","1",1,2));
+        List<Era> actualResult = dao.listEra(new User(1, "1", "1", "1", 1, 2));
 
         //check
         assertThat(actualResult.get(0).getId(), is(expected.getId()));
@@ -120,10 +120,10 @@ public class ExhibitJDBCDaoTest {
     }
 
     @Test
-    public void listExhibits(){
+    public void listExhibits() {
         Exhibit expectedExhibit = new Exhibit(3, "Trekker", "Deze trekker is geen tractor!", null, "object.png", 2015, 1, 2);
 
-        List<Exhibit> result = dao.list(new User(1,"1","1","1",1,3));
+        List<Exhibit> result = dao.list(new User(1, "1", "1", "1", 1, 3));
 
         assertThat(result.get(2).getId(), is(expectedExhibit.getId()));
         assertThat(result.get(2).getYear(), is(expectedExhibit.getYear()));
@@ -136,10 +136,10 @@ public class ExhibitJDBCDaoTest {
     }
 
     @Test
-    public void listExhibitsByEra(){
+    public void listExhibitsByEra() {
         Exhibit expectedExhibit = new Exhibit(3, "Trekker", "Deze trekker is geen tractor!", null, "object.png", 2015, 1, 2);
 
-        List<Exhibit> result = dao.listByEra(new User(1,"1","1","1",1,3), 1);
+        List<Exhibit> result = dao.listByEra(new User(1, "1", "1", "1", 1, 3), 1);
 
         assertThat(result.get(2).getId(), is(expectedExhibit.getId()));
         assertThat(result.get(2).getYear(), is(expectedExhibit.getYear()));
@@ -152,10 +152,10 @@ public class ExhibitJDBCDaoTest {
     }
 
     @Test
-    public void listExhibitsByMuseum(){
+    public void listExhibitsByMuseum() {
         Exhibit expectedExhibit = new Exhibit(3, "Trekker", "Deze trekker is geen tractor!", null, "object.png", 2015, 1, 2);
 
-        List<Exhibit> result = dao.listByMuseum(new User(1,"1","1","1",1,3), 2);
+        List<Exhibit> result = dao.listByMuseum(new User(1, "1", "1", "1", 1, 3), 2);
 
         assertThat(result.get(0).getId(), is(expectedExhibit.getId()));
         assertThat(result.get(0).getYear(), is(expectedExhibit.getYear()));
