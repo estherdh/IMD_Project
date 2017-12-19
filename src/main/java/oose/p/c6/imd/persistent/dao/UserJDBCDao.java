@@ -124,11 +124,24 @@ public class UserJDBCDao implements IUserDao {
         try {
             Connection connection = ConnectMySQL.getInstance().getConnection();
             List<Notification> notifications = new ArrayList<Notification>();
-            ResultSet rs = connection.prepareStatement("SELECT 'Hello {{{1}}} World {{{2}}}' AS notificationText, '2012' AS date, '1' AS `read`, '1' AS `id`").executeQuery();
-            Map<String, String> properties = new HashMap<String, String>();
-            properties.put("QuestId", "1");
-            properties.put("Coins", "200");
+            PreparedStatement ps = connection.prepareStatement("SELECT un.NotificationId as `NotificationId`, n.notificationText as `notificationText`, n.notificationId as `id`, un.Read AS `read`, un.Date AS `date` FROM usernotification un\n" +
+                    "INNER JOIN users u ON u.UserId = un.UserId\n" +
+                    "INNER JOIN notification n ON n.NotificationId = un.NotificationId\n" +
+                    "WHERE un.UserId = ? \n" +
+                    "AND n.languageId IN (SELECT COALESCE((SELECT languageId FROM Notification n WHERE n.NotificationId = un.NotificationId AND languageId = ?),  1))\n");
+            ps.setInt(1, u.getId());
+            ps.setInt(2, u.getLanguageId());
+            ResultSet rs = ps.executeQuery();
             while (rs.next()) {
+                PreparedStatement ps2 = connection.prepareStatement("SELECT np.key, np.value FROM usernotification un\n" +
+                        "INNER JOIN notificationproperties np ON np.UserNotificationId = un.UserNotificationId\n" +
+                        "WHERE un.NotificationId = ?");
+                ps2.setInt(1, rs.getInt("NotificationId"));
+                ResultSet rs2 = ps2.executeQuery();
+                Map<String, String> properties = new HashMap<String, String>();
+                while(rs2.next()){
+                    properties.put(rs.getString(1), rs.getString(2));
+                }
                 notifications.add(NotificationCreator.createNotification(u, rs.getString("notificationText"), properties, 1, rs.getString("date"), rs.getBoolean("read"), rs.getInt("id")));
             }
             return notifications;
