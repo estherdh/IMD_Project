@@ -122,11 +122,11 @@ public class ReplicaJDBCDao implements IReplicaDao {
                     "INNER JOIN `exhibit` e ON e.ExhibitId=r.ExhibitId " +
                     "INNER JOIN `exhibitinfo` ei ON ei.ExhibitId=e.ExhibitId " +
                     "INNER JOIN `eralanguage` erlan ON erlan.EraId=e.EraId " +
-                    "WHERE `UserId` = ? AND erlan.`LanguageId` = (SELECT `LanguageId` FROM `users` WHERE `UserId` = ?) " +
-                    "AND ei.`LanguageId` = (SELECT `LanguageId` FROM `users` WHERE `UserId` = ?)");
+                    "WHERE `UserId` = ? AND erlan.`LanguageId` IN (SELECT COALESCE((SELECT `LanguageId` FROM `eralanguage` WHERE `EraId` = e.EraId AND `LanguageId` = ?), 1)) " +
+                    "AND ei.`LanguageId` IN (SELECT COALESCE((SELECT `LanguageId` FROM `exhibitinfo` WHERE `ExhibitId` = e.ExhibitId AND `LanguageId` = ?), 1))");
             ps.setInt(1, user.getId());
-            ps.setInt(2, user.getId());
-            ps.setInt(3, user.getId());
+            ps.setInt(2, user.getLanguageId());
+            ps.setInt(3, user.getLanguageId());
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 Era era = new Era(rs.getInt("EraId"), rs.getString("EraName"));
