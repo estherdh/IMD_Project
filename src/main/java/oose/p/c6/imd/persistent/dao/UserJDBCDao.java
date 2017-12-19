@@ -124,7 +124,7 @@ public class UserJDBCDao implements IUserDao {
         try {
             Connection connection = ConnectMySQL.getInstance().getConnection();
             List<Notification> notifications = new ArrayList<Notification>();
-            PreparedStatement ps = connection.prepareStatement("SELECT un.NotificationId as `NotificationId`, n.notificationText as `notificationText`, n.notificationId as `id`, un.Read AS `read`, un.Date AS `date` FROM usernotification un\n" +
+            PreparedStatement ps = connection.prepareStatement("SELECT un.UserNotificationId as `NotificationId`, n.notificationText as `notificationText`, n.notificationId as `id`, un.Read AS `read`, un.Date AS `date`, n.NotificationId as `NotificationTypeId` FROM usernotification un\n" +
                     "INNER JOIN users u ON u.UserId = un.UserId\n" +
                     "INNER JOIN notification n ON n.NotificationId = un.NotificationId\n" +
                     "WHERE un.UserId = ? \n" +
@@ -140,9 +140,9 @@ public class UserJDBCDao implements IUserDao {
                 ResultSet rs2 = ps2.executeQuery();
                 Map<String, String> properties = new HashMap<String, String>();
                 while(rs2.next()){
-                    properties.put(rs.getString(1), rs.getString(2));
+                    properties.put(rs2.getString(1), rs2.getString(2));
                 }
-                notifications.add(NotificationCreator.createNotification(u, rs.getString("notificationText"), properties, 1, rs.getString("date"), rs.getBoolean("read"), rs.getInt("id")));
+                notifications.add(NotificationCreator.createNotification(u, rs.getString("notificationText"), properties, rs.getInt("NotificationTypeId"), rs.getString("date"), rs.getBoolean("read"), rs.getInt("id")));
             }
             return notifications;
         } catch (Exception e) {

@@ -375,6 +375,7 @@ public class RESTService {
         job.add("Text", n.getText());
         job.add("DateTime", n.getTime());
         job.add("Read", n.getRead());
+        job.add("NotificationTypeId", n.getTypeId());
         return job.build();
     }
 }
