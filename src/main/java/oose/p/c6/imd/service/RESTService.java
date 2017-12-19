@@ -392,7 +392,7 @@ public class RESTService {
         User user = TokenManager.getInstance().getUserFromToken(token);
         if (user != null) {
             Map<String, String> variables = new HashMap<String, String>();
-            variables.put("videoId", obj.getString("videoId"));
+            variables.put("exhibitId", obj.getString("exhibitId"));
             l.addNotificationToEveryUser(variables, 5);
             return Response.status(200).build();
         }
