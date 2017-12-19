@@ -6,12 +6,15 @@ public class DAOFactory {
     }
     private static IQuestDAO questDAO = new QuestJDBCDao();
     private static IUserDao userDao = new UserJDBCDao();
+    private static IReplicaDao replicaDao = new ReplicaJDBCDao();
+    private static IExhibitDao exhibitDao = new ExhibitJDBCDao();
+    private static IQuestDAO questDao = new QuestJDBCDao();
 
-    public static IReplicaDao getReplicaDao(){
+    public static IReplicaDao getReplicaDao() {
         return new ReplicaJDBCDao();
     }
 
-    public static IUserDao getUserDao(){
+    public static IUserDao getUserDao() {
         return userDao;
     }
 
@@ -25,5 +28,13 @@ public class DAOFactory {
 
     public static void setUserDao(IUserDao dao) {
         userDao = dao;
+    }
+
+    public static IExhibitDao getExhibitDao() {
+        return exhibitDao;
+    }
+
+    public static void setExhibitDao(IExhibitDao ed) {
+        exhibitDao = ed;
     }
 }
