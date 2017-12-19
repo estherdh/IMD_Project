@@ -70,7 +70,7 @@ public class ExhibitViewQuestGeneratorTest {
         exhibitQuest.generateQuest(userId);
 
         //check
-        ResultSet rs = conn.prepareStatement("SELECT * FROM questproperties WHERE EntryId = 8").executeQuery();
+        ResultSet rs = conn.prepareStatement("SELECT * FROM questproperties WHERE EntryId = 10").executeQuery();
         rs.next();
         int i = Integer.parseInt((rs.getString(3)));
 
