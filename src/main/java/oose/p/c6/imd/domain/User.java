@@ -188,6 +188,8 @@ public class User extends Model {
         this.replicaDao = replicaDao;
     }
 
+    public List<Notification> getNotifications() {return userDao.listNotification(this); }
+
     public List<Replica> getReplicas() {
         return replicaDao.getReplicasFromUser(this);
     }

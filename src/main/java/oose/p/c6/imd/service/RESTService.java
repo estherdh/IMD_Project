@@ -451,6 +451,33 @@ public class RESTService {
         return Response.status(401).build();
     }
 
+    @Path("/user/notifications/")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getNotifications(@QueryParam("token") String token) {
+        User user = TokenManager.getInstance().getUserFromToken(token);
+        if (user != null) {
+            JsonBuilderFactory factory = Json.createBuilderFactory(null);
+            JsonArrayBuilder jab = factory.createArrayBuilder();
+            for(Notification n:user.getNotifications()){
+                jab.add(buildNotificationJson(n));
+            }
+            return Response.status(200).entity(jab.build()).build();
+        }
+        return Response.status(401).build();
+    }
+
+    private JsonObject buildNotificationJson(Notification n){
+        JsonBuilderFactory factory = Json.createBuilderFactory(null);
+        JsonObjectBuilder job = factory.createObjectBuilder();
+        job.add("NotificationId", n.getId());
+        job.add("Text", n.getText());
+        job.add("DateTime", n.getTime());
+        job.add("Read", n.getRead());
+        job.add("NotificationTypeId", n.getTypeId());
+        return job.build();
+    }
+
     @DELETE
     @Path("/user/remove")
     public Response removeAccount(@QueryParam("token") String token){

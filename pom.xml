@@ -6,7 +6,7 @@
 
     <groupId>OOSE.P.C6</groupId>
     <artifactId>IMD</artifactId>
-    <version>1.0</version>
+    <version>1.3</version>
     <packaging>war</packaging>
 
     <properties>

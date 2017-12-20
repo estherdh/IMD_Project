@@ -3,6 +3,7 @@ package oose.p.c6.imd.persistent.dao;
 import oose.p.c6.imd.domain.*;
 import oose.p.c6.imd.persistent.ConnectMySQL;
 
+import javax.el.MethodNotFoundException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -51,6 +52,46 @@ public class QuestJDBCDao implements IQuestDAO {
         }
     }
 
+    @Override
+    public Quest find(int id, User user) {
+        Connection connection = ConnectMySQL.getInstance().getConnection();
+        QuestFactory factory = QuestFactory.getInstance();
+        try {
+            PreparedStatement ps = connection.prepareStatement("" +
+                    "SELECT * FROM (questlog ql INNER JOIN QuestType qt" +
+                    "    ON ql.QuestTypeId = qt.QuestTypeId)" +
+                    "  INNER JOIN QuestTypeLanguage qtl" +
+                    "    ON qt.QuestTypeId = qtl.QuestTypeId " +
+                    "WHERE UserId = ? " +
+                    "And EntryId = ? " +
+                    "AND LanguageId IN" +
+                    "    (SELECT COALESCE(" +
+                    "        (SELECT languageId FROM questtypelanguage qtl2 WHERE qtl2.LanguageId = ? AND qtl2.QuestTypeId = qt.QuestTypeId)" +
+                    "        , 1)" +
+                    "    );");
+            ps.setInt(1, user.getId());
+            ps.setInt(2, id);
+            ps.setInt(3, user.getLanguageId());
+            ResultSet rs = ps.executeQuery();
+            Quest result = null;
+            if (rs.next()) {
+                int questType = rs.getInt("QuestTypeId");
+                IQuestType typeStrategy = factory.generateQuest(QuestTypes.values()[questType - 1], getVariablesOfQuest(rs.getInt("EntryId")));
+                result = new Quest(
+                        rs.getInt("EntryId"),
+                        rs.getString("Name"),
+                        rs.getString("Description"),
+                        rs.getInt("Reward"),
+                        typeStrategy
+                );
+            }
+            return result;
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, e.toString(), e);
+            return null;
+        }
+    }
+
     public void add(Quest entity) {
         //Not yet implemented
 
@@ -69,7 +110,7 @@ public class QuestJDBCDao implements IQuestDAO {
     }
 
     public Quest find(int id) {
-        return null;
+        throw new MethodNotFoundException();
     }
 
     public List<Quest> getQuestsForUser(int userId, int languageId) {
