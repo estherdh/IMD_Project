@@ -17,9 +17,9 @@ public class QuestGeneratorFactory {
     public IQuestGenerator getQuestGenerator(QuestTypes questType) {
         switch(questType) {
             case EXHIBITVIEW:
-                return new ExhibitViewQuestGenerator(questType.ordinal());
+                return new ExhibitViewQuestGenerator();
             case ERAVIEW:
-                return new EraViewQuestGenerator(questType.ordinal());
+                return new EraViewQuestGenerator();
             default:
                 LOGGER.log(Level.WARNING, "Geen generator voor questtype: "+questType+" gevonden");
                 return null;
