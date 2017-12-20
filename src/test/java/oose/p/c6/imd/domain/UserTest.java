@@ -2,7 +2,6 @@ package oose.p.c6.imd.domain;
 
 import oose.p.c6.imd.persistent.dao.DAOFactory;
 import oose.p.c6.imd.persistent.dao.IUserDao;
-import oose.p.c6.imd.persistent.dao.QuestJDBCDao;
 import oose.p.c6.imd.persistent.dao.UserJDBCDao;
 import org.junit.Test;
 import org.junit.runner.RunWith;
