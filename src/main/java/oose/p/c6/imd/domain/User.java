@@ -191,8 +191,8 @@ public class User extends Model {
     public List<Notification> getNotifications() {return userDao.listNotification(this); }
 
     public void markNotification(int notificationId, boolean read) {
-        Object n = userDao.findNotification(this, notificationId);
-        n.markNotification(read);
+        Notification n = userDao.findNotification(this, notificationId);
+        n.setRead(read);
         userDao.updateNotification(n);
     }
 }

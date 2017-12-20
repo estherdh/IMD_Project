@@ -875,4 +875,31 @@ public class RESTServiceTest {
         //check
         assertThat(actualResponse.getStatus(), is(401));
     }
+
+    @Test
+    public void markNotificationTest() {
+        //init
+        User mockUser = mock(User.class);
+        when(tokenManager.getUserFromToken("token")).thenReturn(mockUser);
+        JsonBuilderFactory factory = Json.createBuilderFactory(null);
+        JsonObjectBuilder job = factory.createObjectBuilder();
+        job.add("Read", true);
+        job.add("NotificationId", 1);
+        JsonObject jo = job.build();
+        //test
+        Response actualResponse = service.markNotification("token", jo);
+        //check
+        assertThat(actualResponse.getStatus(), is(200));
+        verify(librarian, times(1)).markNotification(mockUser, 1, true);
+    }
+
+    @Test
+    public void markNotificationInvalidUser() {
+        //init
+        when(tokenManager.getUserFromToken("token")).thenReturn(null);
+        //test
+        Response actualResponse = service.markNotification("token" , mock(JsonObject.class));
+        //check
+        assertThat(actualResponse.getStatus(), is(401));
+    }
 }
