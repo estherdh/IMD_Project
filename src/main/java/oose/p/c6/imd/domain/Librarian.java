@@ -110,4 +110,8 @@ public class Librarian {
             user.addNotification(typeId, variables);
         }
     }
+
+    public List<Replica> getReplicasFromUser(User user) {
+        return user.getReplicas();
+    }
 }
