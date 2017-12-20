@@ -21,15 +21,48 @@ CREATE TABLE Users (
   LanguageId INT NOT NULL DEFAULT 1
 );
 
+-- NOTIFICATION
+
+CREATE TABLE Notification (
+  NotificationId INT AUTO_INCREMENT PRIMARY KEY,
+  LanguageId INT NOT NULL,
+  `NotificationText` VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE UserNotification (
+  UserNotificationId INT AUTO_INCREMENT PRIMARY KEY,
+  NotificationId INT NOT NULL,
+  UserId INT NOT NULL,
+  `Read` TINYINT NOT NULL DEFAULT 0,
+  `Date` DATETIME NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE NotificationProperties (
+  NotificationPropertiesId INT AUTO_INCREMENT PRIMARY KEY,
+  UserNotificationId INT NOT NULL,
+  `Key` VARCHAR(15) NOT NULL,
+  `Value` VARCHAR(60) NOT NULL
+);
+
 -- MUSEA
 
 CREATE TABLE Museum (
   MuseumId INT AUTO_INCREMENT PRIMARY KEY,
   `MuseumName` VARCHAR(50) NOT NULL,
   `Website` VARCHAR(50),
-  `Region` VARCHAR(45)
+  `Region` VARCHAR(45),
+  `Logo` VARCHAR(25)
 );
 
+-- ADMINISTRATOR
+
+CREATE TABLE Administrator (
+  AdministratorId INT AUTO_INCREMENT PRIMARY KEY,
+  `Email` VARCHAR(100) NOT NULL UNIQUE,
+  `Password` VARCHAR(128) NOT NULL,
+  Role INT NOT NULL DEFAULT 0,
+  MuseumId INT NOT NULL
+);
 
 -- QUEST SYSTEEM
 
@@ -51,7 +84,7 @@ CREATE TABLE QuestLog (
   EntryId INT AUTO_INCREMENT PRIMARY KEY,
   UserId INT NOT NULL,
   QuestTypeId INT NOT NULL,
-  `Completed` BOOLEAN,
+  `Completed` BOOLEAN DEFAULT 0,
   Removed BOOLEAN DEFAULT 0
 );
 
@@ -119,7 +152,7 @@ CREATE TABLE Replica (
   ExhibitId INT NOT NULL,
   `Price` INT NOT NULL,
   Sprite VARCHAR(45) NOT NULL,
-  `ReplicaTypeId` VARCHAR(45) NOT NULL
+  ReplicaTypeId INT NOT NULL
 );
 
 
@@ -133,29 +166,6 @@ CREATE TABLE UserReplica (
   UserId INT NOT NULL,
   ReplicaId INT NOT NULL,
   ReplicaPositionId INT NULL DEFAULT NULL
-);
-
--- NOTIFICATION
-
-CREATE TABLE Notification (
-  NotificationId INT AUTO_INCREMENT PRIMARY KEY,
-  LanguageId INT NOT NULL,
-  `NotificationText` VARCHAR(100) NOT NULL
-);
-
-CREATE TABLE UserNotification (
-  UserNotificationId INT AUTO_INCREMENT PRIMARY KEY,
-  NotificationId INT NOT NULL,
-  UserId INT NOT NULL,
-  `Read` TINYINT NOT NULL DEFAULT 0,
-  `Date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP()
-);
-
-CREATE TABLE NotificationProperties (
-  NotificationPropertiesId INT AUTO_INCREMENT PRIMARY KEY,
-  UserNotificationId INT NOT NULL,
-  `Key` VARCHAR(15) NOT NULL,
-  `Value` VARCHAR(60) NOT NULL
 );
 
 -- FOREIGN KEYS
@@ -189,6 +199,12 @@ FOREIGN KEY (LanguageId) REFERENCES Language (LanguageId);
 ALTER TABLE Replica ADD CONSTRAINT FK_Replica_Exhibit
 FOREIGN KEY (ExhibitId) REFERENCES Exhibit (ExhibitId);
 
+ALTER TABLE Replica ADD CONSTRAINT FK_Replica_ReplicaType
+FOREIGN KEY (ReplicaTypeId) REFERENCES ReplicaType (ReplicaTypeId);
+
+ALTER TABLE ReplicaPositions ADD CONSTRAINT FK_ReplicaPositions_ReplicaType
+FOREIGN KEY (ReplicaTypeId) REFERENCES ReplicaType (ReplicaTypeId);
+
 ALTER TABLE UserReplica ADD CONSTRAINT FK_UserReplica_User
 FOREIGN KEY (UserId) REFERENCES Users (UserId)
   ON DELETE CASCADE
@@ -196,6 +212,9 @@ FOREIGN KEY (UserId) REFERENCES Users (UserId)
 
 ALTER TABLE UserReplica ADD CONSTRAINT FK_UserReplica_Replica
 FOREIGN KEY (ReplicaId) REFERENCES Replica (ReplicaId);
+
+ALTER TABLE UserReplica ADD CONSTRAINT FK_UserReplica_ReplicaPositions
+FOREIGN KEY (ReplicaPositionId) REFERENCES ReplicaPositions (ReplicaPositionId);
 
 ALTER TABLE Exhibit ADD CONSTRAINT FK_Exhibit_Museum
 FOREIGN KEY (MuseumId) REFERENCES Museum (MuseumId);
@@ -209,6 +228,9 @@ FOREIGN KEY (ExhibitId) REFERENCES Exhibit (ExhibitId);
 ALTER TABLE ExhibitTags ADD CONSTRAINT FK_ExhibitTags_Tags
 FOREIGN KEY (TagId) REFERENCES Tags (TagId);
 
+ALTER TABLE Administrator ADD CONSTRAINT FK_Administrator_Museum
+FOREIGN KEY (MuseumId) REFERENCES Museum (MuseumId);
+
 ALTER TABLE Notification ADD CONSTRAINT FK_Notification_Language
 FOREIGN KEY (LanguageId) REFERENCES Language (LanguageId);
 
@@ -220,8 +242,6 @@ FOREIGN KEY (UserId) REFERENCES Users (UserId);
 
 ALTER TABLE NotificationProperties ADD CONSTRAINT FK_NotificationProperties_UserNotification
 FOREIGN KEY (UserNotificationId) REFERENCES UserNotification (UserNotificationId);
-
--- Hier komen de insert scripts
 -- Hier komen de insert scripts
 INSERT INTO librarian.language (Short_Code, Name) VALUES ('nl', 'Nederlands');
 INSERT INTO librarian.language (Short_Code, Name) VALUES ('en', 'English');
@@ -309,8 +329,12 @@ INSERT INTO `userreplica` (`UserId`, `ReplicaId`, `ReplicaPositionId`) VALUES
   (1, 3, NULL),
   (2, 1, NULL);
 
-INSERT INTO `Notification` (`LanguageId`, `NotificationText`) VALUES (1, 'Dit is een testnotificatie!');
+INSERT INTO `Notification` (`LanguageId`, `NotificationText`) VALUES (1, 'Quest `{{{1}}}` voltooid! Je hebt nu {{{2}}} munten');
+INSERT INTO `UserNotification` (NotificationId, UserId) VALUES (1, 2);
+INSERT INTO `NotificationProperties` (`Key`, `Value`, `UserNotificationId`) VALUES ('QuestId', '2', 1);
+INSERT INTO `NotificationProperties` (`Key`, `Value`, `UserNotificationId`) VALUES ('Coins', '2000', 1);
 
-INSERT INTO `UserNotification` (NotificationId, UserId) VALUES (1, 1);
 
-INSERT INTO `NotificationProperties` (`Key`, `Value`, `UserNotificationId`) VALUES ('Topstuk', 'Memorietafel', 1);
+INSERT INTO `Notification` (`LanguageId`, `NotificationText`) VALUES (1, 'Quest `{{{1}}}` verwijderd');
+INSERT INTO `UserNotification` (NotificationId, UserId) VALUES (2, 2);
+INSERT INTO `NotificationProperties` (`Key`, `Value`, `UserNotificationId`) VALUES ('QuestId', '2', 2);
