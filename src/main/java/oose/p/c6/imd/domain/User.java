@@ -182,4 +182,10 @@ public class User extends Model {
     public void setReplicaDao(IReplicaDao replicaDao) {
         this.replicaDao = replicaDao;
     }
+
+    public void markNotification(int notificationId, boolean read) {
+        Object n = userDao.findNotification(this, notificationId);
+        n.markNotification(read);
+        userDao.updateNotification(n);
+    }
 }
