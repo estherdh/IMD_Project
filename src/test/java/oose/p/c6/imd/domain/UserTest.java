@@ -11,10 +11,12 @@ import org.mockito.junit.MockitoJUnitRunner;
 import javax.json.Json;
 import javax.json.JsonObject;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UserTest {
@@ -125,5 +127,15 @@ public class UserTest {
 		int actualResponse =   user.updateUser(jo.getString("email"), jo.getString("displayName"), jo.getString("password"), jo.getInt("languageId"), user);
 		//check
 		assertThat(actualResponse, is(1));
+	}
+
+	@Test
+	public void addNotificationTestSuccess() {
+		//init
+		Map expectedResult = new HashMap<String, String>();
+		//test
+		user.addNotification(1, expectedResult);
+		//check
+		verify(userDao, times(1)).addNotification(1, expectedResult, user);
 	}
 }

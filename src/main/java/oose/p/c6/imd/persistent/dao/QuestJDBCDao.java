@@ -1,9 +1,6 @@
 package oose.p.c6.imd.persistent.dao;
 
-import oose.p.c6.imd.domain.IQuestType;
-import oose.p.c6.imd.domain.Quest;
-import oose.p.c6.imd.domain.QuestFactory;
-import oose.p.c6.imd.domain.QuestTypes;
+import oose.p.c6.imd.domain.*;
 import oose.p.c6.imd.persistent.ConnectMySQL;
 
 import java.sql.Connection;
