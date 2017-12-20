@@ -8,7 +8,9 @@ import javax.json.*;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 @Path("/")
@@ -392,6 +394,51 @@ public class RESTService {
             JsonObjectBuilder job = factory.createObjectBuilder();
             job.add("reason", reason);
             return Response.status(200).entity(job.build()).build();
+        }
+        return Response.status(401).build();
+    }
+
+    @POST
+    @Path("/notification/newExhibit")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response newExhibitNotification(@QueryParam("token") String token, JsonObject obj) {
+        //TODO: In latere sprint checken of de gebruiker permissie heeft om deze functie uit te voeren.
+        User user = TokenManager.getInstance().getUserFromToken(token);
+        if (user != null) {
+            Map<String, String> variables = new HashMap<String, String>();
+            variables.put("exhibitId", Integer.toString(obj.getInt("exhibitId")));
+            l.addNotificationToEveryUser(variables, 3);
+            return Response.status(200).build();
+        }
+        return Response.status(401).build();
+    }
+
+    @POST
+    @Path("/notification/newReplica")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response newReplicaNotification(@QueryParam("token") String token, JsonObject obj) {
+        //TODO: In latere sprint checken of de gebruiker permissie heeft om deze functie uit te voeren.
+        User user = TokenManager.getInstance().getUserFromToken(token);
+        if (user != null) {
+            Map<String, String> variables = new HashMap<String, String>();
+            variables.put("replicaId", Integer.toString(obj.getInt("replicaId")));
+            l.addNotificationToEveryUser(variables, 4);
+            return Response.status(200).build();
+        }
+        return Response.status(401).build();
+    }
+
+    @POST
+    @Path("/notification/newVideo")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response newVideoNotification(@QueryParam("token") String token, JsonObject obj) {
+        //TODO: In latere sprint checken of de gebruiker permissie heeft om deze functie uit te voeren.
+        User user = TokenManager.getInstance().getUserFromToken(token);
+        if (user != null) {
+            Map<String, String> variables = new HashMap<String, String>();
+            variables.put("exhibitId", Integer.toString(obj.getInt("exhibitId")));
+            l.addNotificationToEveryUser(variables, 5);
+            return Response.status(200).build();
         }
         return Response.status(401).build();
     }
