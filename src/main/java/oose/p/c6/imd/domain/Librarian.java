@@ -113,7 +113,7 @@ public class Librarian {
         User newUser = new User(email, password, name, languageId);
         int validationState = newUser.areValidCredentials(email, password, name, languageId);
         if (!isNull(getUserByEmail(email))) {
-            validationState = 5;
+            validationState = 4;
         } else if (validationState == 0) {
             userDao.add(newUser);
         }
