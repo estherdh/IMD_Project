@@ -131,17 +131,20 @@ public class ReplicaJDBCDao implements IReplicaDao {
         user.setLanguageId(2);
         List<Replica> replicas = new ArrayList<>();
         try {
-            PreparedStatement ps = connection.prepareStatement("SELECT ur.ReplicaPositionId, r.*, e.*, ei.*, erlan.Name as EraName " +
+            PreparedStatement ps = connection.prepareStatement("SELECT ur.ReplicaPositionId, r.*, e.*, ei.*, (" +
+                    "SELECT `Name` FROM eralanguage erlan "+
+                    "WHERE erlan.EraId=e.EraId AND erlan.LanguageId = (" +
+                    "SELECT COALESCE((" +
+                    "SELECT `LanguageId` FROM `eralanguage` erlang WHERE erlang.EraId=e.EraId AND `LanguageId` = ?), 1))) AS EraName " +
                     "FROM `userreplica` ur " +
                     "INNER JOIN `replica` r ON r.ReplicaId=ur.ReplicaId " +
                     "INNER JOIN `exhibit` e ON e.ExhibitId=r.ExhibitId " +
-                    "INNER JOIN `exhibitinfo` ei ON ei.ExhibitId=e.ExhibitId " +
-                    "INNER JOIN `eralanguage` erlan ON erlan.EraId=e.EraId " +
-                    "WHERE `UserId` = ? AND erlan.`LanguageId` IN (SELECT COALESCE((SELECT `LanguageId` FROM `eralanguage` WHERE `EraId` = e.EraId AND `LanguageId` = ?), 1)) " +
-                    "AND ei.`LanguageId` IN (SELECT COALESCE((SELECT `LanguageId` FROM `exhibitinfo` WHERE `ExhibitId` = e.ExhibitId AND `LanguageId` = ?), 1))");
-            ps.setInt(1, user.getId());
+                    "INNER JOIN exhibitinfo ei ON ei.ExhibitId=e.ExhibitId " +
+                    "WHERE ei.LanguageId = (SELECT COALESCE((SELECT `LanguageId` FROM `exhibitinfo` WHERE `ExhibitId` = e.ExhibitId AND `LanguageId` = ?), 1)) " +
+                    "AND `UserId` = ?");
+            ps.setInt(1, user.getLanguageId());
             ps.setInt(2, user.getLanguageId());
-            ps.setInt(3, user.getLanguageId());
+            ps.setInt(3, user.getId());
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 Era era = new Era(rs.getInt("EraId"), rs.getString("EraName"));
