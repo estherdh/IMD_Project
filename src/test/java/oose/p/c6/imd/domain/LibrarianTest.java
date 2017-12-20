@@ -45,4 +45,14 @@ public class LibrarianTest {
 		//check
 		assertTrue(actualResult);
 	}
+
+	@Test
+	public void removeUserTestSuccess() {
+		//test
+		User mockUser = mock(User.class);
+		//test
+		librarian.removeUser(mockUser);
+		//verify
+		verify(userDao, times(1)).remove(mockUser);
+	}
 }
