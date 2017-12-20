@@ -5,6 +5,7 @@ import oose.p.c6.imd.persistent.dao.IQuestDAO;
 import oose.p.c6.imd.persistent.dao.IUserDao;
 
 import javax.inject.Inject;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -48,7 +49,17 @@ public class Librarian {
     }
 
     public boolean removeQuestFromQuestLog(int entryId, User user) {
-        return user.removeQuestFromQuestLog(entryId);
+        boolean success = user.removeQuestFromQuestLog(entryId);
+        if (success) {
+            Map<String, String> notificationVariables = new HashMap<>();
+            notificationVariables.put("QuestId", Integer.toString(entryId));
+            sendNotification(user, 2,notificationVariables);
+        }
+        return success;
+    }
+
+    private void sendNotification(User user, int typeId, Map<String, String> variables) {
+        user.addNotification(typeId, variables);
     }
 
     public boolean buyReplica(User user, int replicaId) {
