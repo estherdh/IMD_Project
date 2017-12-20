@@ -1,27 +1,24 @@
 package oose.p.c6.imd.domain;
 
 import oose.p.c6.imd.persistent.dao.IUserDao;
-import oose.p.c6.imd.service.Token;
-import oose.p.c6.imd.service.TokenManager;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import javax.validation.constraints.AssertTrue;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class LibrarianTest {
     @Mock
+    private
     IUserDao userDao;
     @InjectMocks
+    private
     Librarian librarian;
 
     @Test
@@ -56,5 +53,20 @@ public class LibrarianTest {
         librarian.removeUser(mockUser);
         //verify
         verify(userDao, times(1)).remove(mockUser);
+    }
+
+    @Test
+    public void registerUserSuccesTest() {
+        //init
+        String email = "hoi@hoi.nl";
+        String displayName = "hallo123";
+        String password = "Hee456";
+        int languageId = 1;
+
+        //test
+        int actualResponse = librarian.registerUser(email, password, displayName, languageId);
+
+        //check
+        assertThat(actualResponse, is(0));
     }
 }

@@ -8,7 +8,6 @@ import javax.inject.Inject;
 import java.util.List;
 
 import static java.util.Objects.isNull;
-import static java.util.Objects.requireNonNull;
 
 public class Librarian {
     @Inject
@@ -111,11 +110,12 @@ public class Librarian {
 
     public int registerUser(String email, String password, String name, int languageId) {
         User newUser = new User(email, password, name, languageId);
-        int validationState = newUser.areValidCredentials(email, password, name, languageId);
-        if (!isNull(getUserByEmail(email))) {
-            validationState = 4;
-        } else if (validationState == 0) {
-            userDao.add(newUser);
+        int validationState = 4;
+        if (isNull(getUserByEmail(email))) {
+            validationState = newUser.areValidCredentials(email, password, name, languageId);
+            if (validationState == 0) {
+                userDao.add(newUser);
+            }
         }
         return validationState;
     }

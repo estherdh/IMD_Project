@@ -1,11 +1,8 @@
 package oose.p.c6.imd.domain;
 
-import oose.p.c6.imd.persistent.dao.QuestJDBCDao;
-import oose.p.c6.imd.persistent.dao.UserJDBCDao;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import javax.json.Json;
@@ -18,10 +15,7 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UserTest {
-    @Mock
-    private QuestJDBCDao questDao;
-    @Mock
-    private UserJDBCDao userDao;
+
     @InjectMocks
     private User user = new User(0, "mail", "password", "fullname", 0, 1);
 
