@@ -7,6 +7,7 @@ import oose.p.c6.imd.persistent.dao.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -125,6 +126,10 @@ public class User extends Model {
 
     public boolean isValidPassword(String password) {
         return !password.trim().isEmpty() && password.length() <= 128 && password.length() >= 6;
+    }
+
+    public void addNotification(int typeId, Map<String, String> properties) {
+        userDao.addNotification(typeId, properties, this);
     }
 
     public String getEmail() {
