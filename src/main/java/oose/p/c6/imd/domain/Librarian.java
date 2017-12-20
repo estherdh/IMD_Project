@@ -109,6 +109,5 @@ public class Librarian {
         for (User user:allUsers) {
             user.addNotification(typeId, variables);
         }
-
     }
 }
