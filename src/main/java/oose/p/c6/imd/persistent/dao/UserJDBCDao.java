@@ -135,7 +135,7 @@ public class UserJDBCDao implements IUserDao {
             while (rs.next()) {
                 PreparedStatement ps2 = connection.prepareStatement("SELECT np.key, np.value FROM usernotification un\n" +
                         "INNER JOIN notificationproperties np ON np.UserNotificationId = un.UserNotificationId\n" +
-                        "WHERE un.NotificationId = ?");
+                        "WHERE un.userNotificationId = ?");
                 ps2.setInt(1, rs.getInt("NotificationId"));
                 ResultSet rs2 = ps2.executeQuery();
                 Map<String, String> properties = new HashMap<String, String>();

@@ -11,6 +11,7 @@ import com.openpojo.validation.rule.impl.NoPublicFieldsRule;
 import com.openpojo.validation.rule.impl.SetterMustExistRule;
 import com.openpojo.validation.test.impl.GetterTester;
 import com.openpojo.validation.test.impl.SetterTester;
+import oose.p.c6.imd.persistent.dao.DAOFactory;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -34,6 +35,7 @@ public class PojoTest {
 		pojoList.add(PojoClassFactory.getPojoClass(Museum.class));
 		pojoList.add(PojoClassFactory.getPojoClass(QrScanAction.class));
 		pojoList.add(PojoClassFactory.getPojoClass(Quest.class));
+		pojoList.add(PojoClassFactory.getPojoClass(Notification.class));
 	}
 
 	@Test
