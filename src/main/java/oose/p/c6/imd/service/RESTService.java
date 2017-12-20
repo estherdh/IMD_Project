@@ -8,7 +8,9 @@ import javax.json.*;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 @Path("/")
@@ -89,9 +91,55 @@ public class RESTService {
         User user = TokenManager.getInstance().getUserFromToken(token);
         if (user != null) {
             List<Replica> replicas = l.getAvailableReplicas(user);
-            return Response.status(200).entity(replicas).build();
+            if(!replicas.isEmpty()) {
+                return Response.status(200).entity(buildReplicaList(replicas, false)).build();
+            }
+            return Response.status(200).build();
         }
         return Response.status(401).build();
+    }
+
+    @GET
+    @Path("/inventory")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getReplicasFromUser(@QueryParam("token") String token) {
+        User user = TokenManager.getInstance().getUserFromToken(token);
+        if(user != null)
+        {
+            List<Replica> replicas = l.getReplicasFromUser(user);
+            if(!replicas.isEmpty()) {
+                return Response.status(200).entity(buildReplicaList(replicas, true)).build();
+            }
+            return Response.status(200).build();
+        }
+        return Response.status(401).build();
+    }
+
+    private JsonArray buildReplicaList(List<Replica> replicas, boolean forUser) {
+        JsonBuilderFactory factory = Json.createBuilderFactory(null);
+        JsonArrayBuilder job = factory.createArrayBuilder();
+
+        for (Replica r:replicas) {
+            job.add(buildReplicaJson(r, forUser));
+        }
+
+        return job.build();
+    }
+
+    private JsonObject buildReplicaJson(Replica r, boolean forUser){
+        JsonBuilderFactory factory = Json.createBuilderFactory(null);
+        JsonObjectBuilder job = factory.createObjectBuilder();
+        job.add("ReplicaId", r.getId());
+        job.add("PlacementCategoryId", r.getType());
+        job.add("Image", r.getSprite());
+        job.add("Price", r.getPrice());
+        if(forUser) {
+            job.add("Position", r.getPosition());
+        }
+
+        job.add("Exhibit", buildExhibitJson(r.getExhibit()));
+
+        return job.build();
     }
 
     @POST
@@ -211,7 +259,13 @@ public class RESTService {
         job.add("Video", video);
         job.add("Image", image);
         job.add("Year", e.getYear());
-        job.add("EraId", e.getEraId());
+        if(e.getEra() != null) {
+            job.add("Era", createEraJson(e.getEra()));
+        }
+        else
+        {
+            job.add("EraId", e.getEraId());
+        }
         job.add("MuseumId", e.getMuseumId());
         return job.build();
     }
@@ -367,6 +421,78 @@ public class RESTService {
             return Response.status(200).entity(job.build()).build();
         }
         return Response.status(401).build();
+    }
+
+    @POST
+    @Path("/notification/newExhibit")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response newExhibitNotification(@QueryParam("token") String token, JsonObject obj) {
+        //TODO: In latere sprint checken of de gebruiker permissie heeft om deze functie uit te voeren.
+        User user = TokenManager.getInstance().getUserFromToken(token);
+        if (user != null) {
+            Map<String, String> variables = new HashMap<String, String>();
+            variables.put("exhibitId", Integer.toString(obj.getInt("exhibitId")));
+            l.addNotificationToEveryUser(variables, 3);
+            return Response.status(200).build();
+        }
+        return Response.status(401).build();
+    }
+
+    @POST
+    @Path("/notification/newReplica")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response newReplicaNotification(@QueryParam("token") String token, JsonObject obj) {
+        //TODO: In latere sprint checken of de gebruiker permissie heeft om deze functie uit te voeren.
+        User user = TokenManager.getInstance().getUserFromToken(token);
+        if (user != null) {
+            Map<String, String> variables = new HashMap<String, String>();
+            variables.put("replicaId", Integer.toString(obj.getInt("replicaId")));
+            l.addNotificationToEveryUser(variables, 4);
+            return Response.status(200).build();
+        }
+        return Response.status(401).build();
+    }
+
+    @POST
+    @Path("/notification/newVideo")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response newVideoNotification(@QueryParam("token") String token, JsonObject obj) {
+        //TODO: In latere sprint checken of de gebruiker permissie heeft om deze functie uit te voeren.
+        User user = TokenManager.getInstance().getUserFromToken(token);
+        if (user != null) {
+            Map<String, String> variables = new HashMap<String, String>();
+            variables.put("exhibitId", Integer.toString(obj.getInt("exhibitId")));
+            l.addNotificationToEveryUser(variables, 5);
+            return Response.status(200).build();
+        }
+        return Response.status(401).build();
+    }
+
+    @Path("/user/notifications/")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getNotifications(@QueryParam("token") String token) {
+        User user = TokenManager.getInstance().getUserFromToken(token);
+        if (user != null) {
+            JsonBuilderFactory factory = Json.createBuilderFactory(null);
+            JsonArrayBuilder jab = factory.createArrayBuilder();
+            for(Notification n:user.getNotifications()){
+                jab.add(buildNotificationJson(n));
+            }
+            return Response.status(200).entity(jab.build()).build();
+        }
+        return Response.status(401).build();
+    }
+
+    private JsonObject buildNotificationJson(Notification n){
+        JsonBuilderFactory factory = Json.createBuilderFactory(null);
+        JsonObjectBuilder job = factory.createObjectBuilder();
+        job.add("NotificationId", n.getId());
+        job.add("Text", n.getText());
+        job.add("DateTime", n.getTime());
+        job.add("Read", n.getRead());
+        job.add("NotificationTypeId", n.getTypeId());
+        return job.build();
     }
 
     @DELETE

@@ -5,7 +5,9 @@ import oose.p.c6.imd.persistent.dao.IQuestDAO;
 import oose.p.c6.imd.persistent.dao.IUserDao;
 
 import javax.inject.Inject;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static java.util.Objects.isNull;
 
@@ -49,7 +51,17 @@ public class Librarian {
     }
 
     public boolean removeQuestFromQuestLog(int entryId, User user) {
-        return user.removeQuestFromQuestLog(entryId);
+        boolean success = user.removeQuestFromQuestLog(entryId);
+        if (success) {
+            Map<String, String> notificationVariables = new HashMap<>();
+            notificationVariables.put("QuestId", Integer.toString(entryId));
+            sendNotification(user, 2,notificationVariables);
+        }
+        return success;
+    }
+
+    private void sendNotification(User user, int typeId, Map<String, String> variables) {
+        user.addNotification(typeId, variables);
     }
 
     public boolean buyReplica(User user, int replicaId) {
@@ -60,35 +72,22 @@ public class Librarian {
         return shop.getAvailableReplicas(user);
     }
 
-    public Exhibit getExhibitDetails(User user, int exhibitId) {
-        return exhibits.find(user, exhibitId);
-    }
+    public Exhibit getExhibitDetails(User user, int exhibitId){return exhibits.find(user, exhibitId);}
 
-    public List<Exhibit> getAvailableExhibitsFromEra(User user, int eraId) {
-        return exhibits.listByEra(user, eraId);
-    }
+    public List<Exhibit> getAvailableExhibitsFromEra(User user, int eraId){return exhibits.listByEra(user, eraId);}
+    public List<Exhibit> getAvailableExhibitsFromMuseum(User user, int museumId){return exhibits.listByMuseum(user, museumId);}
+    public List<Exhibit> getAvailableExhibits(User user){return exhibits.list(user);}
 
-    public List<Exhibit> getAvailableExhibitsFromMuseum(User user, int museumId) {
-        return exhibits.listByMuseum(user, museumId);
-    }
-
-    public List<Exhibit> getAvailableExhibits(User user) {
-        return exhibits.list(user);
-    }
-
-    public Era findEra(User user, int eraId) {
+    public Era findEra(User user, int eraId){
         return exhibits.findEra(user, eraId);
     }
-
-    public List<Era> listEra(User user) {
+    public List<Era> listEra(User user){
         return exhibits.listEra(user);
     }
-
-    public Museum findMuseum(int museumId) {
+    public Museum findMuseum(int museumId){
         return exhibits.findMuseum(museumId);
     }
-
-    public List<Museum> listMuseums() {
+    public List<Museum> listMuseums(){
         return exhibits.listMuseums();
     }
 
@@ -96,7 +95,7 @@ public class Librarian {
         userDao.remove(user);
     }
 
-    public int updateUser(String email, String displayName, String password, int languageId, User user) {
+    public int updateUser(String email, String displayName, String password, int languageId,User user) {
         return user.updateUser(email, displayName, password, languageId, user);
     }
 
@@ -106,6 +105,18 @@ public class Librarian {
 
     public List<Quest> getQuestLog(User user) {
         return questDAO.getQuestsForUser(user.getId(), user.getLanguageId());
+    }
+
+    public void addNotificationToEveryUser(Map<String, String> variables, int typeId) {
+        List<User> allUsers = userDao.list();
+        for (User user:allUsers) {
+            user.addNotification(typeId, variables);
+        }
+
+    }
+
+    public List<Replica> getReplicasFromUser(User user) {
+        return user.getReplicas();
     }
 
     public int registerUser(String email, String password, String name, int languageId) {

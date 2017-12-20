@@ -5,21 +5,27 @@ public class DAOFactory {
         throw new IllegalStateException("DAOFactory class");
     }
 
+    private static IUserDao userDao = new UserJDBCDao();
+    private static IReplicaDao replicaDao = new ReplicaJDBCDao();
     private static IExhibitDao exhibitDao = new ExhibitJDBCDao();
     private static IQuestDAO questDao = new QuestJDBCDao();
-    private static IUserDao userDao = new UserJDBCDao();
 
     public static IReplicaDao getReplicaDao() {
         return new ReplicaJDBCDao();
     }
 
     public static IUserDao getUserDao() {
-        return new UserJDBCDao();
+        return userDao;
     }
 
-    public static IQuestDAO getQuestDao() {
+    public static IQuestDAO getQuestDao(){
         return questDao;
     }
+
+    public static void setQuestDao(IQuestDAO dao){
+        questDao = dao;
+    }
+
 
     public static IExhibitDao getExhibitDao() {
         return exhibitDao;
@@ -29,7 +35,7 @@ public class DAOFactory {
         exhibitDao = ed;
     }
 
-    public static void setUserDao(IUserDao uD) {
-        userDao = uD;
+    public static void setUserDao(IUserDao dao) {
+        userDao = dao;
     }
 }

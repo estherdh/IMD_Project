@@ -7,6 +7,7 @@ import oose.p.c6.imd.persistent.dao.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -134,6 +135,10 @@ public class User extends Model {
         return !password.trim().isEmpty() && password.length() <= 128 && password.length() >= 6;
     }
 
+    public void addNotification(int typeId, Map<String, String> properties) {
+        userDao.addNotification(typeId, properties, this);
+    }
+
     public String getEmail() {
         return email;
     }
@@ -188,6 +193,12 @@ public class User extends Model {
 
     public void setReplicaDao(IReplicaDao replicaDao) {
         this.replicaDao = replicaDao;
+    }
+
+    public List<Notification> getNotifications() {return userDao.listNotification(this); }
+
+    public List<Replica> getReplicas() {
+        return replicaDao.getReplicasFromUser(this);
     }
 
     public int areValidCredentials(String email, String password, String name, int languageId) {

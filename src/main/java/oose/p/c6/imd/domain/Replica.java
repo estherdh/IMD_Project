@@ -1,25 +1,37 @@
 package oose.p.c6.imd.domain;
 
 public class Replica extends Model{
-    private int exhibitInfoId;
+    private int exhibitId;
     private int price;
     private String sprite;
     private int type;
+    private Exhibit exhibit;
+    private int position;
 
-    public Replica(int id, int exhibitInfoId, int price, String sprite, int type) {
+    public Replica(int id, int exhibitId, int price, String sprite, int type) {
         super(id);
-        this.exhibitInfoId = exhibitInfoId;
+        this.exhibitId = exhibitId;
         this.price = price;
         this.sprite = sprite;
         this.type = type;
     }
 
-    public int getExhibitInfoId() {
-        return exhibitInfoId;
+    public Replica(int id, int exhibitId, int price, String sprite, int type, int position, Exhibit exhibit) {
+        super(id);
+        this.exhibitId = exhibitId;
+        this.price = price;
+        this.sprite = sprite;
+        this.type = type;
+        this.position = position;
+        this.exhibit = exhibit;
     }
 
-    public void setExhibitInfoId(int exhibitInfoId) {
-        this.exhibitInfoId = exhibitInfoId;
+    public int getExhibitId() {
+        return exhibitId;
+    }
+
+    public void setExhibitId(int exhibitId) {
+        this.exhibitId = exhibitId;
     }
 
     public int getPrice() {
@@ -44,5 +56,21 @@ public class Replica extends Model{
 
     public void setType(int type) {
         this.type = type;
+    }
+
+    public int getPosition() {
+        return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
+    }
+
+    public Exhibit getExhibit() {
+        return exhibit;
+    }
+
+    public void setExhibit(Exhibit exhibit) {
+        this.exhibit = exhibit;
     }
 }
