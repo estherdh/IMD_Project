@@ -167,14 +167,7 @@ public class UserJDBCDao implements IUserDao {
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                return new User(
-                        rs.getInt("UserId"),
-                        rs.getString("Email"),
-                        rs.getString("Password"),
-                        rs.getString("DisplayName"),
-                        rs.getInt("Coins"),
-                        rs.getInt("LanguageId")
-                );
+                return generateNewUser(rs);
             } else {
                 return null;
             }

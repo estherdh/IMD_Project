@@ -116,7 +116,7 @@ public class UserJDBCDaoTest {
         dao.addNotification(1, variables, mockUser);
         //check
         verify(mockUser, times(1)).getId();
-        ResultSet rs = conn.prepareStatement("SELECT * FROM usernotification WHERE NotificationId = 1 AND UserId = 2;").executeQuery();
+        ResultSet rs = conn.prepareStatement("SELECT * FROM usernotification WHERE NotificationId = 1 AND UserId = 2 AND UserNotificationId = 2;").executeQuery();
         assertTrue(rs.next());
         assertFalse(rs.next());
         rs = conn.prepareStatement("SELECT * FROM notificationproperties WHERE Key = 'key1' AND Value = 'value1';").executeQuery();
