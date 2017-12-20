@@ -34,8 +34,8 @@ public class Quest {
 		IUserDao userDao = DAOFactory.getUserDao();
 		User user = userDao.getUserByQuestId(entryId);
 		Map<String, String> variables = new HashMap<String, String>();
-		variables.put("questId", Integer.toString(entryId));
-		variables.put("userCoins", Integer.toString(user.getCoins() + reward));
+		variables.put("QuestId", Integer.toString(entryId));
+		variables.put("Coins", Integer.toString(user.getCoins() + reward));
 		userDao.addNotification(1, variables, user);
 	}
 
