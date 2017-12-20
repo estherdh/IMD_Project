@@ -5,7 +5,9 @@ import oose.p.c6.imd.persistent.dao.IQuestDAO;
 import oose.p.c6.imd.persistent.dao.IUserDao;
 
 import javax.inject.Inject;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Librarian {
     @Inject
@@ -37,7 +39,7 @@ public class Librarian {
 
     public void scanQrCode(User user, String qrCode) {
         Action qrScanAction = new QrScanAction(qrCode);
-         if (user.checkQuestCompleted(qrScanAction)) {
+        if (user.checkQuestCompleted(qrScanAction)) {
             userDao.update(user);
         }
     }
@@ -46,9 +48,19 @@ public class Librarian {
         return userDao.findUserByemail(email);
     }
 
-	public boolean removeQuestFromQuestLog(int entryId, User user) {
-        return user.removeQuestFromQuestLog(entryId);
-	}
+    public boolean removeQuestFromQuestLog(int entryId, User user) {
+        boolean success = user.removeQuestFromQuestLog(entryId);
+        if (success) {
+            Map<String, String> notificationVariables = new HashMap<>();
+            notificationVariables.put("QuestId", Integer.toString(entryId));
+            sendNotification(user, 2,notificationVariables);
+        }
+        return success;
+    }
+
+    private void sendNotification(User user, int typeId, Map<String, String> variables) {
+        user.addNotification(typeId, variables);
+    }
 
     public boolean buyReplica(User user, int replicaId) {
         return shop.buyReplica(user, replicaId);
@@ -65,7 +77,7 @@ public class Librarian {
     public List<Exhibit> getAvailableExhibits(User user){return exhibits.list(user);}
 
     public Era findEra(User user, int eraId){
-       return exhibits.findEra(user, eraId);
+        return exhibits.findEra(user, eraId);
     }
     public List<Era> listEra(User user){
         return exhibits.listEra(user);
@@ -76,9 +88,13 @@ public class Librarian {
     public List<Museum> listMuseums(){
         return exhibits.listMuseums();
     }
+    public void removeUser(User user) {
+        userDao.remove(user);
+    }
 
-
-
+    public int updateUser(String email, String displayName, String password, int languageId,User user) {
+        return user.updateUser(email, displayName, password, languageId, user);
+    }
 
     public int placeReplica(int replicaId, int positionId, User user) {
         return library.tryPlaceReplica(user, replicaId, positionId);
@@ -86,5 +102,13 @@ public class Librarian {
 
     public List<Quest> getQuestLog(User user) {
         return questDAO.getQuestsForUser(user.getId(), user.getLanguageId());
+    }
+
+    public void addNotificationToEveryUser(Map<String, String> variables, int typeId) {
+        List<User> allUsers = userDao.list();
+        for (User user:allUsers) {
+            user.addNotification(typeId, variables);
+        }
+
     }
 }

@@ -1,9 +1,6 @@
 package oose.p.c6.imd.persistent.dao;
 
-import oose.p.c6.imd.domain.IQuestType;
-import oose.p.c6.imd.domain.Quest;
-import oose.p.c6.imd.domain.QuestFactory;
-import oose.p.c6.imd.domain.QuestTypes;
+import oose.p.c6.imd.domain.*;
 import oose.p.c6.imd.persistent.ConnectMySQL;
 
 import java.sql.Connection;
@@ -22,17 +19,29 @@ public class QuestJDBCDao implements IQuestDAO {
 
     public void addQuestToQuestlog(Map<String, String> properties, int userId, int questTypeId) {
         Connection connection = ConnectMySQL.getInstance().getConnection();
-        ResultSet rs = null;
         try {
             PreparedStatement psInsert1 = connection.prepareStatement("INSERT INTO Questlog (UserId, QuestTypeId) VALUES (?, ?)");
             psInsert1.setInt(1, userId);
             psInsert1.setInt(2, questTypeId);
             psInsert1.execute();
 
-            PreparedStatement psInsert2 = connection.prepareStatement("INSERT INTO Questproperties (EntryId, Key, Value) VALUES ((SELECT LAST_INSERT_ID()), ?, ?) ");
+            ResultSet rs1 = connection.prepareStatement("SELECT LAST_INSERT_ID()").executeQuery();
+            rs1.next();
+            int entryId = rs1.getInt(1);
 
-            psInsert2.setString(1, properties.get("Key"));
-            psInsert2.setString(2, properties.get("Value"));
+            String sql = "INSERT INTO Questproperties (EntryId, `Key`, `Value`) VALUES ";
+            for (int i = 0; i < properties.size(); i++) {
+                sql = sql + "(? , ?, ?), ";
+            }
+            sql = sql.replaceAll(", $", "");
+            PreparedStatement psInsert2 = connection.prepareStatement(sql);
+
+            int j = 1;
+            for (Map.Entry<String, String> entry : properties.entrySet()) {
+                psInsert2.setInt(j++, entryId);
+                psInsert2.setString(j++, entry.getKey());
+                psInsert2.setString(j++, entry.getValue());
+            }
             psInsert2.execute();
 
 //            connection.close();
