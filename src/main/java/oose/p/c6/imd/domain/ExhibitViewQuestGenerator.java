@@ -9,12 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-public class ExhibitViewQuestGenerator extends IQuestGenerator {
+public class ExhibitViewQuestGenerator extends BaseQuestGenerator {
 
-    private IQuestDAO questDAO;
-    private IExhibitDao exhibitDao;
-
-    @Override
     public void generateQuest(int userId) {
         Map<String, String> properties = new HashMap<>();
         questTypeId = 3;
@@ -37,7 +33,7 @@ public class ExhibitViewQuestGenerator extends IQuestGenerator {
         return exhibitDao.findExhibitsNotYetInQuestlog(userId);
     }
 
-    private void addQuestToQuestlog(Map<String, String> properties, int userId) {
+    public void addQuestToQuestlog(Map<String, String> properties, int userId) {
         IQuestDAO questDAO = DAOFactory.getQuestDao();
         questDAO.addQuestToQuestlog(properties, userId, questTypeId);
     }
