@@ -34,7 +34,6 @@ public class DAOFactory {
     public static void setExhibitDao(IExhibitDao ed) {
         exhibitDao = ed;
     }
-}
 
     public static void setUserDao(IUserDao dao) {
         userDao = dao;
