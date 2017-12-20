@@ -50,6 +50,23 @@ public class RESTService {
     }
 
     @POST
+    @Path("/register")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response registerUser(JsonObject object) {
+        JsonBuilderFactory factory = Json.createBuilderFactory(null);
+        JsonObjectBuilder job = factory.createObjectBuilder();
+        int registerState = l.registerUser(object.getString("email"), object.getString("password"), object.getString("displayName"), object.getInt("languageId"));
+        if (registerState == 0) {
+            Token t = TokenManager.getInstance().createTokenForUser(l.getUserByEmail(object.getString("email")));
+            job.add("token", t.getTokenString());
+            return Response.status(200).entity(job.build()).build();
+        } else {
+            job.add("reason", registerState);
+            return Response.status(401).entity(job.build()).build();
+        }
+    }
+
+    @POST
     @Path("/shop/buy/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response buyReplica(@PathParam("id") int replicaId, @QueryParam("token") String token) {
@@ -354,9 +371,9 @@ public class RESTService {
 
     @DELETE
     @Path("/user/remove")
-    public Response removeAccount(@QueryParam("token") String token){
+    public Response removeAccount(@QueryParam("token") String token) {
         User user = TokenManager.getInstance().getUserFromToken(token);
-        if(user != null){
+        if (user != null) {
             l.removeUser(user);
             TokenManager.getInstance().removeUserByToken(token);
             return Response.status(200).build();

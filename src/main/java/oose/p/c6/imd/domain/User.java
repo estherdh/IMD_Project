@@ -36,6 +36,13 @@ public class User extends Model {
         this.questLog = new QuestLog();
     }
 
+    public User(String email, String password, String displayName, int languageId) {
+        this.email = email;
+        this.password = password;
+        this.displayName = displayName;
+        this.languageId = languageId;
+    }
+
     public boolean passwordCorrect(String actual) {
         return hashPassword(actual).equals(password);
     }
@@ -85,7 +92,7 @@ public class User extends Model {
     }
 
     public int updateUser(String email, String name, String password, int languageId, User user) {
-        if (isValidEmailAddress(email)){
+        if (isValidEmailAddress(email)) {
             if (isValidDisplayName(name)) {
                 if (isValidPassword(password)) {
                     user.setEmail(email);
@@ -181,5 +188,27 @@ public class User extends Model {
 
     public void setReplicaDao(IReplicaDao replicaDao) {
         this.replicaDao = replicaDao;
+    }
+
+    public int areValidCredentials(String email, String password, String name, int languageId) {
+        if (isValidEmailAddress(email)) {
+            if (isValidDisplayName(name)) {
+                if (isValidPassword(password)) {
+                    setEmail(email);
+                    setDisplayName(name);
+                    setPassword(hashPassword(password));
+                    setLanguageId(languageId);
+                    setCoins(0);
+                    // success
+                    return 0;
+                }
+                //invalid password
+                return 1;
+            }
+            //invalid displayName
+            return 2;
+        }
+        //invalid email
+        return 3;
     }
 }

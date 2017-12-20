@@ -7,6 +7,9 @@ import oose.p.c6.imd.persistent.dao.IUserDao;
 import javax.inject.Inject;
 import java.util.List;
 
+import static java.util.Objects.isNull;
+import static java.util.Objects.requireNonNull;
+
 public class Librarian {
     @Inject
     private IUserDao userDao;
@@ -25,10 +28,10 @@ public class Librarian {
 
     public int verifyLogin(String email, String password) {
         User u = getUserByEmail(email);
-        if(u == null) {
+        if (u == null) {
             return 1;
         }
-        if(u.passwordCorrect(password)){
+        if (u.passwordCorrect(password)) {
             return 0;
         } else {
             return 2;
@@ -42,7 +45,7 @@ public class Librarian {
         }
     }
 
-    public User getUserByEmail(String email){
+    public User getUserByEmail(String email) {
         return userDao.findUserByemail(email);
     }
 
@@ -58,29 +61,43 @@ public class Librarian {
         return shop.getAvailableReplicas(user);
     }
 
-    public Exhibit getExhibitDetails(User user, int exhibitId){return exhibits.find(user, exhibitId);}
+    public Exhibit getExhibitDetails(User user, int exhibitId) {
+        return exhibits.find(user, exhibitId);
+    }
 
-    public List<Exhibit> getAvailableExhibitsFromEra(User user, int eraId){return exhibits.listByEra(user, eraId);}
-    public List<Exhibit> getAvailableExhibitsFromMuseum(User user, int museumId){return exhibits.listByMuseum(user, museumId);}
-    public List<Exhibit> getAvailableExhibits(User user){return exhibits.list(user);}
+    public List<Exhibit> getAvailableExhibitsFromEra(User user, int eraId) {
+        return exhibits.listByEra(user, eraId);
+    }
 
-    public Era findEra(User user, int eraId){
+    public List<Exhibit> getAvailableExhibitsFromMuseum(User user, int museumId) {
+        return exhibits.listByMuseum(user, museumId);
+    }
+
+    public List<Exhibit> getAvailableExhibits(User user) {
+        return exhibits.list(user);
+    }
+
+    public Era findEra(User user, int eraId) {
         return exhibits.findEra(user, eraId);
     }
-    public List<Era> listEra(User user){
+
+    public List<Era> listEra(User user) {
         return exhibits.listEra(user);
     }
-    public Museum findMuseum(int museumId){
+
+    public Museum findMuseum(int museumId) {
         return exhibits.findMuseum(museumId);
     }
-    public List<Museum> listMuseums(){
+
+    public List<Museum> listMuseums() {
         return exhibits.listMuseums();
     }
+
     public void removeUser(User user) {
         userDao.remove(user);
     }
 
-    public int updateUser(String email, String displayName, String password, int languageId,User user) {
+    public int updateUser(String email, String displayName, String password, int languageId, User user) {
         return user.updateUser(email, displayName, password, languageId, user);
     }
 
@@ -90,5 +107,16 @@ public class Librarian {
 
     public List<Quest> getQuestLog(User user) {
         return questDAO.getQuestsForUser(user.getId(), user.getLanguageId());
+    }
+
+    public int registerUser(String email, String password, String name, int languageId) {
+        User newUser = new User(email, password, name, languageId);
+        int validationState = newUser.areValidCredentials(email, password, name, languageId);
+        if (!isNull(getUserByEmail(email))) {
+            validationState = 5;
+        } else if (validationState == 0) {
+            userDao.add(newUser);
+        }
+        return validationState;
     }
 }

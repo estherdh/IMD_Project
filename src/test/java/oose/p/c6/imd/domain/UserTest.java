@@ -18,112 +18,197 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UserTest {
-	@Mock
-	private QuestJDBCDao questDao;
-	@Mock
-	private UserJDBCDao userDao;
-	@InjectMocks
-	private User user = new User(0, "mail", "password", "fullname", 0, 1);
+    @Mock
+    private QuestJDBCDao questDao;
+    @Mock
+    private UserJDBCDao userDao;
+    @InjectMocks
+    private User user = new User(0, "mail", "password", "fullname", 0, 1);
 
-	@Test
-	public void checkQuestCompletedAddCoins() throws Exception {
-		//init
-		Action inputAction = mock(Action.class);
-		QuestLog questLog = mock(QuestLog.class);
-		user.setQuestLog(questLog);
-		when(questLog.checkQuestComplete(inputAction, 0, 1)).thenReturn(100);
-		//test
-		boolean actualResult = user.checkQuestCompleted(inputAction);
-		//check
-		assertTrue(actualResult);
-		assertThat(user.getCoins(), is(100));
-	}
+    @Test
+    public void checkQuestCompletedAddCoins() throws Exception {
+        //init
+        Action inputAction = mock(Action.class);
+        QuestLog questLog = mock(QuestLog.class);
+        user.setQuestLog(questLog);
+        when(questLog.checkQuestComplete(inputAction, 0, 1)).thenReturn(100);
+        //test
+        boolean actualResult = user.checkQuestCompleted(inputAction);
+        //check
+        assertTrue(actualResult);
+        assertThat(user.getCoins(), is(100));
+    }
 
-	@Test
-	public void checkQuestQuestFailedNoCoins() throws Exception {
-		//init
-		Action inputAction = mock(Action.class);
-		QuestLog questLog = mock(QuestLog.class);
-		user.setQuestLog(questLog);
-		when(questLog.checkQuestComplete(inputAction, 0, 1)).thenReturn(0);
-		//test
-		Boolean actualResult = user.checkQuestCompleted(inputAction);
-		//check
-		assertThat(user.getCoins(), is(0));
-		assertFalse(actualResult);
-	}
+    @Test
+    public void checkQuestQuestFailedNoCoins() throws Exception {
+        //init
+        Action inputAction = mock(Action.class);
+        QuestLog questLog = mock(QuestLog.class);
+        user.setQuestLog(questLog);
+        when(questLog.checkQuestComplete(inputAction, 0, 1)).thenReturn(0);
+        //test
+        Boolean actualResult = user.checkQuestCompleted(inputAction);
+        //check
+        assertThat(user.getCoins(), is(0));
+        assertFalse(actualResult);
+    }
 
-	@Test
-	public void removeQuestFromBacklogSuccess() {
-		//init
-		User user = new User(1, "email", "password", "fullName", 10, 1);
-		QuestLog questLog = mock(QuestLog.class);
-		user.setQuestLog(questLog);
-		when(questLog.removeQuestFromQuestLog(1, 1)).thenReturn(true);
-		//test
-		boolean actualResult = user.removeQuestFromQuestLog(1);
-		//check
-		assertTrue(actualResult);
-	}
+    @Test
+    public void removeQuestFromBacklogSuccess() {
+        //init
+        User user = new User(1, "email", "password", "fullName", 10, 1);
+        QuestLog questLog = mock(QuestLog.class);
+        user.setQuestLog(questLog);
+        when(questLog.removeQuestFromQuestLog(1, 1)).thenReturn(true);
+        //test
+        boolean actualResult = user.removeQuestFromQuestLog(1);
+        //check
+        assertTrue(actualResult);
+    }
 
-	@Test
-	public void updateUserSuccess() {
-		//init
-		JsonObject jo = Json.createObjectBuilder()
-				.add("email", "test@mail.com")
-				.add("displayName", "testUser")
-				.add("password", "testPassword")
-				.add("languageId", 2)
-				.build();
-		//test
-		int actualResponse =   user.updateUser(jo.getString("email"), jo.getString("displayName"), jo.getString("password"), jo.getInt("languageId"), user);
-		//check
-		assertThat(actualResponse, is(0));
-		assertEquals("test@mail.com", jo.getString("email"));
-		assertEquals("testUser", jo.getString("displayName"));
-		assertEquals("testPassword", jo.getString("password"));
-		assertEquals(2,jo.getInt("languageId"));
-	}
+    @Test
+    public void updateUserSuccess() {
+        //init
+        JsonObject jo = Json.createObjectBuilder()
+                .add("email", "test@mail.com")
+                .add("displayName", "testUser")
+                .add("password", "testPassword")
+                .add("languageId", 2)
+                .build();
+        //test
+        int actualResponse = user.updateUser(jo.getString("email"), jo.getString("displayName"), jo.getString("password"), jo.getInt("languageId"), user);
+        //check
+        assertThat(actualResponse, is(0));
+        assertEquals("test@mail.com", jo.getString("email"));
+        assertEquals("testUser", jo.getString("displayName"));
+        assertEquals("testPassword", jo.getString("password"));
+        assertEquals(2, jo.getInt("languageId"));
+    }
 
-	@Test
-	public void updateUserInvalidEmail() {
-		JsonObject jo = Json.createObjectBuilder()
-				.add("email", "------")
-				.add("displayName", "testUser")
-				.add("password", "testPassword")
-				.add("languageId", 1)
-				.build();
-		//test
-		int actualResponse =   user.updateUser(jo.getString("email"), jo.getString("displayName"), jo.getString("password"), jo.getInt("languageId"), user);
-		//check
-		assertThat(actualResponse, is(3));
-	}
+    @Test
+    public void updateUserInvalidEmail() {
+        JsonObject jo = Json.createObjectBuilder()
+                .add("email", "------")
+                .add("displayName", "testUser")
+                .add("password", "testPassword")
+                .add("languageId", 1)
+                .build();
+        //test
+        int actualResponse = user.updateUser(jo.getString("email"), jo.getString("displayName"), jo.getString("password"), jo.getInt("languageId"), user);
+        //check
+        assertThat(actualResponse, is(3));
+    }
 
-	@Test
-	public void updateUserInvalidDisplayName() {
-		JsonObject jo = Json.createObjectBuilder()
-				.add("email", "test@mail.com")
-				.add("displayName", "")
-				.add("password", "testPassword")
-				.add("languageId", 1)
-				.build();
-		//test
-		int actualResponse =   user.updateUser(jo.getString("email"), jo.getString("displayName"), jo.getString("password"), jo.getInt("languageId"), user);
-		//check
-		assertThat(actualResponse, is(2));
-	}
+    @Test
+    public void updateUserInvalidDisplayName() {
+        JsonObject jo = Json.createObjectBuilder()
+                .add("email", "test@mail.com")
+                .add("displayName", "")
+                .add("password", "testPassword")
+                .add("languageId", 1)
+                .build();
+        //test
+        int actualResponse = user.updateUser(jo.getString("email"), jo.getString("displayName"), jo.getString("password"), jo.getInt("languageId"), user);
+        //check
+        assertThat(actualResponse, is(2));
+    }
 
-	@Test
-	public void updateUserInvalidPassword() {
-		JsonObject jo = Json.createObjectBuilder()
-				.add("email", "test@mail.com")
-				.add("displayName", "testUser")
-				.add("password", "")
-				.add("languageId", 1)
-				.build();
-		//test
-		int actualResponse =   user.updateUser(jo.getString("email"), jo.getString("displayName"), jo.getString("password"), jo.getInt("languageId"), user);
-		//check
-		assertThat(actualResponse, is(1));
-	}
+    @Test
+    public void updateUserInvalidPassword() {
+        JsonObject jo = Json.createObjectBuilder()
+                .add("email", "test@mail.com")
+                .add("displayName", "testUser")
+                .add("password", "")
+                .add("languageId", 1)
+                .build();
+        //test
+        int actualResponse = user.updateUser(jo.getString("email"), jo.getString("displayName"), jo.getString("password"), jo.getInt("languageId"), user);
+        //check
+        assertThat(actualResponse, is(1));
+    }
+
+    //are valid credentials tests
+    @Test
+    public void areValidCredentialsSuccessTest() {
+        //init
+        JsonObject object = Json.createObjectBuilder()
+                .add("email", "test@newmail.com")
+                .add("displayName", "testNewUser")
+                .add("password", "testNewPassword")
+                .add("languageId", 1)
+                .build();
+
+        //test
+        int actualResponse = user.areValidCredentials(object.getString("email"), object.getString("password"), object.getString("displayName"), object.getInt("languageId")) ;
+
+        //check
+        assertThat(actualResponse, is(0));
+        assertEquals("test@newmail.com", object.getString("email"));
+        assertEquals("testNewUser", object.getString("displayName"));
+        assertEquals("testNewPassword", object.getString("password"));
+        assertEquals(1, object.getInt("languageId"));
+    }
+
+    @Test
+    public void areValidCredentialsInvalidPasswordTest() {
+        //init
+        JsonObject object = Json.createObjectBuilder()
+                .add("email", "test@newmail.com")
+                .add("displayName", "testNewUser")
+                .add("password", "")
+                .add("languageId", 1)
+                .build();
+
+        //test
+        int actualResponse = user.areValidCredentials(object.getString("email"), object.getString("password"), object.getString("displayName"), object.getInt("languageId")) ;
+
+        //check
+        assertThat(actualResponse, is(1));
+        assertEquals("test@newmail.com", object.getString("email"));
+        assertEquals("testNewUser", object.getString("displayName"));
+        assertEquals("", object.getString("password"));
+        assertEquals(1, object.getInt("languageId"));
+    }
+
+    @Test
+    public void areValidCredentialsInvalidDisplayNameTest() {
+        //init
+        JsonObject object = Json.createObjectBuilder()
+                .add("email", "test@newmail.com")
+                .add("displayName", "")
+                .add("password", "testNewPassword")
+                .add("languageId", 1)
+                .build();
+
+        //test
+        int actualResponse = user.areValidCredentials(object.getString("email"), object.getString("password"), object.getString("displayName"), object.getInt("languageId")) ;
+
+        //check
+        assertThat(actualResponse, is(2));
+        assertEquals("test@newmail.com", object.getString("email"));
+        assertEquals("", object.getString("displayName"));
+        assertEquals("testNewPassword", object.getString("password"));
+        assertEquals(1, object.getInt("languageId"));
+    }
+
+    @Test
+    public void areValidCredentialsInvalidEmailTest() {
+        //init
+        JsonObject object = Json.createObjectBuilder()
+                .add("email", "test")
+                .add("displayName", "testNewUser")
+                .add("password", "testNewPassword")
+                .add("languageId", 1)
+                .build();
+
+        //test
+        int actualResponse = user.areValidCredentials(object.getString("email"), object.getString("displayName"), object.getString("password"), object.getInt("languageId")) ;
+
+        //check
+        assertThat(actualResponse, is(3));
+        assertEquals("test", object.getString("email"));
+        assertEquals("testNewUser", object.getString("displayName"));
+        assertEquals("testNewPassword", object.getString("password"));
+        assertEquals(1, object.getInt("languageId"));
+    }
 }
