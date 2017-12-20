@@ -23,12 +23,27 @@ public class ReplicaJDBCDao implements IReplicaDao {
         Connection connection = ConnectMySQL.getInstance().getConnection();
         List<Replica> replicas = new ArrayList<>();
         try {
-            PreparedStatement ps = connection.prepareStatement("SELECT * FROM `replica`" +
-                    " WHERE `ReplicaId` NOT IN (SELECT `ReplicaId` FROM `userreplica` WHERE `UserId` = ?)");
-            ps.setInt(1, user.getId());
+            PreparedStatement ps = connection.prepareStatement("SELECT r.*, e.*, ei.*, (" +
+                    "SELECT `Name` FROM eralanguage erlan "+
+                    "WHERE erlan.EraId=e.EraId AND erlan.LanguageId = (" +
+                    "SELECT COALESCE((" +
+                    "SELECT `LanguageId` FROM `eralanguage` erlang WHERE erlang.EraId=e.EraId AND `LanguageId` = ?), 1))) AS EraName " +
+                    "FROM `replica` r " +
+                    "INNER JOIN `exhibit` e ON e.ExhibitId=r.ExhibitId " +
+                    "INNER JOIN exhibitinfo ei ON ei.ExhibitId=e.ExhibitId " +
+                    "WHERE ei.LanguageId = (SELECT COALESCE((SELECT `LanguageId` FROM `exhibitinfo` WHERE `ExhibitId` = e.ExhibitId AND `LanguageId` = ?), 1)) " +
+                    "AND r.ReplicaId NOT IN (SELECT `ReplicaId` FROM `userreplica` WHERE `UserId` = ?)");
+            ps.setInt(1, user.getLanguageId());
+            ps.setInt(2, user.getLanguageId());
+            ps.setInt(3, user.getId());
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                replicas.add(createReplica(rs));
+                Era era = new Era(rs.getInt("EraId"), rs.getString("EraName"));
+                Exhibit exhibit = new Exhibit(rs.getInt("ExhibitId"), rs.getString("Name"),
+                        rs.getString("Description"), rs.getString("Video"), rs.getString("Image"),
+                        rs.getInt("Year"), rs.getInt("EraId"), rs.getInt("MuseumId"), era);
+                Replica replica = new Replica(rs.getInt("ReplicaId"), rs.getInt("ExhibitId"), rs.getInt("Price"), rs.getString("Sprite"), rs.getInt("ReplicaTypeId"), 0, exhibit);
+                replicas.add(replica);
             }
             connection.close();
         } catch (SQLException e) {

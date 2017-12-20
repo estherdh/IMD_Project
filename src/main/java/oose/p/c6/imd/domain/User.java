@@ -192,5 +192,5 @@ public class User extends Model {
         return replicaDao.getReplicasFromUser(this);
     }
 
-    public List<Notification> getNotifications() {return userDao.listNotification(this); }
+    public List<Notification> getNotifications() { return userDao.listNotification(this); }
 }
