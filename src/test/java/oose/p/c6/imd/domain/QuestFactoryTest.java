@@ -30,6 +30,5 @@ public class QuestFactoryTest {
 
         assertThat(q, instanceOf(DummyQuest.class));
     }
-
 }
 
