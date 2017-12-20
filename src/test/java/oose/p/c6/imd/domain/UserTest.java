@@ -16,10 +16,12 @@ import javax.json.JsonObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UserTest {
@@ -148,7 +150,13 @@ public class UserTest {
 		assertEquals(list.get(0).getTime(), expected.get(0).getTime());
 	}
 
-
-
-
+	@Test
+	public void addNotificationTestSuccess() {
+		//init
+		Map expectedResult = new HashMap<String, String>();
+		//test
+		user.addNotification(1, expectedResult);
+		//check
+		verify(userDao, times(1)).addNotification(1, expectedResult, user);
+	}
 }

@@ -19,9 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PojoTest {
-	// Configured for expectation, so we know when a class gets added or removed.
-
-	// The package to test
 	List<PojoClass> pojoList;
 
 	@Before

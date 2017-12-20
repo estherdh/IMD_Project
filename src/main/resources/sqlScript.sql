@@ -310,24 +310,24 @@ VALUES (4, 1, 'Voorbeeld streektaal', 'Dit papier bevat een stuk tekst in streek
   (4, 3, 'Lol look at tis translation', 'Possibly testing de taal', 'object.png');
 
 INSERT INTO `replicatype` (`ReplicaTypeId`, `Name`) VALUES
-    (1, 'wall'),
-    (2, 'floor'),
-    (3, 'table');
+  (1, 'wall'),
+  (2, 'floor'),
+  (3, 'table');
 
 INSERT INTO `replica` (`ReplicaId`, `ExhibitInfoId`, `Price`, `Sprite`, `ReplicaTypeId`) VALUES
-    (1, 6, 10, 'traktor', 2),
-    (2, 1, 15, 'test1', 2),
-    (3, 1, 12, 'test2', 2);
+  (1, 6, 10, 'traktor', 2),
+  (2, 1, 15, 'test1', 2),
+  (3, 1, 12, 'test2', 2);
 
 INSERT INTO `replicapositions` (`ReplicaPositionId`, `ReplicaTypeId`) VALUES
-    (1, 2),
-    (2, 2),
-    (3, 2);
+  (1, 2),
+  (2, 2),
+  (3, 2);
 
 INSERT INTO `userreplica` (`UserId`, `ReplicaId`, `ReplicaPositionId`) VALUES
-    (1, 2, 1),
-    (1, 3, NULL),
-    (2, 1, NULL);
+  (1, 2, 1),
+  (1, 3, NULL),
+  (2, 1, NULL);
 
 INSERT INTO `Notification` (`LanguageId`, `NotificationText`) VALUES (1, 'Quest `{{{1}}}` voltooid! Je hebt nu {{{2}}} munten');
 INSERT INTO `UserNotification` (NotificationId, UserId) VALUES (1, 2);

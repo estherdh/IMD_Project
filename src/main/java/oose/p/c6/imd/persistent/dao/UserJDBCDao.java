@@ -150,6 +150,65 @@ public class UserJDBCDao implements IUserDao {
         }
     }
 
+    @Override
+    public void addNotification(int typeId, Map<String, String> properties, User user) {
+        int notificationId = addNotificationToUsernotificationAndGetId(typeId, user.getId());
+        if (notificationId > 0) {
+            properties.forEach((k,v)-> addPropertiesToNotification(notificationId, k, v));
+        }
+
+    }
+
+    private void addPropertiesToNotification(int notificationId, String key, String value) {
+        Connection connection = ConnectMySQL.getInstance().getConnection();
+        try {
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO notificationproperties (UserNotificationId, Key, Value) VALUES (?,?,?);");
+            ps.setInt(1, notificationId);
+            ps.setString(2, key);
+            ps.setString(3, value);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, e.toString(), e);
+        }
+    }
+
+    private int addNotificationToUsernotificationAndGetId(int typeId,  int userId) {
+        Connection connection = ConnectMySQL.getInstance().getConnection();
+        try {
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO usernotification(NotificationId, UserId) VALUES (? , ?)");
+            ps.setInt(1, typeId);
+            ps.setInt(2, userId);
+            ps.executeUpdate();
+            ResultSet rs = ps.getGeneratedKeys();
+            if(rs.next()){
+                return rs.getInt(1);
+            } else {
+                return 0;
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, e.toString(), e);
+            return 0;
+        }
+    }
+
+    @Override
+    public User getUserByQuestId(int id) {
+        Connection connection = ConnectMySQL.getInstance().getConnection();
+        try {
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM questlog q JOIN users u ON q.UserId = u.UserId WHERE q.EntryId = ?;");
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return generateNewUser(rs);
+            } else {
+                return null;
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, e.toString(), e);
+            return null;
+        }
+    }
+
     private User generateNewUser(ResultSet rs) {
         try {
             return new User(rs.getInt("UserId"), rs.getString("email"), rs.getString("Password"), rs.getString("DisplayName"), rs.getInt("Coins"), rs.getInt("LanguageId"));
