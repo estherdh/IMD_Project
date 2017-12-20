@@ -62,16 +62,34 @@ public class ReplicaJDBCDaoTest
 
     @Test
     public void findAvailableReplicasTest() {
+        Era era = new Era(1, "tijdperk test");
+        Exhibit exhibit = new Exhibit(1, "Het test object",
+                "Dit object wordt altijd al gebruikt om te testen", null, "object.png",
+                1999, 1, 1, era);
+        Replica replica = new Replica(1, 1, 10, "traktor", 2, 0, exhibit);
         // init
-        List<Replica> expectedReplicaList = new ArrayList<Replica>(){{
-            add(new Replica(1, 1, 10, "traktor", 2));
+        List<Replica> expected = new ArrayList<Replica>() {{
+            add(replica);
         }};
         // test
-        List<Replica> replicaList = dao.findAvailableReplicas(user);
+        List<Replica> actual = dao.findAvailableReplicas(user);
         // check result
-        assertThat(replicaList.size(), is(expectedReplicaList.size()));
-        for(int i = 0; i < expectedReplicaList.size(); i++) {
-            assertThat(replicaList.get(i), samePropertyValuesAs(expectedReplicaList.get(i)));
+        assertThat(actual.size(), samePropertyValuesAs(expected.size()));
+        for(int i = 0; i < expected.size(); i++) {
+            //check replica
+            assertThat(actual.get(i).getId(), is(expected.get(i).getId()));
+            assertThat(actual.get(i).getPrice(), is(expected.get(i).getPrice()));
+            assertThat(actual.get(i).getType(), is(expected.get(i).getType()));
+            assertThat(actual.get(i).getPosition(), is(0));
+            assertThat(actual.get(i).getSprite(), is(expected.get(i).getSprite()));
+            //check exhibit
+            assertThat(actual.get(i).getExhibit().getDescription(), is(expected.get(i).getExhibit().getDescription()));
+            assertThat(actual.get(i).getExhibit().getImage(), is(expected.get(i).getExhibit().getImage()));
+            assertThat(actual.get(i).getExhibit().getName(), is(expected.get(i).getExhibit().getName()));
+            assertThat(actual.get(i).getExhibit().getVideo(), is(expected.get(i).getExhibit().getVideo()));
+            assertThat(actual.get(i).getExhibit().getYear(), is(expected.get(i).getExhibit().getYear()));
+            //check era
+            assertThat(actual.get(i).getExhibit().getEra().getName(), is(expected.get(i).getExhibit().getEra().getName()));
         }
     }
 
@@ -110,9 +128,9 @@ public class ReplicaJDBCDaoTest
 
     @Test
     public void getReplicasFromUserTest() {
-        Era era = new Era(1, "test era");
-        Exhibit exhibit = new Exhibit(1, "The test object",
-                "Possibly used for testing", null, "object.png",
+        Era era = new Era(1, "tijdperk test");
+        Exhibit exhibit = new Exhibit(1, "Het test object",
+                "Dit object wordt altijd al gebruikt om te testen", null, "object.png",
                 1999, 1, 1, era);
         Replica replica = new Replica(2, 1, 15, "test1", 2, 1, exhibit);
         // init

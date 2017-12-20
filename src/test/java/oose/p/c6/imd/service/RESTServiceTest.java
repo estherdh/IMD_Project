@@ -161,18 +161,39 @@ public class RESTServiceTest {
     @Test
     public void getReplicasTestSuccess() throws Exception {
         //init
-        List<Replica> expectedResult = new ArrayList<>();
-        expectedResult.add(mock(Replica.class));
-        expectedResult.add(mock(Replica.class));
+        Era era = new Era(1, "tijdperk test");
+        Exhibit exhibit = new Exhibit(1, "Het test object",
+                "Dit object wordt altijd al gebruikt om te testen", null, "object.png",
+                1999, 1, 1, era);
+        Replica replica = new Replica(3, 1, 15, "test2", 2, 0, exhibit);
+        List<Replica> expected = new ArrayList<>();
+        expected.add(replica);
         User mockUser = mock(User.class);
+
         when(tokenManager.getUserFromToken("token")).thenReturn(mockUser);
-        when(librarian.getAvailableReplicas(mockUser)).thenReturn(expectedResult);
+        when(librarian.getAvailableReplicas(mockUser)).thenReturn(expected);
         //test
-        Response actualResponse = service.getReplicas("token");
-        //check
-        List<Replica> actualResult = (List<Replica>) actualResponse.getEntity();
-        assertThat(actualResult, is(expectedResult));
-        assertThat(actualResponse.getStatus(), is(200));
+        Response actual = service.getReplicas("token");
+        JsonArray jsonArray = (JsonArray) actual.getEntity();
+        JsonObject object1 = (JsonObject) jsonArray.get(0);
+        //check replica
+        assertThat(object1.getInt("ReplicaId"), is(expected.get(0).getId()));
+        assertThat(object1.getInt("PlacementCategoryId"), is(expected.get(0).getType()));
+        assertThat(object1.getString("Image"), is(expected.get(0).getSprite()));
+        assertThat(object1.getInt("Price"), is(expected.get(0).getPrice()));
+        //check exhibit
+        assertThat(object1.getJsonObject("Exhibit").getInt("ExhibitId"),  is(expected.get(0).getExhibit().getId()));
+        assertThat(object1.getJsonObject("Exhibit").getString("Name"),  is(expected.get(0).getExhibit().getName()));
+        assertThat(object1.getJsonObject("Exhibit").getString("Description"),  is(expected.get(0).getExhibit().getDescription()));
+        assertThat(object1.getJsonObject("Exhibit").getString("Video"),  is("undefined"));
+        assertThat(object1.getJsonObject("Exhibit").getString("Image"),  is(expected.get(0).getExhibit().getImage()));
+        assertThat(object1.getJsonObject("Exhibit").getInt("Year"),  is(expected.get(0).getExhibit().getYear()));
+        assertThat(object1.getJsonObject("Exhibit").getInt("MuseumId"),  is(expected.get(0).getExhibit().getMuseumId()));
+        //check era
+        assertThat(object1.getJsonObject("Exhibit").getJsonObject("Era").getInt("EraId"),  is(expected.get(0).getExhibit().getEra().getId()));
+        assertThat(object1.getJsonObject("Exhibit").getJsonObject("Era").getString("Name"),  is(expected.get(0).getExhibit().getEra().getName()));
+
+        assertThat(actual.getStatus(), is(200));
     }
 
 	@Test
