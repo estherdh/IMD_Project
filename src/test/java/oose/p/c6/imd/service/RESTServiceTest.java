@@ -10,7 +10,6 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import sun.invoke.empty.Empty;
 
 import javax.json.*;
 import javax.ws.rs.core.Response;
