@@ -8,6 +8,7 @@ public class Exhibit extends Model {
     private int year;
     private int eraId;
     private int museumId;
+    private Era era;
     public Exhibit (int id, String name, String description, String video, String image, int year, int eraId, int museumId){
         super(id);
         this.name = name;
@@ -19,6 +20,17 @@ public class Exhibit extends Model {
         this.eraId = eraId;
     }
 
+    public Exhibit (int id, String name, String description, String video, String image, int year, int eraId, int museumId, Era era){
+        super(id);
+        this.name = name;
+        this.description = description;
+        this.video = video;
+        this.image = image;
+        this.year = year;
+        this.museumId = museumId;
+        this.eraId = eraId;
+        this.era = era;
+    }
 
     public String getName() {
         return name;
@@ -74,5 +86,13 @@ public class Exhibit extends Model {
 
     public void setMuseumId(int museumId) {
         this.museumId = museumId;
+    }
+
+    public Era getEra() {
+        return era;
+    }
+
+    public void setEra(Era era) {
+        this.era = era;
     }
 }

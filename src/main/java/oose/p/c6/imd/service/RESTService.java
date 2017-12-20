@@ -74,9 +74,55 @@ public class RESTService {
         User user = TokenManager.getInstance().getUserFromToken(token);
         if (user != null) {
             List<Replica> replicas = l.getAvailableReplicas(user);
-            return Response.status(200).entity(replicas).build();
+            if(!replicas.isEmpty()) {
+                return Response.status(200).entity(buildReplicaList(replicas, false)).build();
+            }
+            return Response.status(200).build();
         }
         return Response.status(401).build();
+    }
+
+    @GET
+    @Path("/inventory")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getReplicasFromUser(@QueryParam("token") String token) {
+        User user = TokenManager.getInstance().getUserFromToken(token);
+        if(user != null)
+        {
+            List<Replica> replicas = l.getReplicasFromUser(user);
+            if(!replicas.isEmpty()) {
+                return Response.status(200).entity(buildReplicaList(replicas, true)).build();
+            }
+            return Response.status(200).build();
+        }
+        return Response.status(401).build();
+    }
+
+    private JsonArray buildReplicaList(List<Replica> replicas, boolean forUser) {
+        JsonBuilderFactory factory = Json.createBuilderFactory(null);
+        JsonArrayBuilder job = factory.createArrayBuilder();
+
+        for (Replica r:replicas) {
+            job.add(buildReplicaJson(r, forUser));
+        }
+
+        return job.build();
+    }
+
+    private JsonObject buildReplicaJson(Replica r, boolean forUser){
+        JsonBuilderFactory factory = Json.createBuilderFactory(null);
+        JsonObjectBuilder job = factory.createObjectBuilder();
+        job.add("ReplicaId", r.getId());
+        job.add("PlacementCategoryId", r.getType());
+        job.add("Image", r.getSprite());
+        job.add("Price", r.getPrice());
+        if(forUser) {
+            job.add("Position", r.getPosition());
+        }
+
+        job.add("Exhibit", buildExhibitJson(r.getExhibit()));
+
+        return job.build();
     }
 
     @POST
@@ -196,7 +242,13 @@ public class RESTService {
         job.add("Video", video);
         job.add("Image", image);
         job.add("Year", e.getYear());
-        job.add("EraId", e.getEraId());
+        if(e.getEra() != null) {
+            job.add("Era", createEraJson(e.getEra()));
+        }
+        else
+        {
+            job.add("EraId", e.getEraId());
+        }
         job.add("MuseumId", e.getMuseumId());
         return job.build();
     }
