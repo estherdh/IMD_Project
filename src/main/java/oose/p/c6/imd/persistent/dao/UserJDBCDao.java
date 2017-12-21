@@ -6,10 +6,7 @@ import oose.p.c6.imd.persistent.ConnectMySQL;
 import oose.p.c6.imd.persistent.NotificationCreator;
 
 import javax.enterprise.inject.Default;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -162,7 +159,7 @@ public class UserJDBCDao implements IUserDao {
     private void addPropertiesToNotification(int notificationId, String key, String value) {
         Connection connection = ConnectMySQL.getInstance().getConnection();
         try {
-            PreparedStatement ps = connection.prepareStatement("INSERT INTO notificationproperties (UserNotificationId, Key, Value) VALUES (?,?,?);");
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO notificationproperties (UserNotificationId, `Key`, `Value`) VALUES (?,?,?)");
             ps.setInt(1, notificationId);
             ps.setString(2, key);
             ps.setString(3, value);
@@ -175,7 +172,7 @@ public class UserJDBCDao implements IUserDao {
     private int addNotificationToUsernotificationAndGetId(int typeId,  int userId) {
         Connection connection = ConnectMySQL.getInstance().getConnection();
         try {
-            PreparedStatement ps = connection.prepareStatement("INSERT INTO usernotification(NotificationId, UserId) VALUES (? , ?)");
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO usernotification(NotificationId, UserId) VALUES (? , ?)", Statement.RETURN_GENERATED_KEYS);
             ps.setInt(1, typeId);
             ps.setInt(2, userId);
             ps.executeUpdate();

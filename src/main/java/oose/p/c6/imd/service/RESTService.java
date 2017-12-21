@@ -1,6 +1,7 @@
 package oose.p.c6.imd.service;
 
 
+import jdk.nashorn.internal.ir.CatchNode;
 import oose.p.c6.imd.domain.*;
 
 import javax.inject.Inject;
@@ -8,6 +9,7 @@ import javax.json.*;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,14 +25,19 @@ public class RESTService {
     @GET
     @Path("/")
     public String hello() {
-        JsonBuilderFactory factory = Json.createBuilderFactory(null);
-        JsonObjectBuilder job = factory.createObjectBuilder();
-        job.add("email", "test@void");
-        job.add("password", "test");
-        JsonObject jo = job.build();
-        String token = ((JsonObject) login(jo).getEntity()).getString("token");
-        TokenManager.getInstance().getTokenFromTokenString(token).devSetTokenString();
-        return "hello world";
+    	try {
+			JsonBuilderFactory factory = Json.createBuilderFactory(null);
+			JsonObjectBuilder job = factory.createObjectBuilder();
+			job.add("email", "test@void");
+			job.add("password", "test");
+			JsonObject jo = job.build();
+			String token = ((JsonObject) login(jo).getEntity()).getString("token");
+			TokenManager.getInstance().getTokenFromTokenString(token).devSetTokenString();
+			return "hello world";
+		} catch (Exception e) {
+    		e.printStackTrace();
+    		return "Something happend. Misschien draai je een database waar test@void niet bestaat, of je hebt het programma gebroken. <hr>" + e.getMessage();
+		}
     }
 
     @POST
