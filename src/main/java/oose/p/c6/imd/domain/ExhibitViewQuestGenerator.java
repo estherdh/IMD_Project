@@ -39,6 +39,4 @@ public class ExhibitViewQuestGenerator extends IQuestGenerator {
         IQuestDAO questDAO = DAOFactory.getQuestDao();
         questDAO.addQuestToQuestlog(properties, userId, questTypeId);
     }
-
-
 }

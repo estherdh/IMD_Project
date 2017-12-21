@@ -107,6 +107,10 @@ public class Librarian {
         return questDAO.getQuestsForUser(user.getId(), user.getLanguageId());
     }
 
+    public void markNotification(User user, int notificationId, boolean read){
+        user.markNotification(notificationId, read);
+    }
+
     public void addNotificationToEveryUser(Map<String, String> variables, int typeId) {
         List<User> allUsers = userDao.list();
         for (User user:allUsers) {

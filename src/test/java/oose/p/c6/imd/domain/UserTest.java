@@ -2,6 +2,7 @@ package oose.p.c6.imd.domain;
 
 import oose.p.c6.imd.persistent.dao.DAOFactory;
 import oose.p.c6.imd.persistent.dao.IUserDao;
+import oose.p.c6.imd.persistent.dao.QuestJDBCDao;
 import oose.p.c6.imd.persistent.dao.UserJDBCDao;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,6 +25,8 @@ import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UserTest {
+	@Mock
+	private QuestJDBCDao questDao;
 	@Mock
 	private UserJDBCDao userDao;
 	@InjectMocks
@@ -255,4 +258,16 @@ public class UserTest {
         assertEquals("testNewPassword", object.getString("password"));
         assertEquals(1, object.getInt("languageId"));
     }
+
+	@Test
+	public void markNotificationTest(){
+		IUserDao udao = mock(IUserDao.class);
+		DAOFactory.setUserDao(udao);
+		Notification n = new Notification(1, "NOW", "Ha!", false, 99);
+		when(udao.findNotification(any(), anyInt())).thenReturn(n);
+		User u = new User(2, "test@user@db", "tested", "testUser", 10, 2);
+		u.markNotification(1, true);
+		verify(udao, times(1)).updateNotification(n);
+		assertTrue(n.getRead());
+	}
 }
