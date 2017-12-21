@@ -122,13 +122,27 @@ public class UserTest {
 		JsonObject jo = Json.createObjectBuilder()
 				.add("email", "test@mail.com")
 				.add("displayName", "testUser")
-				.add("password", "")
+				.add("password", "test")
 				.add("languageId", 1)
 				.build();
 		//test
 		int actualResponse =   user.updateUser(jo.getString("email"), jo.getString("displayName"), jo.getString("password"), jo.getInt("languageId"), user);
 		//check
 		assertThat(actualResponse, is(1));
+	}
+
+	@Test
+	public void updateUserNoPassword() {
+		JsonObject jo = Json.createObjectBuilder()
+				.add("email", "test@mail.com")
+				.add("displayName", "testUser")
+				.add("password", "")
+				.add("languageId", 1)
+				.build();
+		//test
+		int actualResponse =   user.updateUser(jo.getString("email"), jo.getString("displayName"), jo.getString("password"), jo.getInt("languageId"), user);
+		//check
+		assertThat(actualResponse, is(0));
 	}
 
 	@Test
