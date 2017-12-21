@@ -197,9 +197,17 @@ public class User extends Model {
         this.replicaDao = replicaDao;
     }
 
+    public List<Notification> getNotifications() {return userDao.listNotification(this); }
+
+    public void markNotification(int notificationId, boolean read) {
+        Notification n = userDao.findNotification(this, notificationId);
+        if(n != null){
+            n.setRead(read);
+            userDao.updateNotification(n);
+        }
+    }
+
     public List<Replica> getReplicas() {
         return replicaDao.getReplicasFromUser(this);
     }
-
-    public List<Notification> getNotifications() { return userDao.listNotification(this); }
 }

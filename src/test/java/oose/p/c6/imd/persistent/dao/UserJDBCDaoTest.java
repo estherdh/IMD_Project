@@ -149,4 +149,24 @@ public class UserJDBCDaoTest {
         assertThat(actualResult.getCoins(), is(0));
         assertThat(actualResult.getLanguageId(), is(2));
     }
+
+    @Test
+    public void findNotification(){
+        DAOFactory.setQuestDao(new QuestJDBCDao());
+        DAOFactory.setUserDao(new UserJDBCDao());
+        Notification n = dao.findNotification(dao.find(2), 1);
+        assertEquals("Quest `(EN)Scan qr code` voltooid! Je hebt nu 2000 munten", n.getText());
+    }
+
+    @Test
+    public void updateNotification(){
+        DAOFactory.setQuestDao(new QuestJDBCDao());
+        DAOFactory.setUserDao(new UserJDBCDao());
+        Notification n = dao.findNotification(dao.find(2), 1);
+        assertFalse(n.getRead());
+        n.setRead(true);
+        dao.updateNotification(n);
+        Notification n2 = dao.findNotification(dao.find(2), 1);
+        assertTrue(n2.getRead());
+    }
 }

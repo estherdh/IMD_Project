@@ -494,5 +494,17 @@ public class RESTService {
         }
         return Response.status(401).build();
     }
+
+    @POST
+    @Path("/user/notification")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response markNotification(@QueryParam("token") String token, JsonObject jo){
+        User user = TokenManager.getInstance().getUserFromToken(token);
+        if(user != null){
+            l.markNotification(user, jo.getInt("NotificationId"), jo.getBoolean("Read"));
+            return Response.status(200).build();
+        }
+        return Response.status(401).build();
+    }
 }
 
