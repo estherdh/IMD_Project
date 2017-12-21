@@ -192,8 +192,10 @@ public class User extends Model {
 
     public void markNotification(int notificationId, boolean read) {
         Notification n = userDao.findNotification(this, notificationId);
-        n.setRead(read);
-        userDao.updateNotification(n);
+        if(n != null){
+            n.setRead(read);
+            userDao.updateNotification(n);
+        }
     }
 
     public List<Replica> getReplicas() {
