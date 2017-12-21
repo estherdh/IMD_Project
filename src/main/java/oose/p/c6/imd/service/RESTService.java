@@ -23,14 +23,19 @@ public class RESTService {
     @GET
     @Path("/")
     public String hello() {
-        JsonBuilderFactory factory = Json.createBuilderFactory(null);
-        JsonObjectBuilder job = factory.createObjectBuilder();
-        job.add("email", "test@void");
-        job.add("password", "test");
-        JsonObject jo = job.build();
-        String token = ((JsonObject) login(jo).getEntity()).getString("token");
-        TokenManager.getInstance().getTokenFromTokenString(token).devSetTokenString();
-        return "hello world";
+    	try {
+			JsonBuilderFactory factory = Json.createBuilderFactory(null);
+			JsonObjectBuilder job = factory.createObjectBuilder();
+			job.add("email", "test@void");
+			job.add("password", "test");
+			JsonObject jo = job.build();
+			String token = ((JsonObject) login(jo).getEntity()).getString("token");
+			TokenManager.getInstance().getTokenFromTokenString(token).devSetTokenString();
+			return "hello world";
+		} catch (Exception e) {
+    		e.printStackTrace();
+    		return "Something happend. Misschien draai je een database waar test@void niet bestaat, of je hebt het programma gebroken. <hr>" + e.getMessage();
+		}
     }
 
     @POST
