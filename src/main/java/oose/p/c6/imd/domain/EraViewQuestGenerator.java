@@ -1,18 +1,11 @@
 package oose.p.c6.imd.domain;
 
-import oose.p.c6.imd.persistent.dao.DAOFactory;
-import oose.p.c6.imd.persistent.dao.IExhibitDao;
-import oose.p.c6.imd.persistent.dao.IQuestDAO;
-
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
-public class EraViewQuestGenerator extends BaseQuestGenerator {
+public class EraViewQuestGenerator extends ViewQuestGenerator {
 
     public void generateQuest(int userId) {
-        Map<String, String> properties = new HashMap<>();
         questTypeId = 4;
 
         List<Era> eras = findErasNotYetInQuestlog(userId);
@@ -21,20 +14,14 @@ public class EraViewQuestGenerator extends BaseQuestGenerator {
             Era e = eras.get(new Random().nextInt(eras.size()));
 
             String key = "Era";
-            int value = e.getId();
-            properties.put(key, String.valueOf(value));
+            String value = String.valueOf(e.getId());
+            setProperties(key, value);
 
-            addQuestToQuestlog(properties, userId);
+            addQuestToQuestlog(userId);
         }
     }
 
     private List<Era> findErasNotYetInQuestlog(int userId) {
-        IExhibitDao exhibitDao = DAOFactory.getExhibitDao();
         return exhibitDao.findErasNotYetInQuestlog(userId);
-    }
-    
-    public void addQuestToQuestlog(Map<String, String> properties, int userId) {
-        IQuestDAO questDAO = DAOFactory.getQuestDao();
-        questDAO.addQuestToQuestlog(properties, userId, questTypeId);
     }
 }
