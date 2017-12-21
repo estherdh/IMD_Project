@@ -1,7 +1,6 @@
 package oose.p.c6.imd.service;
 
 
-import jdk.nashorn.internal.ir.CatchNode;
 import oose.p.c6.imd.domain.*;
 
 import javax.inject.Inject;
@@ -9,7 +8,6 @@ import javax.json.*;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
