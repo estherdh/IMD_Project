@@ -3,10 +3,8 @@ package oose.p.c6.imd.domain;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.HashMap;
-
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -17,7 +15,7 @@ public class QuestTest {
 	@Before
 	public void setUp() {
 		mockStrategy = mock(QrScanQuest.class);
-		this.quest = new Quest(1, "questName", "questDescription", 100, mockStrategy);
+		this.quest = new Quest(1, "questName", "questDescription", 100, 1, 0, 0, mockStrategy);
 	}
 
 	@Test

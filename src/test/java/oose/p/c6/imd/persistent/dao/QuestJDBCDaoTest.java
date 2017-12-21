@@ -53,8 +53,8 @@ public class QuestJDBCDaoTest {
 		QuestFactory factory = mock(QuestFactory.class);
 		QuestFactory.setFactory(factory);
 		when(factory.generateQuest(any(QuestTypes.class), any(Map.class))).thenReturn(new QrScanQuest(new HashMap<>()));
-		Quest expectedQuest1 = new Quest(1, "(EN)Scan qr code", "(EN)Scan a qr code", 10, new QrScanQuest(new HashMap<>()));
-		Quest expectedQuest2 = new Quest(2, "(NL)Stuur tekst", "(NL)Stuur een bepaald stuk tekst op", 15, new QrScanQuest(new HashMap<>()));
+		Quest expectedQuest1 = new Quest(1, "(EN)Scan qr code", "(EN)Scan a qr code", 10, 1, 0, 0, new QrScanQuest(new HashMap<>()));
+		Quest expectedQuest2 = new Quest(2, "(NL)Stuur tekst", "(NL)Stuur een bepaald stuk tekst op", 15, 1, 0, 0, new QrScanQuest(new HashMap<>()));
 		//test
 		List<Quest> actualResult = dao.getQuestsForUser(2, 2);
 		//check
