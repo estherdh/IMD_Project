@@ -115,4 +115,8 @@ public class Librarian {
         }
 
     }
+
+    public List<Replica> getReplicasFromUser(User user) {
+        return user.getReplicas();
+    }
 }

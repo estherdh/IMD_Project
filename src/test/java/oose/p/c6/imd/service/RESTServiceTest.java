@@ -20,6 +20,7 @@ import java.util.List;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -160,240 +161,310 @@ public class RESTServiceTest {
     @Test
     public void getReplicasTestSuccess() throws Exception {
         //init
-        List<Replica> expectedResult = new ArrayList<>();
-        expectedResult.add(mock(Replica.class));
-        expectedResult.add(mock(Replica.class));
+        Era era = new Era(1, "tijdperk test");
+        Exhibit exhibit = new Exhibit(1, "Het test object",
+                "Dit object wordt altijd al gebruikt om te testen", null, "object.png",
+                1999, 1, 1, era);
+        Replica replica = new Replica(3, 1, 15, "test2", 2, 0, exhibit);
+        List<Replica> expected = new ArrayList<>();
+        expected.add(replica);
         User mockUser = mock(User.class);
+
         when(tokenManager.getUserFromToken("token")).thenReturn(mockUser);
-        when(librarian.getAvailableReplicas(mockUser)).thenReturn(expectedResult);
+        when(librarian.getAvailableReplicas(mockUser)).thenReturn(expected);
         //test
-        Response actualResponse = service.getReplicas("token");
-        //check
-        List<Replica> actualResult = (List<Replica>) actualResponse.getEntity();
-        assertThat(actualResult, is(expectedResult));
-        assertThat(actualResponse.getStatus(), is(200));
-    }
-
-    @Test
-    public void getReplicasTestIncorrectUser() throws Exception {
-        //init
-        when(tokenManager.getUserFromToken("token")).thenReturn(null);
-        //test
-        Response actualResponse = service.getReplicas("token");
-        //check
-        assertThat(actualResponse.getStatus(), is(401));
-    }
-
-    @Test
-    public void scanQrCodeTestSuccess() throws Exception {
-        //init
-        User mockUser = mock(User.class);
-        when(tokenManager.getUserFromToken("token")).thenReturn(mockUser);
-        JsonObject jo = Json.createObjectBuilder()
-                .add("qrCode", "qrCode")
-                .build();
-        //test
-        service.scanQrCode("token", jo);
-        //check
-        verify(librarian, times(1)).scanQrCode(mockUser, "qrCode");
-    }
-
-    @Test
-    public void scanQrCodeTestInvalidUser() throws Exception {
-        //init
-        User mockUser = mock(User.class);
-        JsonObject jo = Json.createObjectBuilder()
-                .add("qrCode", "qrCode")
-                .build();
-        //test
-        service.scanQrCode("token", jo);
-        //check
-        verify(librarian, times(0)).scanQrCode(mockUser, "qrCode");
-    }
-
-    @Test
-    public void removeQuestFromQuestLogTestSuccess() {
-        //init
-        User mockUser = mock(User.class);
-        when(tokenManager.getUserFromToken("token")).thenReturn(mockUser);
-        //test
-        Response actualResponse = service.removeQuestFromQuestLog(1, "token");
-        //check
-        verify(librarian, times(1)).removeQuestFromQuestLog(1, mockUser);
-        assertThat(actualResponse.getStatus(), is(200));
-    }
-
-    @Test
-    public void removeQuestFromQuestLogTestInvalidUser() {
-        //init
-        User mockUser = mock(User.class);
-        //test
-        Response actualResponse = service.removeQuestFromQuestLog(1, "token");
-        //check
-        verify(librarian, times(0)).removeQuestFromQuestLog(1, mockUser);
-        assertThat(actualResponse.getStatus(), is(401));
-    }
-
-    @Test
-    public void getQuestLogTestSuccess() throws Exception {
-        //init
-        List<Quest> questList = new ArrayList<>();
-        questList.add(mock(Quest.class));
-        questList.add(mock(Quest.class));
-
-        User mockUser = mock(User.class);
-        when(tokenManager.getUserFromToken("token")).thenReturn(mockUser);
-        when(librarian.getQuestLog(mockUser)).thenReturn(questList);
-
-        //test
-        Response actualResponse = service.getQuestLog("token");
-        //check
-        List<Quest> actualList = (List<Quest>) actualResponse.getEntity();
-        assertThat(actualList, is(questList));
-        assertThat(actualResponse.getStatus(), is(200));
-    }
-
-    @Test
-    public void getQuestLogTestEmptyQuestlog() throws Exception {
-        //init
-        List<Quest> questList = new ArrayList<>();
-
-        User mockUser = mock(User.class);
-        when(tokenManager.getUserFromToken("token")).thenReturn(mockUser);
-        when(librarian.getQuestLog(mockUser)).thenReturn(questList);
-
-        //test
-        Response actualResponse = service.getQuestLog("token");
-        //check
-        assertThat(actualResponse.getEntity(), is(nullValue()));
-        assertThat(actualResponse.getStatus(), is(200));
-    }
-
-    @Test
-    public void getQuestLogTestInvalidUser() throws Exception {
-        //init
-        when(tokenManager.getUserFromToken("token")).thenReturn(null);
-        //test
-        Response actualResponse = service.getQuestLog("token");
-        //check
-        assertThat(actualResponse.getEntity(), is(nullValue()));
-        assertThat(actualResponse.getStatus(), is(401));
-    }
-
-    @Test
-    public void getExhibitDetailsTestSuccess() {
-        //init
-        Exhibit exhibit = new Exhibit(1, "topstuk", "a topstuk", null, null, 2020, 2, 1);
-        User mockUser = mock(User.class);
-        when(tokenManager.getUserFromToken("token")).thenReturn(mockUser);
-        when(librarian.getExhibitDetails(mockUser, 1)).thenReturn(exhibit);
-        //test
-        Response actualResponse = service.getExhibitDetails(1, "token");
-        //check
-        JsonObject json = (JsonObject) actualResponse.getEntity();
-        assertThat(actualResponse.getStatus(), is(200));
-        assertThat(json.getInt("ExhibitId"), is(1));
-        assertThat(json.getString("Name"), is(equalTo("topstuk")));
-        assertThat(json.getString("Description"), is(equalTo("a topstuk")));
-        assertThat(json.getString("Video"), is(equalTo("undefined")));
-        assertThat(json.getString("Image"), is(equalTo("undefined")));
-        assertThat(json.getInt("Year"), is(2020));
-        assertThat(json.getInt("EraId"), is(2));
-        assertThat(json.getInt("MuseumId"), is(1));
-    }
-
-    @Test
-    public void getExhibitDetailsTestNoExhibit() {
-        //init
-        User mockUser = mock(User.class);
-        when(tokenManager.getUserFromToken("token")).thenReturn(mockUser);
-        when(librarian.getExhibitDetails(mockUser, 1)).thenReturn(null);
-        //test
-        Response actualResponse = service.getExhibitDetails(1, "token");
-        //check
-        assertThat(actualResponse.getStatus(), is(200));
-    }
-
-    @Test
-    public void getExhibitDetailsTestInvalidUser() {
-        //init
-        when(tokenManager.getUserFromToken("token")).thenReturn(null);
-        //test
-        Response actualResponse = service.getExhibitDetails(1, "token");
-        //check
-        assertThat(actualResponse.getStatus(), is(401));
-    }
-
-    @Test
-    public void getExhibitsTestSuccess() {
-        //init
-        Exhibit exhibit1 = new Exhibit(1, "topstuk", "a topstuk", null, null, 2020, 2, 1);
-        Exhibit exhibit2 = new Exhibit(2, "topstuk", "a topstuk", null, null, 2020, 2, 1);
-        List<Exhibit> exhibitList = new ArrayList<>();
-        exhibitList.add(exhibit1);
-        exhibitList.add(exhibit2);
-
-        User mockUser = mock(User.class);
-        when(tokenManager.getUserFromToken("token")).thenReturn(mockUser);
-        when(librarian.getAvailableExhibits(mockUser)).thenReturn(exhibitList);
-        //test
-        Response actualResponse = service.getExhibits("token");
-        //check
-        JsonArray jsonArray = (JsonArray) actualResponse.getEntity();
+        Response actual = service.getReplicas("token");
+        JsonArray jsonArray = (JsonArray) actual.getEntity();
         JsonObject object1 = (JsonObject) jsonArray.get(0);
-        JsonObject object2 = (JsonObject) jsonArray.get(1);
-        assertThat(actualResponse.getStatus(), is(200));
-        assertThat(object1.getInt("ExhibitId"), is(1));
-        assertThat(object2.getInt("ExhibitId"), is(2));
+        //check replica
+        assertThat(object1.getInt("ReplicaId"), is(expected.get(0).getId()));
+        assertThat(object1.getInt("PlacementCategoryId"), is(expected.get(0).getType()));
+        assertThat(object1.getString("Image"), is(expected.get(0).getSprite()));
+        assertThat(object1.getInt("Price"), is(expected.get(0).getPrice()));
+        //check exhibit
+        assertThat(object1.getJsonObject("Exhibit").getInt("ExhibitId"),  is(expected.get(0).getExhibit().getId()));
+        assertThat(object1.getJsonObject("Exhibit").getString("Name"),  is(expected.get(0).getExhibit().getName()));
+        assertThat(object1.getJsonObject("Exhibit").getString("Description"),  is(expected.get(0).getExhibit().getDescription()));
+        assertThat(object1.getJsonObject("Exhibit").getString("Video"),  is("undefined"));
+        assertThat(object1.getJsonObject("Exhibit").getString("Image"),  is(expected.get(0).getExhibit().getImage()));
+        assertThat(object1.getJsonObject("Exhibit").getInt("Year"),  is(expected.get(0).getExhibit().getYear()));
+        assertThat(object1.getJsonObject("Exhibit").getInt("MuseumId"),  is(expected.get(0).getExhibit().getMuseumId()));
+        //check era
+        assertThat(object1.getJsonObject("Exhibit").getJsonObject("Era").getInt("EraId"),  is(expected.get(0).getExhibit().getEra().getId()));
+        assertThat(object1.getJsonObject("Exhibit").getJsonObject("Era").getString("Name"),  is(expected.get(0).getExhibit().getEra().getName()));
+
+        assertThat(actual.getStatus(), is(200));
     }
 
-    @Test
-    public void getExhibitsTestEmptyArray() {
-        //init
-        List<Exhibit> exhibitList = new ArrayList<>();
+	@Test
+	public void getReplicasTestIncorrectUser() throws Exception {
+		//init
+		when(tokenManager.getUserFromToken("token")).thenReturn(null);
+		//test
+		Response actualResponse = service.getReplicas("token");
+		//check
+		assertThat(actualResponse.getStatus(), is(401));
+	}
 
-        User mockUser = mock(User.class);
-        when(tokenManager.getUserFromToken("token")).thenReturn(mockUser);
-        when(librarian.getAvailableExhibits(mockUser)).thenReturn(exhibitList);
-        //test
-        Response actualResponse = service.getExhibits("token");
-        //check
-        assertThat(actualResponse.getEntity(), is(nullValue()));
-        assertThat(actualResponse.getStatus(), is(200));
-    }
+	@Test
+	public void getReplicasFromUserTestSuccess() throws Exception {
+		//init
+		Era era = new Era(1, "tijdperk test");
+		Exhibit exhibit = new Exhibit(1, "Het test object",
+				"Dit object wordt altijd al gebruikt om te testen", null, "object.png",
+				1999, 1, 1, era);
+		Replica replica = new Replica(2, 1, 15, "test1", 2, 1, exhibit);
+		List<Replica> expected = new ArrayList<>();
+		expected.add(replica);
+		User mockUser = mock(User.class);
 
-    @Test
-    public void getExhibitsInvalidUser() {
-        //init
-        when(tokenManager.getUserFromToken("token")).thenReturn(null);
-        //test
-        Response actualResponse = service.getExhibits("token");
-        //check
-        assertThat(actualResponse.getStatus(), is(401));
-    }
+		when(tokenManager.getUserFromToken("token")).thenReturn(mockUser);
+		when(librarian.getReplicasFromUser(mockUser)).thenReturn(expected);
+		//test
+		Response actual = service.getReplicasFromUser("token");
+		JsonArray jsonArray = (JsonArray) actual.getEntity();
+		JsonObject object1 = (JsonObject) jsonArray.get(0);
+		//check replica
+		assertThat(object1.getInt("ReplicaId"), is(expected.get(0).getId()));
+		assertThat(object1.getInt("PlacementCategoryId"), is(expected.get(0).getType()));
+		assertThat(object1.getString("Image"), is(expected.get(0).getSprite()));
+		assertThat(object1.getInt("Price"), is(expected.get(0).getPrice()));
+		assertThat(object1.getInt("Position"), is(expected.get(0).getPosition()));
+		//check exhibit
+		assertThat(object1.getJsonObject("Exhibit").getInt("ExhibitId"),  is(expected.get(0).getExhibit().getId()));
+		assertThat(object1.getJsonObject("Exhibit").getString("Name"),  is(expected.get(0).getExhibit().getName()));
+		assertThat(object1.getJsonObject("Exhibit").getString("Description"),  is(expected.get(0).getExhibit().getDescription()));
+		assertThat(object1.getJsonObject("Exhibit").getString("Video"),  is("undefined"));
+		assertThat(object1.getJsonObject("Exhibit").getString("Image"),  is(expected.get(0).getExhibit().getImage()));
+		assertThat(object1.getJsonObject("Exhibit").getInt("Year"),  is(expected.get(0).getExhibit().getYear()));
+		assertThat(object1.getJsonObject("Exhibit").getInt("MuseumId"),  is(expected.get(0).getExhibit().getMuseumId()));
+		//check era
+		assertThat(object1.getJsonObject("Exhibit").getJsonObject("Era").getInt("EraId"),  is(expected.get(0).getExhibit().getEra().getId()));
+		assertThat(object1.getJsonObject("Exhibit").getJsonObject("Era").getString("Name"),  is(expected.get(0).getExhibit().getEra().getName()));
 
-    @Test
-    public void getExhibitsFromMuseumTestSuccess() {
-        //init
-        Exhibit exhibit1 = new Exhibit(1, "topstuk", "a topstuk", null, null, 2020, 2, 1);
-        Exhibit exhibit2 = new Exhibit(2, "topstuk", "a topstuk", null, null, 2020, 2, 1);
-        List<Exhibit> exhibitList = new ArrayList<>();
-        exhibitList.add(exhibit1);
-        exhibitList.add(exhibit2);
+		assertThat(actual.getStatus(), is(200));
+	}
 
-        User mockUser = mock(User.class);
-        when(tokenManager.getUserFromToken("token")).thenReturn(mockUser);
-        when(librarian.getAvailableExhibitsFromMuseum(mockUser, 1)).thenReturn(exhibitList);
-        //test
-        Response actualResponse = service.getExhibitsFromMuseum(1, "token");
-        //check
-        JsonArray jsonArray = (JsonArray) actualResponse.getEntity();
-        JsonObject object1 = (JsonObject) jsonArray.get(0);
-        JsonObject object2 = (JsonObject) jsonArray.get(1);
-        assertThat(actualResponse.getStatus(), is(200));
-        assertThat(object1.getInt("ExhibitId"), is(1));
-        assertThat(object2.getInt("ExhibitId"), is(2));
-    }
+	@Test
+	public void getReplicasFromUserTestIncorrectUser() throws Exception {
+		//init
+		when(tokenManager.getUserFromToken("token")).thenReturn(null);
+		//test
+		Response actualResponse = service.getReplicasFromUser("token");
+		//check
+		assertThat(actualResponse.getStatus(), is(401));
+	}
+
+	@Test
+	public void scanQrCodeTestSuccess() throws Exception {
+		//init
+		User mockUser = mock(User.class);
+		when(tokenManager.getUserFromToken("token")).thenReturn(mockUser);
+		JsonObject jo = Json.createObjectBuilder()
+				.add("qrCode", "qrCode")
+				.build();
+		//test
+		service.scanQrCode("token", jo);
+		//check
+		verify(librarian, times(1)).scanQrCode(mockUser, "qrCode");
+	}
+
+	@Test
+	public void scanQrCodeTestInvalidUser() throws Exception {
+		//init
+		User mockUser = mock(User.class);
+		JsonObject jo = Json.createObjectBuilder()
+				.add("qrCode", "qrCode")
+				.build();
+		//test
+		service.scanQrCode("token", jo);
+		//check
+		verify(librarian, times(0)).scanQrCode(mockUser, "qrCode");
+	}
+
+	@Test
+	public void removeQuestFromQuestLogTestSuccess() {
+		//init
+		User mockUser = mock(User.class);
+		when(tokenManager.getUserFromToken("token")).thenReturn(mockUser);
+		//test
+		Response actualResponse = service.removeQuestFromQuestLog(1, "token");
+		//check
+		verify(librarian, times(1)).removeQuestFromQuestLog(1, mockUser);
+		assertThat(actualResponse.getStatus(), is(200));
+	}
+
+	@Test
+	public void removeQuestFromQuestLogTestInvalidUser() {
+		//init
+		User mockUser = mock(User.class);
+		//test
+		Response actualResponse = service.removeQuestFromQuestLog(1, "token");
+		//check
+		verify(librarian, times(0)).removeQuestFromQuestLog(1, mockUser);
+		assertThat(actualResponse.getStatus(), is(401));
+	}
+
+	@Test
+	public void getQuestLogTestSuccess() throws Exception {
+		//init
+		List<Quest> questList = new ArrayList<>();
+		questList.add(mock(Quest.class));
+		questList.add(mock(Quest.class));
+
+		User mockUser = mock(User.class);
+		when(tokenManager.getUserFromToken("token")).thenReturn(mockUser);
+		when(librarian.getQuestLog(mockUser)).thenReturn(questList);
+
+		//test
+		Response actualResponse = service.getQuestLog("token");
+		//check
+		List<Quest> actualList = (List<Quest>) actualResponse.getEntity();
+		assertThat(actualList, is(questList));
+		assertThat(actualResponse.getStatus(), is(200));
+	}
+
+	@Test
+	public void getQuestLogTestEmptyQuestlog() throws Exception {
+		//init
+		List<Quest> questList = new ArrayList<>();
+
+		User mockUser = mock(User.class);
+		when(tokenManager.getUserFromToken("token")).thenReturn(mockUser);
+		when(librarian.getQuestLog(mockUser)).thenReturn(questList);
+
+		//test
+		Response actualResponse = service.getQuestLog("token");
+		//check
+		assertThat(actualResponse.getEntity(), is(nullValue()));
+		assertThat(actualResponse.getStatus(), is(200));
+	}
+
+	@Test
+	public void getQuestLogTestInvalidUser() throws Exception {
+		//init
+		when(tokenManager.getUserFromToken("token")).thenReturn(null);
+		//test
+		Response actualResponse = service.getQuestLog("token");
+		//check
+		assertThat(actualResponse.getEntity(), is(nullValue()));
+		assertThat(actualResponse.getStatus(), is(401));
+	}
+
+	@Test
+	public void getExhibitDetailsTestSuccess(){
+		//init
+		Exhibit exhibit = new Exhibit(1, "topstuk", "a topstuk", null, null, 2020, 2, 1);
+		User mockUser = mock(User.class);
+		when(tokenManager.getUserFromToken("token")).thenReturn(mockUser);
+		when(librarian.getExhibitDetails(mockUser, 1)).thenReturn(exhibit);
+		//test
+		Response actualResponse = service.getExhibitDetails(1, "token");
+		//check
+		JsonObject json = (JsonObject) actualResponse.getEntity();
+		assertThat(actualResponse.getStatus(), is(200));
+		assertThat(json.getInt("ExhibitId"), is(1));
+		assertThat(json.getString("Name"), is(equalTo("topstuk")));
+		assertThat(json.getString("Description"), is(equalTo("a topstuk")));
+		assertThat(json.getString("Video"), is(equalTo("undefined")));
+		assertThat(json.getString("Image"), is(equalTo("undefined")));
+		assertThat(json.getInt("Year"), is(2020));
+		assertThat(json.getInt("EraId"), is(2));
+		assertThat(json.getInt("MuseumId"), is(1));
+	}
+
+	@Test
+	public void getExhibitDetailsTestNoExhibit() {
+		//init
+		User mockUser = mock(User.class);
+		when(tokenManager.getUserFromToken("token")).thenReturn(mockUser);
+		when(librarian.getExhibitDetails(mockUser, 1)).thenReturn(null);
+		//test
+		Response actualResponse = service.getExhibitDetails(1, "token");
+		//check
+		assertThat(actualResponse.getStatus(), is(200));
+	}
+
+	@Test
+	public void getExhibitDetailsTestInvalidUser() {
+		//init
+		when(tokenManager.getUserFromToken("token")).thenReturn(null);
+		//test
+		Response actualResponse = service.getExhibitDetails(1, "token");
+		//check
+		assertThat(actualResponse.getStatus(), is(401));
+	}
+
+	@Test
+	public void getExhibitsTestSuccess() {
+		//init
+		Exhibit exhibit1 = new Exhibit(1, "topstuk", "a topstuk", null, null, 2020, 2, 1);
+		Exhibit exhibit2 = new Exhibit(2, "topstuk", "a topstuk", null, null, 2020, 2, 1);
+		List<Exhibit> exhibitList = new ArrayList<>();
+		exhibitList.add(exhibit1);
+		exhibitList.add(exhibit2);
+
+		User mockUser = mock(User.class);
+		when(tokenManager.getUserFromToken("token")).thenReturn(mockUser);
+		when(librarian.getAvailableExhibits(mockUser)).thenReturn(exhibitList);
+		//test
+		Response actualResponse = service.getExhibits("token");
+		//check
+		JsonArray jsonArray = (JsonArray) actualResponse.getEntity();
+		JsonObject object1 = (JsonObject) jsonArray.get(0);
+		JsonObject object2 = (JsonObject) jsonArray.get(1);
+		assertThat(actualResponse.getStatus(), is(200));
+		assertThat(object1.getInt("ExhibitId"), is(1));
+		assertThat(object2.getInt("ExhibitId"), is(2));
+	}
+
+	@Test
+	public void getExhibitsTestEmptyArray() {
+		//init
+		List<Exhibit> exhibitList = new ArrayList<>();
+
+		User mockUser = mock(User.class);
+		when(tokenManager.getUserFromToken("token")).thenReturn(mockUser);
+		when(librarian.getAvailableExhibits(mockUser)).thenReturn(exhibitList);
+		//test
+		Response actualResponse = service.getExhibits("token");
+		//check
+		assertThat(actualResponse.getEntity(), is(nullValue()));
+		assertThat(actualResponse.getStatus(), is(200));
+	}
+
+	@Test
+	public void getExhibitsInvalidUser() {
+		//init
+		when(tokenManager.getUserFromToken("token")).thenReturn(null);
+		//test
+		Response actualResponse = service.getExhibits("token");
+		//check
+		assertThat(actualResponse.getStatus(), is(401));
+	}
+
+	@Test
+	public void getExhibitsFromMuseumTestSuccess() {
+		//init
+		Exhibit exhibit1 = new Exhibit(1, "topstuk", "a topstuk", null, null, 2020, 2, 1);
+		Exhibit exhibit2 = new Exhibit(2, "topstuk", "a topstuk", null, null, 2020, 2, 1);
+		List<Exhibit> exhibitList = new ArrayList<>();
+		exhibitList.add(exhibit1);
+		exhibitList.add(exhibit2);
+
+		User mockUser = mock(User.class);
+		when(tokenManager.getUserFromToken("token")).thenReturn(mockUser);
+		when(librarian.getAvailableExhibitsFromMuseum(mockUser, 1)).thenReturn(exhibitList);
+		//test
+		Response actualResponse = service.getExhibitsFromMuseum(1, "token");
+		//check
+		JsonArray jsonArray = (JsonArray) actualResponse.getEntity();
+		JsonObject object1 = (JsonObject) jsonArray.get(0);
+		JsonObject object2 = (JsonObject) jsonArray.get(1);
+		assertThat(actualResponse.getStatus(), is(200));
+		assertThat(object1.getInt("ExhibitId"), is(1));
+		assertThat(object2.getInt("ExhibitId"), is(2));
+	}
 
     @Test
     public void getExhibitsFromMuseumTestEmptyArray() {

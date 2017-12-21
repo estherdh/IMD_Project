@@ -195,4 +195,8 @@ public class User extends Model {
         n.setRead(read);
         userDao.updateNotification(n);
     }
+
+    public List<Replica> getReplicas() {
+        return replicaDao.getReplicasFromUser(this);
+    }
 }

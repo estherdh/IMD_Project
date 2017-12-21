@@ -10,8 +10,11 @@ public class QuestLog {
 
 	private IQuestDAO dao;
 
+	private QuestGenerator questGenerator;
+
 	public QuestLog(){
         dao = DAOFactory.getQuestDao();
+        questGenerator = new QuestGenerator();
 	}
 
 
@@ -23,6 +26,7 @@ public class QuestLog {
 			if (questReward > 0) {
 				dao.setQuestComplete(quest.getEntryId());
 				reward += questReward;
+				questGenerator.generateQuest(userId);
 			}
 		}
 		return reward;
@@ -30,5 +34,9 @@ public class QuestLog {
 
 	public boolean removeQuestFromQuestLog(int entryId, int userId) {
 		return dao.removeQuestFromQuestLog(entryId, userId);
+	}
+
+	public void setQuestGenerator(QuestGenerator questGenerator) {
+		this.questGenerator = questGenerator;
 	}
 }
