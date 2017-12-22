@@ -9,9 +9,6 @@ import java.util.Random;
 
 public class ExhibitViewQuestGenerator extends IQuestGenerator {
 
-    private IQuestDAO questDAO;
-    private IExhibitDao exhibitDao;
-
     @Override
     public void generateQuest(int userId) {
         HashMap<String, String> properties = new HashMap<>();
@@ -19,7 +16,7 @@ public class ExhibitViewQuestGenerator extends IQuestGenerator {
 
         List<Exhibit> exhibits = findExhibitsNotYetInQuestlog(userId);
 
-        if (exhibits.size() > 0) {
+        if (!exhibits.isEmpty()) {
             Exhibit e = exhibits.get(new Random().nextInt(exhibits.size()));
 
             String key = "Topstuk";
