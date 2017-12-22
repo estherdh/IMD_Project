@@ -242,6 +242,7 @@ FOREIGN KEY (UserId) REFERENCES Users (UserId);
 
 ALTER TABLE NotificationProperties ADD CONSTRAINT FK_NotificationProperties_UserNotification
 FOREIGN KEY (UserNotificationId) REFERENCES UserNotification (UserNotificationId);
+
 -- Hier komen de insert scripts
 INSERT INTO librarian.language (Short_Code, Name) VALUES ('nl', 'Nederlands');
 INSERT INTO librarian.language (Short_Code, Name) VALUES ('en', 'English');
@@ -264,6 +265,10 @@ INSERT INTO librarian.questtype (Reward) VALUES (30);
 INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name) VALUES (3, 1, '(NL) Lees een topstuk', '(NL)Lezen topstuk');
 INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name) VALUES (3, 2, '(EN) Read an exhibit', '(EN)Read exhibit');
 
+INSERT INTO librarian.questtype (Reward) VALUES (30);
+INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name) VALUES (4, 1, '(NL) Bekijk een tijdperk', '(NL)Bekijken tijdperk');
+INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name) VALUES (4, 2, '(EN) View an era', '(EN)View era');
+
 INSERT INTO librarian.questlog (UserId, QuestTypeId, Completed) VALUES (1, 1, 0);
 INSERT INTO librarian.questproperties(`Key`, `Value`, EntryId) VALUES ('QR', 'AAA', 1);
 INSERT INTO librarian.questlog (UserId, QuestTypeId, Completed) VALUES (2, 1, 0);
@@ -281,9 +286,24 @@ INSERT INTO librarian.questproperties(`Key`, `Value`, EntryId) VALUES ('Topstuk'
 INSERT INTO librarian.questlog (UserId, QuestTypeId, Completed) VALUES (1, 3, 0);
 INSERT INTO librarian.questproperties(`Key`, `Value`, EntryId) VALUES ('Topstuk', '3', 7);
 
+INSERT INTO librarian.questlog (UserId, QuestTypeId) VALUES (1, 4);
+INSERT INTO librarian.questproperties (`Key`, `Value`, EntryId) VALUES ('Tijdperk', '1', 8);
+INSERT INTO librarian.questlog (UserId, QuestTypeId) VALUES (1, 4);
+INSERT INTO librarian.questproperties (`Key`, `Value`, EntryId) VALUES ('Tijdperk', '2', 9);
+
+
 INSERT INTO Era () VALUES ();
 INSERT INTO eralanguage (`eraId`, `name`, `languageId`) VALUES (1, 'tijdperk test', 1);
 INSERT INTO eralanguage (`eraId`, `name`, `languageId`) VALUES (1, 'test era', 2);
+
+INSERT INTO Era () VALUES ();
+INSERT INTO eralanguage (`eraId`, `name`, `languageId`) VALUES (2, 'tijdperk test2', 1);
+INSERT INTO eralanguage (`eraId`, `name`, `languageId`) VALUES (2, 'test era2', 2);
+
+INSERT INTO Era () VALUES ();
+INSERT INTO eralanguage (`eraId`, `name`, `languageId`) VALUES (3, 'Steen tijd', 1);
+INSERT INTO eralanguage (`eraId`, `name`, `languageId`) VALUES (3, 'Stone age', 2);
+
 
 INSERT INTO Museum (`MuseumName`, `website`, `Region`) VALUES ('test musei', 'http://google.nl', 'Nederland');
 
