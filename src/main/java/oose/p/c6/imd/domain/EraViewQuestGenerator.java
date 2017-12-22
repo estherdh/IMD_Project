@@ -10,7 +10,7 @@ public class EraViewQuestGenerator extends ViewQuestGenerator {
 
         List<Era> eras = findErasNotYetInQuestlog(userId);
 
-        if(eras.isEmpty()) {
+        if (!eras.isEmpty()) {
             Era e = eras.get(new Random().nextInt(eras.size()));
 
             String key = "Era";
