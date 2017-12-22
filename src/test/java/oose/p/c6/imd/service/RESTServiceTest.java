@@ -164,7 +164,8 @@ public class RESTServiceTest {
         Era era = new Era(1, "tijdperk test");
         Exhibit exhibit = new Exhibit(1, "Het test object",
                 "Dit object wordt altijd al gebruikt om te testen", null, "object.png",
-                1999, 1, 1, era);
+                1999, 1, 1);
+        exhibit.setEra(era);
         Replica replica = new Replica(3, 1, 15, "test2", 2, 0, exhibit);
         List<Replica> expected = new ArrayList<>();
         expected.add(replica);
@@ -212,7 +213,8 @@ public class RESTServiceTest {
 		Era era = new Era(1, "tijdperk test");
 		Exhibit exhibit = new Exhibit(1, "Het test object",
 				"Dit object wordt altijd al gebruikt om te testen", null, "object.png",
-				1999, 1, 1, era);
+				1999, 1, 1);
+		exhibit.setEra(era);
 		Replica replica = new Replica(2, 1, 15, "test1", 2, 1, exhibit);
 		List<Replica> expected = new ArrayList<>();
 		expected.add(replica);

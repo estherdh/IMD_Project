@@ -21,6 +21,7 @@ public class RESTService {
     private String jsonAttrPassword = "password";
     private String jsonAttrReason = "reason";
     private String jsonAttrExhibitId = "exhibitId";
+    private String jsonAttrReplicaId = "replicaId";
 
     @Inject
     private Librarian l;
@@ -240,16 +241,16 @@ public class RESTService {
         JsonObjectBuilder job = factory.createObjectBuilder();
         job.add("ExhibitId", e.getId());
         job.add("Name", e.getName());
-        String image = e.getImage();
-        if (image == null) { image = "undefined"; }
-        String video = e.getVideo();
-        if (video == null) { video = "undefined"; }
         job.add("Description", e.getDescription());
-        job.add("Video", video);
-        job.add("Image", image);
+        job.add("Video", (e.getVideo() == null) ? "undefined" : e.getVideo());
+        job.add("Image", (e.getImage() == null) ? "undefined" : e.getImage());
         job.add("Year", e.getYear());
-        if(e.getEra() != null) { job.add("Era", createEraJson(e.getEra())); }
-        else { job.add("EraId", e.getEraId()); }
+        if(e.getEra() != null) {
+            job.add("Era", createEraJson(e.getEra()));
+        }
+        else {
+            job.add("EraId", e.getEraId());
+        }
         job.add("MuseumId", e.getMuseumId());
         return job.build();
     }
@@ -283,7 +284,7 @@ public class RESTService {
     public Response placeReplica(@QueryParam("token") String token, JsonObject obj) {
         User user = TokenManager.getInstance().getUserFromToken(token);
         if (user != null) {
-            int reason = l.placeReplica(obj.getInt("replicaId"), obj.getInt("positionId"), user);
+            int reason = l.placeReplica(obj.getInt(jsonAttrReplicaId), obj.getInt("positionId"), user);
             JsonBuilderFactory factory = Json.createBuilderFactory(null);
             JsonObjectBuilder job = factory.createObjectBuilder();
             job.add(jsonAttrReason, reason);
@@ -430,7 +431,7 @@ public class RESTService {
         User user = TokenManager.getInstance().getUserFromToken(token);
         if (user != null) {
             Map<String, String> variables = new HashMap<String, String>();
-            variables.put("replicaId", Integer.toString(obj.getInt("replicaId")));
+            variables.put(jsonAttrReplicaId, Integer.toString(obj.getInt(jsonAttrReplicaId)));
             l.addNotificationToEveryUser(variables, 4);
             return Response.status(200).build();
         }
