@@ -995,7 +995,7 @@ public class RESTServiceTest {
 
         //check
         verify(librarian, times(1)).getUserByEmail(object.getString("email"));
-        assertThat(actualResponse.getStatus(), is(200));
+        assertThat(actualResponse.getStatus(), is(201));
         JsonObject jsonResponse = (JsonObject) actualResponse.getEntity();
         assertTrue(jsonResponse.containsKey("token"));
         assertFalse(jsonResponse.containsKey("reason"));
@@ -1017,7 +1017,7 @@ public class RESTServiceTest {
         Response actualResponse = service.registerUser(object);
 
         //check
-        assertThat(actualResponse.getStatus(), is(401));
+        assertThat(actualResponse.getStatus(), is(417));
         JsonObject jsonResponse = (JsonObject) actualResponse.getEntity();
         assertFalse(jsonResponse.containsKey("token"));
         assertThat(jsonResponse.getInt("reason"), is(1));
@@ -1039,7 +1039,7 @@ public class RESTServiceTest {
         Response actualResponse = service.registerUser(object);
 
         //check
-        assertThat(actualResponse.getStatus(), is(401));
+        assertThat(actualResponse.getStatus(), is(417));
         JsonObject jsonResponse = (JsonObject) actualResponse.getEntity();
         assertFalse(jsonResponse.containsKey("token"));
         assertThat(jsonResponse.getInt("reason"), is(2));
@@ -1061,7 +1061,7 @@ public class RESTServiceTest {
         Response actualResponse = service.registerUser(object);
 
         //check
-        assertThat(actualResponse.getStatus(), is(401));
+        assertThat(actualResponse.getStatus(), is(417));
         JsonObject jsonResponse = (JsonObject) actualResponse.getEntity();
         assertFalse(jsonResponse.containsKey("token"));
         assertThat(jsonResponse.getInt("reason"), is(3));
@@ -1083,7 +1083,7 @@ public class RESTServiceTest {
         Response actualResponse = service.registerUser(object);
 
         //check
-        assertThat(actualResponse.getStatus(), is(401));
+        assertThat(actualResponse.getStatus(), is(417));
         JsonObject jsonResponse = (JsonObject) actualResponse.getEntity();
         assertFalse(jsonResponse.containsKey("token"));
         assertThat(jsonResponse.getInt("reason"), is(4));
