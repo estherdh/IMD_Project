@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.Objects.isNull;
+
 public class Librarian {
     @Inject
     private IUserDao userDao;
@@ -25,12 +27,15 @@ public class Librarian {
     @Inject
     private IExhibitDao exhibits;
 
+    @Inject
+    private QuestGenerator questGenerator;
+
     public int verifyLogin(String email, String password) {
         User u = getUserByEmail(email);
-        if(u == null) {
+        if (u == null) {
             return 1;
         }
-        if(u.passwordCorrect(password)){
+        if (u.passwordCorrect(password)) {
             return 0;
         } else {
             return 2;
@@ -44,7 +49,7 @@ public class Librarian {
         }
     }
 
-    public User getUserByEmail(String email){
+    public User getUserByEmail(String email) {
         return userDao.findUserByEmail(email);
     }
 
@@ -88,6 +93,7 @@ public class Librarian {
     public List<Museum> listMuseums(){
         return exhibits.listMuseums();
     }
+
     public void removeUser(User user) {
         userDao.remove(user);
     }
@@ -117,5 +123,20 @@ public class Librarian {
 
     public List<Replica> getReplicasFromUser(User user) {
         return user.getReplicas();
+    }
+
+    public int registerUser(String email, String password, String name, int languageId) {
+        User newUser = new User(email, password, name, languageId);
+        int validationState = 4;
+        if (isNull(getUserByEmail(email))) {
+            validationState = newUser.areValidCredentials();
+            if (validationState == 0) {
+                userDao.add(newUser);
+                for (int i = 0; i < 3; i++) {
+                    questGenerator.generateQuest(getUserByEmail(email).getId());
+                }
+            }
+        }
+        return validationState;
     }
 }

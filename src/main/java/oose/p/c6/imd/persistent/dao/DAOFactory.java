@@ -1,7 +1,7 @@
 package oose.p.c6.imd.persistent.dao;
 
 public class DAOFactory {
-    private DAOFactory(){
+    private DAOFactory() {
         throw new IllegalStateException("DAOFactory class");
     }
 
