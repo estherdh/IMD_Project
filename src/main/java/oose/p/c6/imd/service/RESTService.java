@@ -66,10 +66,10 @@ public class RESTService {
         if (registerState == 0) {
             Token t = TokenManager.getInstance().createTokenForUser(l.getUserByEmail(object.getString("email")));
             job.add("token", t.getTokenString());
-            return Response.status(200).entity(job.build()).build();
+            return Response.status(201).entity(job.build()).build();
         } else {
             job.add("reason", registerState);
-            return Response.status(401).entity(job.build()).build();
+            return Response.status(417).entity(job.build()).build();
         }
     }
 

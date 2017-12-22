@@ -11,7 +11,6 @@ public class QuestGenerator {
 
     public void generateQuest(int userId) {
         int random = ThreadLocalRandom.current().nextInt(0, QuestTypes.values().length - 1);
-        System.out.println(random);
         QuestTypes questType = QuestTypes.values()[random];
         IQuestGenerator questGeneratorType = questGeneratorFactory.getQuestGenerator(questType);
         if(questGeneratorType != null) {
