@@ -9,9 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import static org.junit.Assert.assertTrue;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
@@ -35,39 +33,39 @@ public class LibrarianTest {
     Librarian librarian;
 
 
-    @Test
-    public void scanQrCodeTestSuccess() throws Exception {
-        //init
-        User expectedUser = mock(User.class);
-        String expectedQrCode = "a qr code";
-        when(expectedUser.checkQuestCompleted(any(Action.class))).thenReturn(true);
-        //test
-        librarian.scanQrCode(expectedUser, expectedQrCode);
-        //init
-        verify(expectedUser, times(1)).checkQuestCompleted(any(Action.class));
-        verify(userDao, times(1)).update(expectedUser);
-    }
+	@Test
+	public void scanQrCodeTestSuccess() throws Exception {
+		//init
+		User expectedUser = mock(User.class);
+		String expectedQrCode = "a qr code";
+		when(expectedUser.checkQuestCompleted(any(Action.class))).thenReturn(true);
+		//test
+		librarian.scanQrCode(expectedUser, expectedQrCode);
+		//init
+		verify(expectedUser, times(1)).checkQuestCompleted(any(Action.class));
+		verify(userDao, times(1)).update(expectedUser);
+	}
 
-    @Test
-    public void removeQuestFromQuestLogTest() {
-        //init
-        User mockUser = mock(User.class);
-        when(mockUser.removeQuestFromQuestLog(1)).thenReturn(true);
-        //test
-        boolean actualResult = librarian.removeQuestFromQuestLog(1, mockUser);
-        //check
-        assertTrue(actualResult);
-    }
+	@Test
+	public void removeQuestFromQuestLogTest() {
+		//init
+		User mockUser = mock(User.class);
+		when(mockUser.removeQuestFromQuestLog(1)).thenReturn(true);
+		//test
+		boolean actualResult = librarian.removeQuestFromQuestLog(1, mockUser);
+		//check
+		assertTrue(actualResult);
+	}
 
-    @Test
-    public void removeUserTestSuccess() {
-        //test
-        User mockUser = mock(User.class);
-        //test
-        librarian.removeUser(mockUser);
-        //verify
-        verify(userDao, times(1)).remove(mockUser);
-    }
+	@Test
+	public void removeUserTestSuccess() {
+		//test
+		User mockUser = mock(User.class);
+		//test
+		librarian.removeUser(mockUser);
+		//verify
+		verify(userDao, times(1)).remove(mockUser);
+	}
 
     @Test
     public void registerUserSuccesTest() {
@@ -76,16 +74,16 @@ public class LibrarianTest {
         String displayName = "hallo123";
         String password = "Hee456";
         int languageId = 1;
-        User mockUser = mock(User.class);
-        when(userDao.findUserByEmail("hoi@hooi.nl")).thenReturn(null).thenReturn(mockUser);
-        when(mockUser.getId()).thenReturn(0);
+		User mockUser = mock(User.class);
+		when(userDao.findUserByEmail("hoi@hooi.nl")).thenReturn(null).thenReturn(mockUser);
+		when(mockUser.getId()).thenReturn(0);
 
-        //test
-        int actualResponse = librarian.registerUser(email, password, displayName, languageId);
+		//test
+		int actualResponse = librarian.registerUser(email, password, displayName, languageId);
 
         //check
-        verify(userDao, times(1)).add(any(User.class));
-        verify(questGenerator, times(3)).generateQuest(0);
+		verify(userDao, times(1)).add(any(User.class));
+		verify(questGenerator, times(3)).generateQuest(0);
         assertThat(actualResponse, is(0));
     }
 

@@ -8,6 +8,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -23,7 +24,8 @@ public class QuestTest {
 
 	@Before
 	public void setUp() {
-		this.quest = new Quest(1, "questName", "questDescription", 100, mockStrategy);
+		mockStrategy = mock(QrScanQuest.class);
+		this.quest = new Quest(1, "questName", "questDescription", 100, 1, 0, 0, mockStrategy);
 		DAOFactory.setUserDao(userDao);
 	}
 

@@ -119,7 +119,7 @@ public class QuestJDBCDao implements IQuestDAO {
     public boolean removeQuestFromQuestLog(int entryId, int userId) {
         Connection connection = ConnectMySQL.getInstance().getConnection();
         try {
-            PreparedStatement query = connection.prepareStatement("DELETE FROM QuestLog WHERE EntryId = ? AND UserId = ?;");
+            PreparedStatement query = connection.prepareStatement("UPDATE questlog ql SET ql.Removed = 1 WHERE EntryId = ? AND UserId = ?;");
             query.setInt(1, entryId);
             query.setInt(2, userId);
             query.executeUpdate();
@@ -169,6 +169,9 @@ public class QuestJDBCDao implements IQuestDAO {
                 rs.getString("Name"),
                 rs.getString("Description"),
                 rs.getInt("Reward"),
+                rs.getInt("QuestTypeId"),
+                rs.getInt("Removed"),
+                rs.getInt("Completed"),
                 typeStrategy
         );
     }
