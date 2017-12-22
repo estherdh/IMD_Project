@@ -222,10 +222,7 @@ public class User extends Model {
         if (isValidEmailAddress(email)) {
             if (isValidDisplayName(displayName)) {
                 if (isValidPassword(password)) {
-                    setEmail(email);
-                    setDisplayName(displayName);
                     setPassword(hashPassword(password));
-                    setLanguageId(languageId);
                     setCoins(0);
                     // success
                     return 0;
