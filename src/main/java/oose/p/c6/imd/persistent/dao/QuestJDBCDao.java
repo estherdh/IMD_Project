@@ -28,12 +28,7 @@ public class QuestJDBCDao implements IQuestDAO {
             ResultSet rs1 = connection.prepareStatement("SELECT LAST_INSERT_ID()").executeQuery();
             rs1.next();
             int entryId = rs1.getInt(1);
-            StringBuilder sb = new StringBuilder("INSERT INTO Questproperties (EntryId, `Key`, `Value`) VALUES ");
-            for (int i = 0; i < properties.size(); i++) {
-                sb.append("(? , ?, ?), ");
-            }
-            String sql = sb.toString().replaceAll(", $", "");
-            PreparedStatement psInsert2 = connection.prepareStatement(sql);
+            PreparedStatement psInsert2 = connection.prepareStatement(buildQuestPropertyQuery(properties));
             int j = 1;
             for (Map.Entry<String, String> entry : properties.entrySet()) {
                 psInsert2.setInt(j++, entryId);
@@ -46,22 +41,22 @@ public class QuestJDBCDao implements IQuestDAO {
         }
     }
 
+    private String buildQuestPropertyQuery(Map<String, String> properties) {
+        StringBuilder sb = new StringBuilder("INSERT INTO Questproperties (EntryId, `Key`, `Value`) VALUES ");
+        for (int i = 0; i < properties.size(); i++) {
+            sb.append("(? , ?, ?), ");
+        }
+        return sb.toString().replaceAll(", $", "");
+    }
+
     @Override
     public Quest find(int id, User user) {
         Connection connection = ConnectMySQL.getInstance().getConnection();
         try {
-            PreparedStatement ps = connection.prepareStatement("" +
-                    "SELECT * FROM (questlog ql INNER JOIN QuestType qt" +
-                    "    ON ql.QuestTypeId = qt.QuestTypeId)" +
-                    "  INNER JOIN QuestTypeLanguage qtl" +
-                    "    ON qt.QuestTypeId = qtl.QuestTypeId " +
-                    "WHERE UserId = ? " +
-                    "And EntryId = ? " +
-                    "AND LanguageId IN" +
-                    "    (SELECT COALESCE(" +
-                    "        (SELECT languageId FROM questtypelanguage qtl2 WHERE qtl2.LanguageId = ? AND qtl2.QuestTypeId = qt.QuestTypeId)" +
-                    "        , 1)" +
-                    "    );");
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM (questlog ql INNER JOIN QuestType qt ON ql.QuestTypeId = qt.QuestTypeId) " +
+                    "INNER JOIN QuestTypeLanguage qtl ON qt.QuestTypeId = qtl.QuestTypeId " +
+                    "WHERE UserId = ? And EntryId = ? AND LanguageId IN " +
+                    "(SELECT COALESCE((SELECT languageId FROM questtypelanguage qtl2 WHERE qtl2.LanguageId = ? AND qtl2.QuestTypeId = qt.QuestTypeId), 1));");
             ps.setInt(1, user.getId());
             ps.setInt(2, id);
             ps.setInt(3, user.getLanguageId());
@@ -100,18 +95,11 @@ public class QuestJDBCDao implements IQuestDAO {
         Connection connection = ConnectMySQL.getInstance().getConnection();
         List<Quest> questList = new ArrayList<>();
         try {
-            PreparedStatement ps = connection.prepareStatement("" +
-                    "SELECT * FROM (questlog ql INNER JOIN QuestType qt" +
-                    "    ON ql.QuestTypeId = qt.QuestTypeId)" +
-                    "  INNER JOIN QuestTypeLanguage qtl" +
-                    "    ON qt.QuestTypeId = qtl.QuestTypeId " +
-                    "WHERE UserId = ? " +
-                    "AND Completed = 0 " +
-                    "AND LanguageId IN" +
-                    "    (SELECT COALESCE(" +
-                    "        (SELECT languageId FROM questtypelanguage qtl2 WHERE qtl2.LanguageId = ? AND qtl2.QuestTypeId = qt.QuestTypeId)" +
-                    "        , 1)" +
-                    "    );");
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM (questlog ql INNER JOIN QuestType qt ON ql.QuestTypeId = qt.QuestTypeId) " +
+                    "INNER JOIN QuestTypeLanguage qtl ON qt.QuestTypeId = qtl.QuestTypeId " +
+                    "WHERE UserId = ? AND Completed = 0 AND LanguageId IN " +
+                    "(SELECT COALESCE(" +
+                    "(SELECT languageId FROM questtypelanguage qtl2 WHERE qtl2.LanguageId = ? AND qtl2.QuestTypeId = qt.QuestTypeId), 1));");
             ps.setInt(1, userId);
             ps.setInt(2, languageId);
             ResultSet rs = ps.executeQuery();

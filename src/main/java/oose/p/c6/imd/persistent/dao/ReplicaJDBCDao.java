@@ -20,57 +20,45 @@ public class ReplicaJDBCDao implements IReplicaDao {
 
     @Override
     public List<Replica> findAvailableReplicas(User user) {
-        Connection connection = ConnectMySQL.getInstance().getConnection();
-        List<Replica> replicas = new ArrayList<>();
-        try {
-            PreparedStatement ps = connection.prepareStatement("SELECT 0 as ReplicaPositionId, r.*, e.*, ei.*, (" +
+            return getReplicaList("SELECT 0 as ReplicaPositionId, r.*, e.*, ei.*, (" +
                     "SELECT `Name` FROM eralanguage erlan "+
                     "WHERE erlan.EraId=e.EraId AND erlan.LanguageId = (SELECT COALESCE((SELECT `LanguageId` FROM `eralanguage` erlang " +
                     "WHERE erlang.EraId=e.EraId AND `LanguageId` = ?), 1))) AS EraName FROM `replica` r " +
                     "INNER JOIN `exhibit` e ON e.ExhibitId=r.ExhibitId " +
                     "INNER JOIN exhibitinfo ei ON ei.ExhibitId=e.ExhibitId " +
                     "WHERE ei.LanguageId = (SELECT COALESCE((SELECT `LanguageId` FROM `exhibitinfo` WHERE `ExhibitId` = e.ExhibitId AND `LanguageId` = ?), 1)) " +
-                    "AND r.ReplicaId NOT IN (SELECT `ReplicaId` FROM `userreplica` WHERE `UserId` = ?)");
-            ps.setInt(1, user.getLanguageId());
-            ps.setInt(2, user.getLanguageId());
-            ps.setInt(3, user.getId());
-            fillReplicaList(ps, replicas);
-            connection.close();
-        } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, e.toString(), e);
-        }
-        return replicas;
+                    "AND r.ReplicaId NOT IN (SELECT `ReplicaId` FROM `userreplica` WHERE `UserId` = ?)", user);
     }
 
     @Override
     public List<Replica> getReplicasFromUser(User user) {
-        Connection connection = ConnectMySQL.getInstance().getConnection();
-        List<Replica> replicas = new ArrayList<>();
-        try {
-            PreparedStatement ps = connection.prepareStatement("SELECT ur.ReplicaPositionId, r.*, e.*, ei.*, (" +
+            return getReplicaList("SELECT ur.ReplicaPositionId, r.*, e.*, ei.*, (" +
                     "SELECT `Name` FROM eralanguage erlan "+
                     "WHERE erlan.EraId=e.EraId AND erlan.LanguageId = (SELECT COALESCE((SELECT `LanguageId` FROM `eralanguage` erlang " +
                     "WHERE erlang.EraId=e.EraId AND `LanguageId` = ?), 1))) AS EraName FROM `userreplica` ur " +
                     "INNER JOIN `replica` r ON r.ReplicaId=ur.ReplicaId " +
                     "INNER JOIN `exhibit` e ON e.ExhibitId=r.ExhibitId " +
                     "INNER JOIN exhibitinfo ei ON ei.ExhibitId=e.ExhibitId " +
-                    "WHERE ei.LanguageId = (SELECT COALESCE((SELECT `LanguageId` FROM `exhibitinfo` WHERE `ExhibitId` = e.ExhibitId AND `LanguageId` = ?), 1)) AND `UserId` = ?");
+                    "WHERE ei.LanguageId = (SELECT COALESCE((SELECT `LanguageId` FROM `exhibitinfo` WHERE `ExhibitId` = e.ExhibitId AND `LanguageId` = ?), 1)) AND `UserId` = ?", user);
+    }
+
+    private List<Replica> getReplicaList(String sql, User user) {
+        Connection connection = ConnectMySQL.getInstance().getConnection();
+        List<Replica> replicas = new ArrayList<>();
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
             ps.setInt(1, user.getLanguageId());
             ps.setInt(2, user.getLanguageId());
             ps.setInt(3, user.getId());
-            fillReplicaList(ps, replicas);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                replicas.add(createReplicaWithExhibitAndEra(rs));
+            }
             connection.close();
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, e.toString(), e);
         }
         return replicas;
-    }
-
-    private void fillReplicaList(PreparedStatement ps, List<Replica> replicas) throws SQLException {
-        ResultSet rs = ps.executeQuery();
-        while (rs.next()) {
-            replicas.add(createReplicaWithExhibitAndEra(rs));
-        }
     }
 
     @Override

@@ -242,8 +242,16 @@ public class RESTService {
         job.add("ExhibitId", e.getId());
         job.add("Name", e.getName());
         job.add("Description", e.getDescription());
-        job.add("Video", (e.getVideo() == null) ? "undefined" : e.getVideo());
-        job.add("Image", (e.getImage() == null) ? "undefined" : e.getImage());
+        String video = e.getVideo();
+        if(video == null) {
+            video = "undefined";
+        }
+        job.add("Video", video);
+        String image = e.getImage();
+        if(image == null) {
+            image = "undefined";
+        }
+        job.add("Image", image);
         job.add("Year", e.getYear());
         if(e.getEra() != null) {
             job.add("Era", createEraJson(e.getEra()));
