@@ -45,6 +45,11 @@ public class TokenManager {
         }
         return null;
     }
+
+    public void removeUserByToken(String tokenString) {
+		tokens.removeIf(e -> (e.tokenStringCorrect(tokenString)));
+	}
+
     public static void setInstance(TokenManager newInstance) {
     	instance = newInstance;
 	}

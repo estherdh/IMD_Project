@@ -1,5 +1,11 @@
 package oose.p.c6.imd.domain;
 
+import oose.p.c6.imd.persistent.dao.DAOFactory;
+import oose.p.c6.imd.persistent.dao.IUserDao;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public class Quest {
 	int entryId;
 	String name;
@@ -23,10 +29,20 @@ public class Quest {
 
 	public int checkQuestComplete(Action action) {
 		if (questType.checkQuestComplete(action)) {
+			sendNotification();
 			return reward;
 		} else {
 			return 0;
 		}
+	}
+
+	private void sendNotification() {
+		IUserDao userDao = DAOFactory.getUserDao();
+		User user = userDao.getUserByQuestId(entryId);
+		Map<String, String> variables = new HashMap<String, String>();
+		variables.put("QuestId", Integer.toString(entryId));
+		variables.put("Coins", Integer.toString(user.getCoins() + reward));
+		userDao.addNotification(1, variables, user);
 	}
 
 	public int getEntryId() {

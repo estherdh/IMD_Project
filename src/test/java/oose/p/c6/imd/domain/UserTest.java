@@ -1,6 +1,7 @@
 package oose.p.c6.imd.domain;
 
-import oose.p.c6.imd.persistent.dao.IQuestDAO;
+import oose.p.c6.imd.persistent.dao.DAOFactory;
+import oose.p.c6.imd.persistent.dao.IUserDao;
 import oose.p.c6.imd.persistent.dao.QuestJDBCDao;
 import oose.p.c6.imd.persistent.dao.UserJDBCDao;
 import org.junit.Test;
@@ -9,18 +10,24 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import javax.json.Json;
+import javax.json.JsonObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.booleanThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UserTest {
 	@Mock
 	private QuestJDBCDao questDao;
+	@Mock
 	private UserJDBCDao userDao;
 	@InjectMocks
 	private User user = new User(0, "mail", "password", "fullname", 0, 1);
@@ -64,5 +71,118 @@ public class UserTest {
 		boolean actualResult = user.removeQuestFromQuestLog(1);
 		//check
 		assertTrue(actualResult);
+	}
+
+	@Test
+	public void updateUserSuccess() {
+		//init
+		JsonObject jo = Json.createObjectBuilder()
+				.add("email", "test@mail.com")
+				.add("displayName", "testUser")
+				.add("password", "testPassword")
+				.add("languageId", 2)
+				.build();
+		//test
+		int actualResponse =   user.updateUser(jo.getString("email"), jo.getString("displayName"), jo.getString("password"), jo.getInt("languageId"), user);
+		//check
+		assertThat(actualResponse, is(0));
+		assertEquals("test@mail.com", jo.getString("email"));
+		assertEquals("testUser", jo.getString("displayName"));
+		assertEquals("testPassword", jo.getString("password"));
+		assertEquals(2,jo.getInt("languageId"));
+	}
+
+	@Test
+	public void updateUserInvalidEmail() {
+		JsonObject jo = Json.createObjectBuilder()
+				.add("email", "------")
+				.add("displayName", "testUser")
+				.add("password", "testPassword")
+				.add("languageId", 1)
+				.build();
+		//test
+		int actualResponse =   user.updateUser(jo.getString("email"), jo.getString("displayName"), jo.getString("password"), jo.getInt("languageId"), user);
+		//check
+		assertThat(actualResponse, is(3));
+	}
+
+	@Test
+	public void updateUserInvalidDisplayName() {
+		JsonObject jo = Json.createObjectBuilder()
+				.add("email", "test@mail.com")
+				.add("displayName", "")
+				.add("password", "testPassword")
+				.add("languageId", 1)
+				.build();
+		//test
+		int actualResponse =   user.updateUser(jo.getString("email"), jo.getString("displayName"), jo.getString("password"), jo.getInt("languageId"), user);
+		//check
+		assertThat(actualResponse, is(2));
+	}
+
+	@Test
+	public void updateUserInvalidPassword() {
+		JsonObject jo = Json.createObjectBuilder()
+				.add("email", "test@mail.com")
+				.add("displayName", "testUser")
+				.add("password", "test")
+				.add("languageId", 1)
+				.build();
+		//test
+		int actualResponse =   user.updateUser(jo.getString("email"), jo.getString("displayName"), jo.getString("password"), jo.getInt("languageId"), user);
+		//check
+		assertThat(actualResponse, is(1));
+	}
+
+	@Test
+	public void updateUserNoPassword() {
+		JsonObject jo = Json.createObjectBuilder()
+				.add("email", "test@mail.com")
+				.add("displayName", "testUser")
+				.add("password", "")
+				.add("languageId", 1)
+				.build();
+		//test
+		int actualResponse =   user.updateUser(jo.getString("email"), jo.getString("displayName"), jo.getString("password"), jo.getInt("languageId"), user);
+		//check
+		assertThat(actualResponse, is(0));
+	}
+
+	@Test
+	public void getNotifications() {
+		IUserDao dao = mock(IUserDao.class);
+		DAOFactory.setUserDao(dao);
+		User test2 = new User(2, "test@void", "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08", "muspi merol", 0, 2);
+		List<Notification> expected = new ArrayList<Notification>();
+		Notification n = new Notification(1, "NOW", "YEAH", false,5);
+		expected.add(n);
+		when(dao.listNotification(test2)).thenReturn(expected);
+		List<Notification> list = test2.getNotifications();
+		assertEquals(list.get(0).getId(), expected.get(0).getId());
+		assertEquals(list.get(0).getText(), expected.get(0).getText());
+		assertEquals(list.get(0).getRead(), expected.get(0).getRead());
+		assertEquals(list.get(0).getTime(), expected.get(0).getTime());
+	}
+
+	@Test
+	public void addNotificationTestSuccess() {
+		//init
+		Map expectedResult = new HashMap<String, String>();
+		//test
+		user.addNotification(1, expectedResult);
+		//check
+		verify(userDao, times(1)).addNotification(1, expectedResult, user);
+	}
+
+	@Test
+	public void markNotificationTest(){
+		IUserDao udao = mock(IUserDao.class);
+		DAOFactory.setUserDao(udao);
+		Notification n = new Notification(1, "NOW", "Ha!", false, 99);
+		when(udao.findNotification(any(), anyInt())).thenReturn(n);
+		User u = new User(2, "test@user@db", "tested", "testUser", 10, 2);
+		u.markNotification(1, true);
+		verify(udao, times(1)).updateNotification(n);
+		assertTrue(n.getRead());
 	}
 }
