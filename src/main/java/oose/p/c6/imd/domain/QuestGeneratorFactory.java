@@ -14,7 +14,7 @@ public class QuestGeneratorFactory {
         return instance;
     }
 
-    public IQuestGenerator getQuestGenerator(QuestTypes questType) {
+    public BaseQuestGenerator getQuestGenerator(QuestTypes questType) {
         switch(questType) {
             case EXHIBITVIEW:
                 return new ExhibitViewQuestGenerator();

@@ -23,12 +23,10 @@ public class ReplicaJDBCDao implements IReplicaDao {
         Connection connection = ConnectMySQL.getInstance().getConnection();
         List<Replica> replicas = new ArrayList<>();
         try {
-            PreparedStatement ps = connection.prepareStatement("SELECT r.*, e.*, ei.*, (" +
+            PreparedStatement ps = connection.prepareStatement("SELECT 0 as ReplicaPositionId, r.*, e.*, ei.*, (" +
                     "SELECT `Name` FROM eralanguage erlan "+
-                    "WHERE erlan.EraId=e.EraId AND erlan.LanguageId = (" +
-                    "SELECT COALESCE((" +
-                    "SELECT `LanguageId` FROM `eralanguage` erlang WHERE erlang.EraId=e.EraId AND `LanguageId` = ?), 1))) AS EraName " +
-                    "FROM `replica` r " +
+                    "WHERE erlan.EraId=e.EraId AND erlan.LanguageId = (SELECT COALESCE((SELECT `LanguageId` FROM `eralanguage` erlang " +
+                    "WHERE erlang.EraId=e.EraId AND `LanguageId` = ?), 1))) AS EraName FROM `replica` r " +
                     "INNER JOIN `exhibit` e ON e.ExhibitId=r.ExhibitId " +
                     "INNER JOIN exhibitinfo ei ON ei.ExhibitId=e.ExhibitId " +
                     "WHERE ei.LanguageId = (SELECT COALESCE((SELECT `LanguageId` FROM `exhibitinfo` WHERE `ExhibitId` = e.ExhibitId AND `LanguageId` = ?), 1)) " +
@@ -36,20 +34,43 @@ public class ReplicaJDBCDao implements IReplicaDao {
             ps.setInt(1, user.getLanguageId());
             ps.setInt(2, user.getLanguageId());
             ps.setInt(3, user.getId());
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                Era era = new Era(rs.getInt("EraId"), rs.getString("EraName"));
-                Exhibit exhibit = new Exhibit(rs.getInt("ExhibitId"), rs.getString("Name"),
-                        rs.getString("Description"), rs.getString("Video"), rs.getString("Image"),
-                        rs.getInt("Year"), rs.getInt("EraId"), rs.getInt("MuseumId"), era);
-                Replica replica = new Replica(rs.getInt("ReplicaId"), rs.getInt("ExhibitId"), rs.getInt("Price"), rs.getString("Sprite"), rs.getInt("ReplicaTypeId"), 0, exhibit);
-                replicas.add(replica);
-            }
+            fillReplicaList(ps, replicas);
             connection.close();
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, e.toString(), e);
         }
         return replicas;
+    }
+
+    @Override
+    public List<Replica> getReplicasFromUser(User user) {
+        Connection connection = ConnectMySQL.getInstance().getConnection();
+        List<Replica> replicas = new ArrayList<>();
+        try {
+            PreparedStatement ps = connection.prepareStatement("SELECT ur.ReplicaPositionId, r.*, e.*, ei.*, (" +
+                    "SELECT `Name` FROM eralanguage erlan "+
+                    "WHERE erlan.EraId=e.EraId AND erlan.LanguageId = (SELECT COALESCE((SELECT `LanguageId` FROM `eralanguage` erlang " +
+                    "WHERE erlang.EraId=e.EraId AND `LanguageId` = ?), 1))) AS EraName FROM `userreplica` ur " +
+                    "INNER JOIN `replica` r ON r.ReplicaId=ur.ReplicaId " +
+                    "INNER JOIN `exhibit` e ON e.ExhibitId=r.ExhibitId " +
+                    "INNER JOIN exhibitinfo ei ON ei.ExhibitId=e.ExhibitId " +
+                    "WHERE ei.LanguageId = (SELECT COALESCE((SELECT `LanguageId` FROM `exhibitinfo` WHERE `ExhibitId` = e.ExhibitId AND `LanguageId` = ?), 1)) AND `UserId` = ?");
+            ps.setInt(1, user.getLanguageId());
+            ps.setInt(2, user.getLanguageId());
+            ps.setInt(3, user.getId());
+            fillReplicaList(ps, replicas);
+            connection.close();
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, e.toString(), e);
+        }
+        return replicas;
+    }
+
+    private void fillReplicaList(PreparedStatement ps, List<Replica> replicas) throws SQLException {
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+            replicas.add(createReplicaWithExhibitAndEra(rs));
+        }
     }
 
     @Override
@@ -96,10 +117,7 @@ public class ReplicaJDBCDao implements IReplicaDao {
                             "AND `ReplicaPositionId` IS NOT NULL)");
             ps.setInt(1, replicaType);
             ps.setInt(2, user.getId());
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                positions.add(rs.getInt("ReplicaPositionId"));
-            }
+            fillPositionList(ps, positions);
             connection.close();
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, e.toString(), e);
@@ -115,10 +133,7 @@ public class ReplicaJDBCDao implements IReplicaDao {
             PreparedStatement ps = connection.prepareStatement(
                     "SELECT `ReplicaPositionId` FROM replicapositions WHERE `ReplicaTypeId` = ?");
             ps.setInt(1, replicaType);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                positions.add(rs.getInt("ReplicaPositionId"));
-            }
+            fillPositionList(ps, positions);
             connection.close();
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, e.toString(), e);
@@ -126,39 +141,11 @@ public class ReplicaJDBCDao implements IReplicaDao {
         return positions;
     }
 
-    @Override
-    public List<Replica> getReplicasFromUser(User user) {
-        Connection connection = ConnectMySQL.getInstance().getConnection();
-        List<Replica> replicas = new ArrayList<>();
-        try {
-            PreparedStatement ps = connection.prepareStatement("SELECT ur.ReplicaPositionId, r.*, e.*, ei.*, (" +
-                    "SELECT `Name` FROM eralanguage erlan "+
-                    "WHERE erlan.EraId=e.EraId AND erlan.LanguageId = (" +
-                    "SELECT COALESCE((" +
-                    "SELECT `LanguageId` FROM `eralanguage` erlang WHERE erlang.EraId=e.EraId AND `LanguageId` = ?), 1))) AS EraName " +
-                    "FROM `userreplica` ur " +
-                    "INNER JOIN `replica` r ON r.ReplicaId=ur.ReplicaId " +
-                    "INNER JOIN `exhibit` e ON e.ExhibitId=r.ExhibitId " +
-                    "INNER JOIN exhibitinfo ei ON ei.ExhibitId=e.ExhibitId " +
-                    "WHERE ei.LanguageId = (SELECT COALESCE((SELECT `LanguageId` FROM `exhibitinfo` WHERE `ExhibitId` = e.ExhibitId AND `LanguageId` = ?), 1)) " +
-                    "AND `UserId` = ?");
-            ps.setInt(1, user.getLanguageId());
-            ps.setInt(2, user.getLanguageId());
-            ps.setInt(3, user.getId());
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                Era era = new Era(rs.getInt("EraId"), rs.getString("EraName"));
-                Exhibit exhibit = new Exhibit(rs.getInt("ExhibitId"), rs.getString("Name"),
-                        rs.getString("Description"), rs.getString("Video"), rs.getString("Image"),
-                        rs.getInt("Year"), rs.getInt("EraId"), rs.getInt("MuseumId"), era);
-                Replica replica = new Replica(rs.getInt("ReplicaId"), rs.getInt("ExhibitId"), rs.getInt("Price"), rs.getString("Sprite"), rs.getInt("ReplicaTypeId"), rs.getInt("ReplicaPositionId"), exhibit);
-                replicas.add(replica);
-            }
-            connection.close();
-        } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, e.toString(), e);
+    private void fillPositionList(PreparedStatement ps, List<Integer> positions) throws SQLException {
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+            positions.add(rs.getInt("ReplicaPositionId"));
         }
-        return replicas;
     }
 
     @Override
@@ -200,5 +187,15 @@ public class ReplicaJDBCDao implements IReplicaDao {
 
     private Replica createReplica(ResultSet rs) throws SQLException {
         return new Replica(rs.getInt("ReplicaId"), rs.getInt("ExhibitId"), rs.getInt("Price"), rs.getString("Sprite"), rs.getInt("ReplicaTypeId"));
+    }
+
+    private Replica createReplicaWithExhibitAndEra(ResultSet rs) throws SQLException {
+        int exhibitId = rs.getInt("ExhibitId");
+        Era era = new Era(rs.getInt("EraId"), rs.getString("EraName"));
+        Exhibit exhibit = new Exhibit(exhibitId, rs.getString("Name"),
+                rs.getString("Description"), rs.getString("Video"), rs.getString("Image"),
+                rs.getInt("Year"), rs.getInt("EraId"), rs.getInt("MuseumId"));
+        exhibit.setEra(era);
+        return new Replica(rs.getInt("ReplicaId"), exhibitId, rs.getInt("Price"), rs.getString("Sprite"), rs.getInt("ReplicaTypeId"), rs.getInt("ReplicaPositionId"), exhibit);
     }
 }

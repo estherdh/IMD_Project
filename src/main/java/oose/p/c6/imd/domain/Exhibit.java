@@ -20,18 +20,6 @@ public class Exhibit extends Model {
         this.eraId = eraId;
     }
 
-    public Exhibit (int id, String name, String description, String video, String image, int year, int eraId, int museumId, Era era){
-        super(id);
-        this.name = name;
-        this.description = description;
-        this.video = video;
-        this.image = image;
-        this.year = year;
-        this.museumId = museumId;
-        this.eraId = eraId;
-        this.era = era;
-    }
-
     public String getName() {
         return name;
     }

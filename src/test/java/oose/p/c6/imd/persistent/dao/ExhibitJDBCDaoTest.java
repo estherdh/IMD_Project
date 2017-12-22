@@ -179,4 +179,18 @@ public class ExhibitJDBCDaoTest {
         //check
         assertThat(actualExhibit, samePropertyValuesAs(expectedExhibit));
     }
+
+    @Test
+    public void findErasNotYetInQuestlog() throws SQLException {
+        //init
+        Era expectedEra = new Era(3, "Steen tijd");
+
+        //test
+        List<Era> eras = dao.findErasNotYetInQuestlog(1);
+        Era actualEra = eras.get(0);
+
+        //check
+        assertThat(actualEra, samePropertyValuesAs(expectedEra));
+    }
+
 }

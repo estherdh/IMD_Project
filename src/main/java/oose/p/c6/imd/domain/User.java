@@ -95,7 +95,7 @@ public class User extends Model {
     public int updateUser(String email, String name, String password, int languageId, User user) {
         if (isValidEmailAddress(email)) {
             if (isValidDisplayName(name)) {
-                if(password.trim().isEmpty() || password.equals("undefined")) {
+                if(password.trim().isEmpty() || "undefined".equals(password)) {
                     user.setEmail(email);
                     user.setDisplayName(name);
                     user.setLanguageId(languageId);

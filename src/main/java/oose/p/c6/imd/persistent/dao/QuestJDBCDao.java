@@ -25,18 +25,15 @@ public class QuestJDBCDao implements IQuestDAO {
             psInsert1.setInt(1, userId);
             psInsert1.setInt(2, questTypeId);
             psInsert1.execute();
-
             ResultSet rs1 = connection.prepareStatement("SELECT LAST_INSERT_ID()").executeQuery();
             rs1.next();
             int entryId = rs1.getInt(1);
-
-            String sql = "INSERT INTO Questproperties (EntryId, `Key`, `Value`) VALUES ";
+            StringBuilder sb = new StringBuilder("INSERT INTO Questproperties (EntryId, `Key`, `Value`) VALUES ");
             for (int i = 0; i < properties.size(); i++) {
-                sql = sql + "(? , ?, ?), ";
+                sb.append("(? , ?, ?), ");
             }
-            sql = sql.replaceAll(", $", "");
+            String sql = sb.toString().replaceAll(", $", "");
             PreparedStatement psInsert2 = connection.prepareStatement(sql);
-
             int j = 1;
             for (Map.Entry<String, String> entry : properties.entrySet()) {
                 psInsert2.setInt(j++, entryId);
@@ -44,9 +41,6 @@ public class QuestJDBCDao implements IQuestDAO {
                 psInsert2.setString(j++, entry.getValue());
             }
             psInsert2.execute();
-
-//            connection.close();
-
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, e.toString(), e);
         }
@@ -55,7 +49,6 @@ public class QuestJDBCDao implements IQuestDAO {
     @Override
     public Quest find(int id, User user) {
         Connection connection = ConnectMySQL.getInstance().getConnection();
-        QuestFactory factory = QuestFactory.getInstance();
         try {
             PreparedStatement ps = connection.prepareStatement("" +
                     "SELECT * FROM (questlog ql INNER JOIN QuestType qt" +
@@ -73,23 +66,13 @@ public class QuestJDBCDao implements IQuestDAO {
             ps.setInt(2, id);
             ps.setInt(3, user.getLanguageId());
             ResultSet rs = ps.executeQuery();
-            Quest result = null;
             if (rs.next()) {
-                int questType = rs.getInt("QuestTypeId");
-                IQuestType typeStrategy = factory.generateQuest(QuestTypes.values()[questType - 1], getVariablesOfQuest(rs.getInt("EntryId")));
-                result = new Quest(
-                        rs.getInt("EntryId"),
-                        rs.getString("Name"),
-                        rs.getString("Description"),
-                        rs.getInt("Reward"),
-                        typeStrategy
-                );
+                return createQuest(rs, generateQuest(rs));
             }
-            return result;
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, e.toString(), e);
-            return null;
         }
+        return null;
     }
 
     public void add(Quest entity) {
@@ -116,7 +99,6 @@ public class QuestJDBCDao implements IQuestDAO {
     public List<Quest> getQuestsForUser(int userId, int languageId) {
         Connection connection = ConnectMySQL.getInstance().getConnection();
         List<Quest> questList = new ArrayList<>();
-        QuestFactory factory = QuestFactory.getInstance();
         try {
             PreparedStatement ps = connection.prepareStatement("" +
                     "SELECT * FROM (questlog ql INNER JOIN QuestType qt" +
@@ -134,15 +116,7 @@ public class QuestJDBCDao implements IQuestDAO {
             ps.setInt(2, languageId);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                int questType = rs.getInt("QuestTypeId");
-                IQuestType typeStrategy = factory.generateQuest(QuestTypes.values()[questType - 1], getVariablesOfQuest(rs.getInt("EntryId")));
-                questList.add(new Quest(
-                        rs.getInt("EntryId"),
-                        rs.getString("Name"),
-                        rs.getString("Description"),
-                        rs.getInt("Reward"),
-                        typeStrategy
-                ));
+                questList.add(createQuest(rs, generateQuest(rs)));
             }
             if (!connection.isClosed()) {
                 connection.close();
@@ -199,5 +173,19 @@ public class QuestJDBCDao implements IQuestDAO {
             LOGGER.log(Level.SEVERE, e.toString(), e);
             return null;
         }
+    }
+
+    private Quest createQuest(ResultSet rs, IQuestType typeStrategy) throws SQLException {
+        return new Quest(
+                rs.getInt("EntryId"),
+                rs.getString("Name"),
+                rs.getString("Description"),
+                rs.getInt("Reward"),
+                typeStrategy
+        );
+    }
+
+    private IQuestType generateQuest(ResultSet rs) throws SQLException {
+        return QuestFactory.getInstance().generateQuest(QuestTypes.values()[rs.getInt("QuestTypeId") - 1], getVariablesOfQuest(rs.getInt("EntryId")));
     }
 }

@@ -119,7 +119,6 @@ public class Librarian {
         for (User user:allUsers) {
             user.addNotification(typeId, variables);
         }
-
     }
 
     public List<Replica> getReplicasFromUser(User user) {

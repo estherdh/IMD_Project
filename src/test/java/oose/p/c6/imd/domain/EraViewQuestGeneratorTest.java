@@ -1,8 +1,7 @@
 package oose.p.c6.imd.domain;
 
 import oose.p.c6.imd.persistent.ConnectMySQL;
-import oose.p.c6.imd.persistent.dao.DAOFactory;
-import oose.p.c6.imd.persistent.dao.IExhibitDao;
+import oose.p.c6.imd.persistent.dao.*;
 import org.h2.tools.RunScript;
 import org.junit.After;
 import org.junit.Before;
@@ -18,23 +17,23 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
-
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class ExhibitViewQuestGeneratorTest {
 
-    private int userId;
-    private List<Exhibit> expectedExhibits;
+@RunWith(MockitoJUnitRunner.class)
+public class EraViewQuestGeneratorTest {
 
     private Connection conn;
+
+    private int userId;
+    private List<Era> expectedEras;
 
     @Mock
     private IExhibitDao exhibitDao;
 
     @InjectMocks
-    private ExhibitViewQuestGenerator exhibitQuest;
+    private EraViewQuestGenerator eraQuest;
 
     @Before
     public void setUp() throws Exception {
@@ -46,13 +45,11 @@ public class ExhibitViewQuestGeneratorTest {
         RunScript.execute(conn, new FileReader("src/main/resources/sqlScript.sql"));
         userId = 1;
 
-        expectedExhibits = (new ArrayList<Exhibit>() {{
-//            add(new Exhibit(1, "Het test object", "Dit object wordt altijd al gebruikt om te testen", null, "object.png", 1999, 1, 1));
-            add(new Exhibit(4, "Voorbeeld streektaal", "Dit papier bevat een stuk tekst in streektaal: Oet de goaldn korenaarn skeup God de Tweantenaarn, en oet t kaf en d restn de leu oet t Westn",
-                    null, "object.png", 2017, 1, 2));
+        expectedEras = (new ArrayList<Era>() {{
+            add(new Era(3, "Steen tijd"));
         }});
 
-        when(exhibitDao.findExhibitsNotYetInQuestlog(userId)).thenReturn(expectedExhibits);
+        when(exhibitDao.findErasNotYetInQuestlog(userId)).thenReturn(expectedEras);
         DAOFactory.setExhibitDao(exhibitDao);
     }
 
@@ -63,17 +60,18 @@ public class ExhibitViewQuestGeneratorTest {
         conn.close();
     }
 
-
     @Test
     public void questIsGeneratedTest() throws SQLException {
         //test
-        exhibitQuest.generateQuest(userId);
+        eraQuest.generateQuest(userId);
 
         //check
         ResultSet rs = conn.prepareStatement("SELECT * FROM questproperties WHERE EntryId = 10").executeQuery();
         rs.next();
         int i = Integer.parseInt((rs.getString(3)));
 
-        assertEquals(i, expectedExhibits.get(0).getId());
+        assertEquals(i, expectedEras.get(0).getId());
     }
+
+
 }
