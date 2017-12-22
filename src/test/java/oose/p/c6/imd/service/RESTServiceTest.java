@@ -975,4 +975,118 @@ public class RESTServiceTest {
         //check
         assertThat(actualResponse.getStatus(), is(401));
     }
+	//register user tests
+    @Test
+    public void registerUserSuccessTest() {
+        //init
+        JsonObject object = Json.createObjectBuilder()
+                .add("email", "email@eee.com")
+                .add("password", "testPassword")
+                .add("displayName", "username")
+                .add("languageId", 1)
+                .build();
+
+        when(librarian.registerUser(object.getString("email"), object.getString("password"), object.getString("displayName"), object.getInt("languageId"))).thenReturn(0);
+        when(librarian.getUserByEmail(anyString())).thenReturn(mock(User.class));
+        when(token.getTokenString()).thenReturn("token");
+
+        //test
+        Response actualResponse = service.registerUser(object);
+
+        //check
+        verify(librarian, times(1)).getUserByEmail(object.getString("email"));
+        assertThat(actualResponse.getStatus(), is(201));
+        JsonObject jsonResponse = (JsonObject) actualResponse.getEntity();
+        assertTrue(jsonResponse.containsKey("token"));
+        assertFalse(jsonResponse.containsKey("reason"));
+    }
+
+    @Test
+    public void registerUserInvalidPasswordTest() {
+        //init
+        JsonObject object = Json.createObjectBuilder()
+                .add("email", "email@e.com")
+                .add("password", "testPassword")
+                .add("displayName", "username")
+                .add("languageId", 1)
+                .build();
+
+        when(librarian.registerUser(object.getString("email"), object.getString("password"), object.getString("displayName"), object.getInt("languageId"))).thenReturn(1);
+
+        //test
+        Response actualResponse = service.registerUser(object);
+
+        //check
+        assertThat(actualResponse.getStatus(), is(417));
+        JsonObject jsonResponse = (JsonObject) actualResponse.getEntity();
+        assertFalse(jsonResponse.containsKey("token"));
+        assertThat(jsonResponse.getInt("reason"), is(1));
+    }
+
+    @Test
+    public void registerUserInvalidDisplayNameTest() {
+        //init
+        JsonObject object = Json.createObjectBuilder()
+                .add("email", "email@e.com")
+                .add("password", "testPassword")
+                .add("displayName", "username")
+                .add("languageId", 1)
+                .build();
+
+        when(librarian.registerUser(object.getString("email"), object.getString("password"), object.getString("displayName"), object.getInt("languageId"))).thenReturn(2);
+
+        //test
+        Response actualResponse = service.registerUser(object);
+
+        //check
+        assertThat(actualResponse.getStatus(), is(417));
+        JsonObject jsonResponse = (JsonObject) actualResponse.getEntity();
+        assertFalse(jsonResponse.containsKey("token"));
+        assertThat(jsonResponse.getInt("reason"), is(2));
+    }
+
+    @Test
+    public void registerUserInvalidEmailTest() {
+        //init
+        JsonObject object = Json.createObjectBuilder()
+                .add("email", "email@e.com")
+                .add("password", "testPassword")
+                .add("displayName", "username")
+                .add("languageId", 1)
+                .build();
+
+        when(librarian.registerUser(object.getString("email"), object.getString("password"), object.getString("displayName"), object.getInt("languageId"))).thenReturn(3);
+
+        //test
+        Response actualResponse = service.registerUser(object);
+
+        //check
+        assertThat(actualResponse.getStatus(), is(417));
+        JsonObject jsonResponse = (JsonObject) actualResponse.getEntity();
+        assertFalse(jsonResponse.containsKey("token"));
+        assertThat(jsonResponse.getInt("reason"), is(3));
+    }
+
+    @Test
+    public void registerUserExistingEmailTest() {
+        //init
+        JsonObject object = Json.createObjectBuilder()
+                .add("email", "email@e.com")
+                .add("password", "testPassword")
+                .add("displayName", "username")
+                .add("languageId", 1)
+                .build();
+
+        when(librarian.registerUser(object.getString("email"), object.getString("password"), object.getString("displayName"), object.getInt("languageId"))).thenReturn(4);
+
+        //test
+        Response actualResponse = service.registerUser(object);
+
+        //check
+        assertThat(actualResponse.getStatus(), is(417));
+        JsonObject jsonResponse = (JsonObject) actualResponse.getEntity();
+        assertFalse(jsonResponse.containsKey("token"));
+        assertThat(jsonResponse.getInt("reason"), is(4));
+    }
+
 }

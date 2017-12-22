@@ -11,6 +11,7 @@ public interface IUserDao extends IDao<User> {
     public User findUserByEmail(String email);
     public List<Notification> listNotification(User u);
 	void addNotification(int typeId, Map<String, String> properties, User user);
+    public void add(User entity);
 	User getUserByQuestId(int id);
     Notification findNotification(User user, int notificationId);
     void updateNotification(Notification n);

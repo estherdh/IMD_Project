@@ -122,7 +122,7 @@ public class QuestJDBCDaoTest {
 
         //check
         ResultSet resultAdded = conn.createStatement().executeQuery("SELECT qp.Key, qp.Value FROM QuestProperties qp " +
-                "WHERE EntryId = 8 ORDER BY qp.Key ASC");
+                "WHERE EntryId = 10 ORDER BY qp.Key ASC");
         resultAdded.next();
         assertEquals("TestKey", resultAdded.getString(1));
         assertEquals(key, resultAdded.getString(2));

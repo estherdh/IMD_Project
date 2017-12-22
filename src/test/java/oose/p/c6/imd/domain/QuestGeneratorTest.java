@@ -20,7 +20,7 @@ public class QuestGeneratorTest {
     private QuestGenerator questGenerator;
 
     @Mock
-    private IQuestGenerator questGeneratorType;
+    private BaseQuestGenerator questGeneratorType;
 
     @Test
     public void generateQuest() {
