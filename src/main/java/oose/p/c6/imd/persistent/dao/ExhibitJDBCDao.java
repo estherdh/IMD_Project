@@ -45,39 +45,24 @@ public class ExhibitJDBCDao implements IExhibitDao {
     @Override
     public List<Exhibit> listByMuseum(User user, int museumId) {
         Connection connection = ConnectMySQL.getInstance().getConnection();
-        ResultSet rs = null;
         try {
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM Exhibit e LEFT JOIN ExhibitInfo ei ON e.ExhibitId = ei.ExhibitId AND ei.languageId  IN (SELECT COALESCE((SELECT languageId FROM ExhibitInfo eil WHERE eil.ExhibitId = e.ExhibitId AND languageId = ?), 1)) WHERE e.MuseumId = ?");
             ps.setInt(2, museumId);
             ps.setInt(1, user.getLanguageId());
-            rs = ps.executeQuery();
-            List<Exhibit> list = new ArrayList<Exhibit>();
-            while (rs.next()) {
-                list.add(createExhibitFromResultset(rs));
-            }
-            connection.close();
-            return list;
+            return getListFromPreparedStatement(ps, connection);
         } catch (SQLException e) {
             return (ArrayList) handleException(e, new ArrayList<Exhibit>());
-
         }
     }
 
     @Override
     public List<Exhibit> listByEra(User user, int eraId) {
         Connection connection = ConnectMySQL.getInstance().getConnection();
-        ResultSet rs = null;
         try {
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM Exhibit e LEFT JOIN ExhibitInfo ei ON e.ExhibitId = ei.ExhibitId AND ei.languageId IN (SELECT COALESCE((SELECT languageId FROM ExhibitInfo eil WHERE eil.ExhibitId = e.ExhibitId AND languageId = ?), 1)) WHERE e.EraId = ?;");
             ps.setInt(2, eraId);
             ps.setInt(1, user.getLanguageId());
-            rs = ps.executeQuery();
-            List<Exhibit> list = new ArrayList<Exhibit>();
-            while (rs.next()) {
-                list.add(createExhibitFromResultset(rs));
-            }
-            connection.close();
-            return list;
+            return getListFromPreparedStatement(ps, connection);
         } catch (SQLException e) {
             return (ArrayList) handleException(e, new ArrayList<Exhibit>());
 
@@ -91,17 +76,10 @@ public class ExhibitJDBCDao implements IExhibitDao {
     @Override
     public List<Exhibit> list(User user) {
         Connection connection = ConnectMySQL.getInstance().getConnection();
-        ResultSet rs = null;
         try {
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM Exhibit e LEFT JOIN ExhibitInfo ei ON e.ExhibitId = ei.ExhibitId AND ei.languageId IN (SELECT COALESCE((SELECT languageId FROM ExhibitInfo eil WHERE eil.ExhibitId = e.ExhibitId AND languageId = ?), 1));");
             ps.setInt(1, user.getLanguageId());
-            rs = ps.executeQuery();
-            List<Exhibit> list = new ArrayList<Exhibit>();
-            while (rs.next()) {
-                list.add(createExhibitFromResultset(rs));
-            }
-            connection.close();
-            return list;
+            return getListFromPreparedStatement(ps, connection);
         } catch (SQLException e) {
             return (ArrayList) handleException(e, new ArrayList<Exhibit>());
 
@@ -192,7 +170,6 @@ public class ExhibitJDBCDao implements IExhibitDao {
     @Override
     public List<Exhibit> findExhibitsNotYetInQuestlog(int userId) {
         Connection connection = ConnectMySQL.getInstance().getConnection();
-        ResultSet rs = null;
         try {
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM exhibit e INNER JOIN exhibitinfo ei " +
                     "ON e.ExhibitId = ei.ExhibitId WHERE e.ExhibitId " +
@@ -203,16 +180,7 @@ public class ExhibitJDBCDao implements IExhibitDao {
                     "WHERE u.UserId = ?)");
             ps.setInt(1, userId);
             ps.setInt(2, userId);
-            rs = ps.executeQuery();
-            List<Exhibit> list = new ArrayList<>();
-            while (rs.next()) {
-                Exhibit e = new Exhibit(rs.getInt("ExhibitId"), rs.getString("Name"),
-                        rs.getString("Description"), rs.getString("Video"), rs.getString("Image"),
-                        rs.getInt("Year"), rs.getInt("EraId"), rs.getInt("MuseumId"));
-                list.add(e);
-            }
-            connection.close();
-            return list;
+            return getListFromPreparedStatement(ps, connection);
         } catch (SQLException e) {
             return (ArrayList) handleException(e, new ArrayList<Exhibit>());
         }
@@ -270,8 +238,18 @@ public class ExhibitJDBCDao implements IExhibitDao {
         throw new MethodNotFoundException();
     }
 
-    protected Object handleException(Exception e, Object o) {
+    private Object handleException(Exception e, Object o) {
         LOGGER.log(Level.SEVERE, e.toString(), e);
         return o;
+    }
+
+    private List<Exhibit> getListFromPreparedStatement(PreparedStatement ps, Connection connection) throws SQLException {
+        ResultSet rs = ps.executeQuery();
+        List<Exhibit> list = new ArrayList<>();
+        while (rs.next()) {
+            list.add(createExhibitFromResultset(rs));
+        }
+        connection.close();
+        return list;
     }
 }

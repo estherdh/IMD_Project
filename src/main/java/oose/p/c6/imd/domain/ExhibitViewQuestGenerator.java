@@ -10,7 +10,7 @@ public class ExhibitViewQuestGenerator extends ViewQuestGenerator {
 
         List<Exhibit> exhibits = findExhibitsNotYetInQuestlog(userId);
 
-        if (exhibits.size() > 0) {
+        if (!exhibits.isEmpty()) {
             Exhibit e = exhibits.get(new Random().nextInt(exhibits.size()));
 
             String key = "Topstuk";
