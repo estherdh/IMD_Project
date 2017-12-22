@@ -9,6 +9,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import static org.junit.Assert.assertTrue;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
@@ -292,5 +297,68 @@ public class LibrarianTest {
 
         //check
         verify(mockUser, times(1)).getReplicas();
+    }
+
+    @Test
+    public void verifyLoginNonExistingUserTest() {
+        //init
+        String email = "test@test.test";
+        String password = "Password1";
+        when(userDao.findUserByEmail("test@test.test")).thenReturn(null);
+
+        //test
+        int verification = librarian.verifyLogin(email, password);
+
+        //check
+        assertThat(verification, is(1));
+    }
+
+    @Test
+    public void verifyLoginInvalidCredentialsTest() {
+        //init
+        String email = "test@test.test";
+        String password = "Password1";
+        User mockUser = mock(User.class);
+        when(userDao.findUserByEmail("test@test.test")).thenReturn(mockUser);
+        when(mockUser.passwordCorrect("Password1")).thenReturn(false);
+
+        //test
+        int verification = librarian.verifyLogin(email, password);
+
+        //check
+        assertThat(verification, is(2));
+    }
+
+    @Test
+    public void verifyLoginSuccesTest() {
+        //init
+        String email = "test@test.test";
+        String password = "Password1";
+        User mockUser = mock(User.class);
+        when(userDao.findUserByEmail("test@test.test")).thenReturn(mockUser);
+        when(mockUser.passwordCorrect("Password1")).thenReturn(true);
+
+        //test
+        int verification = librarian.verifyLogin(email, password);
+
+        //check
+        assertThat(verification, is(0));
+    }
+
+    @Test
+    public void addNotificationToEveryUser() {
+        //init
+        Map<String, String> variables = new HashMap<>();
+        int typeId = 1;
+        User mockUser = mock(User.class);
+        List<User> mockUsers = new ArrayList<>();
+        mockUsers.add(mockUser);
+        when(userDao.list()).thenReturn(mockUsers);
+
+        //test
+        librarian.addNotificationToEveryUser(variables, typeId);
+
+        //check
+        verify(mockUser, times(1)).addNotification(typeId, variables);
     }
 }
