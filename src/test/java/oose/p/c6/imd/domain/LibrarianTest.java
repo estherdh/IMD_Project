@@ -16,8 +16,11 @@ import static org.mockito.Mockito.*;
 public class LibrarianTest {
 	@Mock
 	IUserDao userDao;
+	@Mock
+	QuestGenerator questGenerator;
 	@InjectMocks
 	Librarian librarian;
+
 
 	@Test
 	public void scanQrCodeTestSuccess() throws Exception {
@@ -56,15 +59,20 @@ public class LibrarianTest {
     @Test
     public void registerUserSuccesTest() {
         //init
-        String email = "hoi@hoi.nl";
+        String email = "hoi@hooi.nl";
         String displayName = "hallo123";
         String password = "Hee456";
         int languageId = 1;
+		User mockUser = mock(User.class);
+		when(userDao.findUserByEmail("hoi@hooi.nl")).thenReturn(null).thenReturn(mockUser);
+		when(mockUser.getId()).thenReturn(0);
 
-        //test
-        int actualResponse = librarian.registerUser(email, password, displayName, languageId);
+		//test
+		int actualResponse = librarian.registerUser(email, password, displayName, languageId);
 
         //check
+		verify(userDao, times(1)).add(any(User.class));
+		verify(questGenerator, times(3)).generateQuest(0);
         assertThat(actualResponse, is(0));
     }
 }

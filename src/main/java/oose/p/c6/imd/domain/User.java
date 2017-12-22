@@ -218,12 +218,12 @@ public class User extends Model {
         return replicaDao.getReplicasFromUser(this);
     }
 
-    public int areValidCredentials(String email, String password, String name, int languageId) {
+    public int areValidCredentials() {
         if (isValidEmailAddress(email)) {
-            if (isValidDisplayName(name)) {
+            if (isValidDisplayName(displayName)) {
                 if (isValidPassword(password)) {
                     setEmail(email);
-                    setDisplayName(name);
+                    setDisplayName(displayName);
                     setPassword(hashPassword(password));
                     setLanguageId(languageId);
                     setCoins(0);

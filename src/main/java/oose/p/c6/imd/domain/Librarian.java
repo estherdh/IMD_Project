@@ -27,6 +27,9 @@ public class Librarian {
     @Inject
     private IExhibitDao exhibits;
 
+    @Inject
+    private QuestGenerator questGenerator;
+
     public int verifyLogin(String email, String password) {
         User u = getUserByEmail(email);
         if (u == null) {
@@ -127,9 +130,12 @@ public class Librarian {
         User newUser = new User(email, password, name, languageId);
         int validationState = 4;
         if (isNull(getUserByEmail(email))) {
-            validationState = newUser.areValidCredentials(email, password, name, languageId);
+            validationState = newUser.areValidCredentials();
             if (validationState == 0) {
                 userDao.add(newUser);
+                for (int i = 0; i < 3; i++) {
+                    questGenerator.generateQuest(getUserByEmail(email).getId());
+                }
             }
         }
         return validationState;
