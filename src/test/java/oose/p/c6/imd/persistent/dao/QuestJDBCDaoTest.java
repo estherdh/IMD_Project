@@ -94,13 +94,13 @@ public class QuestJDBCDaoTest {
     public void removeQuestFromQuestLogSuccess() throws SQLException {
         //test
         boolean actualResult = dao.removeQuestFromQuestLog(1, 1);
-        ResultSet resultDeleted = conn.createStatement().executeQuery("SELECT * FROM QuestLog WHERE EntryId = 1 AND UserId = 1");
-        ResultSet resultNotDeleted = conn.createStatement().executeQuery("SELECT * FROM QuestLog WHERE EntryId = 4 AND UserId = 1");
-        ResultSet resultNotDeleted2 = conn.createStatement().executeQuery("SELECT * FROM questproperties WHERE EntryId = 4");
+        ResultSet resultDeleted = conn.createStatement().executeQuery("SELECT Removed FROM QuestLog WHERE EntryId = 1 AND UserId = 1");
+        ResultSet resultNotDeleted = conn.createStatement().executeQuery("SELECT Removed FROM QuestLog WHERE EntryId = 3 AND UserId = 1");
+        ResultSet resultNotDeleted2 = conn.createStatement().executeQuery("SELECT * FROM questproperties WHERE EntryId = 3");
         //check
         assertTrue(actualResult);
-        assertThat(resultDeleted.next(), is(false));
-        assertThat(resultNotDeleted.next(), is(true));
+        assertThat(resultDeleted.next(), is(true));
+        assertThat(resultNotDeleted.next(), is(false));
         assertThat(resultNotDeleted2.next(), is(true));
     }
 
