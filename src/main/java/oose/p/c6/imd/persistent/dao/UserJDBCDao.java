@@ -6,10 +6,7 @@ import oose.p.c6.imd.persistent.ConnectMySQL;
 import oose.p.c6.imd.persistent.NotificationCreator;
 
 import javax.enterprise.inject.Default;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -133,16 +130,7 @@ public class UserJDBCDao implements IUserDao {
             ps.setInt(2, u.getLanguageId());
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                PreparedStatement ps2 = connection.prepareStatement("SELECT np.key, np.value FROM usernotification un\n" +
-                        "INNER JOIN notificationproperties np ON np.UserNotificationId = un.UserNotificationId\n" +
-                        "WHERE un.userNotificationId = ?");
-                ps2.setInt(1, rs.getInt("NotificationId"));
-                ResultSet rs2 = ps2.executeQuery();
-                Map<String, String> properties = new HashMap<String, String>();
-                while(rs2.next()){
-                    properties.put(rs2.getString(1), rs2.getString(2));
-                }
-                notifications.add(NotificationCreator.createNotification(u, rs.getString("notificationText"), properties, rs.getInt("NotificationTypeId"), rs.getString("date"), rs.getBoolean("read"), rs.getInt("id")));
+                notifications.add(createNotification(u, rs, connection));
             }
             return notifications;
         } catch (Exception e) {
@@ -162,7 +150,7 @@ public class UserJDBCDao implements IUserDao {
     private void addPropertiesToNotification(int notificationId, String key, String value) {
         Connection connection = ConnectMySQL.getInstance().getConnection();
         try {
-            PreparedStatement ps = connection.prepareStatement("INSERT INTO notificationproperties (UserNotificationId, Key, Value) VALUES (?,?,?);");
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO notificationproperties (UserNotificationId, `Key`, `Value`) VALUES (?,?,?)");
             ps.setInt(1, notificationId);
             ps.setString(2, key);
             ps.setString(3, value);
@@ -175,7 +163,7 @@ public class UserJDBCDao implements IUserDao {
     private int addNotificationToUsernotificationAndGetId(int typeId,  int userId) {
         Connection connection = ConnectMySQL.getInstance().getConnection();
         try {
-            PreparedStatement ps = connection.prepareStatement("INSERT INTO usernotification(NotificationId, UserId) VALUES (? , ?)");
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO usernotification(NotificationId, UserId) VALUES (? , ?)", Statement.RETURN_GENERATED_KEYS);
             ps.setInt(1, typeId);
             ps.setInt(2, userId);
             ps.executeUpdate();
@@ -206,6 +194,58 @@ public class UserJDBCDao implements IUserDao {
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, e.toString(), e);
             return null;
+        }
+    }
+
+    @Override
+    public Notification findNotification(User user, int notificationId) {
+        try {
+            Connection connection = ConnectMySQL.getInstance().getConnection();
+            Notification notification = null;
+            PreparedStatement ps = connection.prepareStatement("SELECT un.UserNotificationId as `NotificationId`, n.notificationText as `notificationText`, n.notificationId as `id`, un.Read AS `read`, un.Date AS `date`, n.NotificationId as `NotificationTypeId` FROM usernotification un\n" +
+                    "INNER JOIN users u ON u.UserId = un.UserId\n" +
+                    "INNER JOIN notification n ON n.NotificationId = un.NotificationId\n" +
+                    "WHERE un.UserId = ? \n" +
+                    "AND un.UserNotificationId = ? \n" +
+                    "AND n.languageId IN (SELECT COALESCE((SELECT languageId FROM Notification n WHERE n.NotificationId = un.NotificationId AND languageId = ?),  1))\n");
+            ps.setInt(1, user.getId());
+            ps.setInt(2, notificationId);
+            ps.setInt(3, user.getLanguageId());
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                notification = createNotification(user, rs, connection);
+            }
+            return notification;
+        } catch (Exception e) {
+            return (Notification) handleException(e, null);
+        }
+    }
+
+    private Notification createNotification(User u, ResultSet rs, Connection conn) throws SQLException {
+        PreparedStatement ps2 = conn.prepareStatement("SELECT np.key, np.value FROM usernotification un\n" +
+                "INNER JOIN notificationproperties np ON np.UserNotificationId = un.UserNotificationId\n" +
+                "WHERE un.userNotificationId = ?");
+        ps2.setInt(1, rs.getInt("NotificationId"));
+        ResultSet rs2 = ps2.executeQuery();
+        Map<String, String> properties = new HashMap<String, String>();
+        while(rs2.next()){
+            properties.put(rs2.getString(1), rs2.getString(2));
+        }
+        return NotificationCreator.createNotification(u, rs.getString("notificationText"), properties, rs.getInt("NotificationTypeId"), rs.getString("date"), rs.getBoolean("read"), rs.getInt("id"));
+    }
+
+    @Override
+    public void updateNotification(Notification n) {
+        Connection connection = ConnectMySQL.getInstance().getConnection();
+        try {
+            PreparedStatement ps = connection.prepareStatement("UPDATE usernotification " +
+                    "SET `read` = ? " +
+                    "WHERE `userNotificationId` = ? ");
+            ps.setBoolean(1, n.getRead());
+            ps.setInt(2, n.getId());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, e.toString(), e);
         }
     }
 

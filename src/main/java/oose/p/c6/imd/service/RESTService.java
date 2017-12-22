@@ -23,14 +23,19 @@ public class RESTService {
     @GET
     @Path("/")
     public String hello() {
-        JsonBuilderFactory factory = Json.createBuilderFactory(null);
-        JsonObjectBuilder job = factory.createObjectBuilder();
-        job.add("email", "test@void");
-        job.add("password", "test");
-        JsonObject jo = job.build();
-        String token = ((JsonObject) login(jo).getEntity()).getString("token");
-        TokenManager.getInstance().getTokenFromTokenString(token).devSetTokenString();
-        return "hello world";
+    	try {
+			JsonBuilderFactory factory = Json.createBuilderFactory(null);
+			JsonObjectBuilder job = factory.createObjectBuilder();
+			job.add("email", "test@void");
+			job.add("password", "test");
+			JsonObject jo = job.build();
+			String token = ((JsonObject) login(jo).getEntity()).getString("token");
+			TokenManager.getInstance().getTokenFromTokenString(token).devSetTokenString();
+			return "hello world";
+		} catch (Exception e) {
+    		e.printStackTrace();
+    		return "Something happend. Misschien draai je een database waar test@void niet bestaat, of je hebt het programma gebroken. <hr>" + e.getMessage();
+		}
     }
 
     @POST
@@ -485,6 +490,18 @@ public class RESTService {
         if(user != null){
             l.removeUser(user);
             TokenManager.getInstance().removeUserByToken(token);
+            return Response.status(200).build();
+        }
+        return Response.status(401).build();
+    }
+
+    @POST
+    @Path("/user/notification")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response markNotification(@QueryParam("token") String token, JsonObject jo){
+        User user = TokenManager.getInstance().getUserFromToken(token);
+        if(user != null){
+            l.markNotification(user, jo.getInt("NotificationId"), jo.getBoolean("Read"));
             return Response.status(200).build();
         }
         return Response.status(401).build();

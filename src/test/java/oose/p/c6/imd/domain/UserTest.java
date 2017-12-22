@@ -125,13 +125,27 @@ public class UserTest {
 		JsonObject jo = Json.createObjectBuilder()
 				.add("email", "test@mail.com")
 				.add("displayName", "testUser")
-				.add("password", "")
+				.add("password", "test")
 				.add("languageId", 1)
 				.build();
 		//test
 		int actualResponse =   user.updateUser(jo.getString("email"), jo.getString("displayName"), jo.getString("password"), jo.getInt("languageId"), user);
 		//check
 		assertThat(actualResponse, is(1));
+	}
+
+	@Test
+	public void updateUserNoPassword() {
+		JsonObject jo = Json.createObjectBuilder()
+				.add("email", "test@mail.com")
+				.add("displayName", "testUser")
+				.add("password", "")
+				.add("languageId", 1)
+				.build();
+		//test
+		int actualResponse =   user.updateUser(jo.getString("email"), jo.getString("displayName"), jo.getString("password"), jo.getInt("languageId"), user);
+		//check
+		assertThat(actualResponse, is(0));
 	}
 
 	@Test
@@ -158,5 +172,17 @@ public class UserTest {
 		user.addNotification(1, expectedResult);
 		//check
 		verify(userDao, times(1)).addNotification(1, expectedResult, user);
+	}
+
+	@Test
+	public void markNotificationTest(){
+		IUserDao udao = mock(IUserDao.class);
+		DAOFactory.setUserDao(udao);
+		Notification n = new Notification(1, "NOW", "Ha!", false, 99);
+		when(udao.findNotification(any(), anyInt())).thenReturn(n);
+		User u = new User(2, "test@user@db", "tested", "testUser", 10, 2);
+		u.markNotification(1, true);
+		verify(udao, times(1)).updateNotification(n);
+		assertTrue(n.getRead());
 	}
 }

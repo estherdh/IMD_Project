@@ -88,7 +88,15 @@ public class User extends Model {
     public int updateUser(String email, String name, String password, int languageId, User user) {
         if (isValidEmailAddress(email)){
             if (isValidDisplayName(name)) {
-                if (isValidPassword(password)) {
+                if(password.trim().isEmpty() || password.equals("undefined")) {
+                    user.setEmail(email);
+                    user.setDisplayName(name);
+                    user.setLanguageId(languageId);
+                    userDao.update(user);
+                    // success
+                    return 0;
+                }
+                else if (isValidPassword(password)) {
                     user.setEmail(email);
                     user.setDisplayName(name);
                     user.setPassword(user.hashPassword(password));
@@ -96,9 +104,10 @@ public class User extends Model {
                     userDao.update(user);
                     // success
                     return 0;
+                } else {
+                    //invalid password
+                    return 1;
                 }
-                //invalid password
-                return 1;
             }
             //invalid displayname
             return 2;
@@ -189,6 +198,14 @@ public class User extends Model {
     }
 
     public List<Notification> getNotifications() {return userDao.listNotification(this); }
+
+    public void markNotification(int notificationId, boolean read) {
+        Notification n = userDao.findNotification(this, notificationId);
+        if(n != null){
+            n.setRead(read);
+            userDao.updateNotification(n);
+        }
+    }
 
     public List<Replica> getReplicas() {
         return replicaDao.getReplicasFromUser(this);
