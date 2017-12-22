@@ -186,6 +186,32 @@ public class ExhibitJDBCDao implements IExhibitDao {
         }
     }
 
+    @Override
+    public List<Era> findErasNotYetInQuestlog(int userId) {
+        Connection connection = ConnectMySQL.getInstance().getConnection();
+        ResultSet rs;
+        try {
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM era e INNER JOIN eralanguage el " +
+                    "ON e.EraId = el.EraId WHERE el.EraId " +
+                    "NOT IN(SELECT qp.Value FROM questlog ql INNER JOIN " +
+                    "questProperties qp ON ql.EntryId = qp.EntryId " +
+                    "WHERE UserId = ? AND QuestTypeId = 4 AND Removed = 0 AND Completed = 0) " +
+                    "AND el.LanguageId = (SELECT u.LanguageId FROM users u " +
+                    "WHERE u.UserId = ?)");
+            ps.setInt(1, userId);
+            ps.setInt(2, userId);
+            rs = ps.executeQuery();
+            List<Era> list = new ArrayList<>();
+            while (rs.next()) {
+                Era e = new Era(rs.getInt("EraId"), rs.getString("Name"));
+                list.add(e);
+            }
+            connection.close();
+            return list;
+        } catch (SQLException e) {
+            return (ArrayList) handleException(e, new ArrayList<Era>());
+        }
+    }
 
     @Override
     public void add(Exhibit entity) {
