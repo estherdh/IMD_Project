@@ -11,11 +11,16 @@ import javax.ws.rs.core.Response;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Path("/")
 public class RESTService {
     private static final Logger LOGGER = Logger.getLogger(RESTService.class.getName());
+    private String jsonAttrEmail = "email";
+    private String jsonAttrPassword = "password";
+    private String jsonAttrReason = "reason";
+    private String jsonAttrExhibitId = "exhibitId";
 
     @Inject
     private Librarian l;
@@ -26,15 +31,16 @@ public class RESTService {
     	try {
 			JsonBuilderFactory factory = Json.createBuilderFactory(null);
 			JsonObjectBuilder job = factory.createObjectBuilder();
-			job.add("email", "test@void");
-			job.add("password", "test");
+			job.add(jsonAttrEmail, "test@void");
+			job.add(jsonAttrPassword, "test");
 			JsonObject jo = job.build();
 			String token = ((JsonObject) login(jo).getEntity()).getString("token");
 			TokenManager.getInstance().getTokenFromTokenString(token).devSetTokenString();
 			return "hello world";
 		} catch (Exception e) {
-    		e.printStackTrace();
-    		return "Something happend. Misschien draai je een database waar test@void niet bestaat, of je hebt het programma gebroken. <hr>" + e.getMessage();
+    	    String msg = "Something happend. Misschien draai je een database waar test@void niet bestaat, of je hebt het programma gebroken. <hr>";
+    	    LOGGER.log(Level.SEVERE, msg + e.toString(), e);
+    		return msg + e.getMessage();
 		}
     }
 
@@ -42,16 +48,16 @@ public class RESTService {
     @Path("/login")
     @Produces(MediaType.APPLICATION_JSON)
     public Response login(JsonObject jo) {
-        String email = jo.getString("email");
+        String email = jo.getString(jsonAttrEmail);
         JsonBuilderFactory factory = Json.createBuilderFactory(null);
         JsonObjectBuilder job = factory.createObjectBuilder();
-        int loginState = l.verifyLogin(email, jo.getString("password"));
+        int loginState = l.verifyLogin(email, jo.getString(jsonAttrPassword));
         if (loginState == 0) {
             Token t = TokenManager.getInstance().createTokenForUser(l.getUserByEmail(email));
             job.add("token", t.getTokenString());
             return Response.status(201).entity(job.build()).build();
         } else {
-            job.add("reason", loginState);
+            job.add(jsonAttrReason, loginState);
             return Response.status(401).entity(job.build()).build();
         }
     }
@@ -234,26 +240,16 @@ public class RESTService {
         JsonObjectBuilder job = factory.createObjectBuilder();
         job.add("ExhibitId", e.getId());
         job.add("Name", e.getName());
-
         String image = e.getImage();
-        if (image == null) {
-            image = "undefined";
-        }
+        if (image == null) { image = "undefined"; }
         String video = e.getVideo();
-        if (video == null) {
-            video = "undefined";
-        }
+        if (video == null) { video = "undefined"; }
         job.add("Description", e.getDescription());
         job.add("Video", video);
         job.add("Image", image);
         job.add("Year", e.getYear());
-        if(e.getEra() != null) {
-            job.add("Era", createEraJson(e.getEra()));
-        }
-        else
-        {
-            job.add("EraId", e.getEraId());
-        }
+        if(e.getEra() != null) { job.add("Era", createEraJson(e.getEra())); }
+        else { job.add("EraId", e.getEraId()); }
         job.add("MuseumId", e.getMuseumId());
         return job.build();
     }
@@ -290,7 +286,7 @@ public class RESTService {
             int reason = l.placeReplica(obj.getInt("replicaId"), obj.getInt("positionId"), user);
             JsonBuilderFactory factory = Json.createBuilderFactory(null);
             JsonObjectBuilder job = factory.createObjectBuilder();
-            job.add("reason", reason);
+            job.add(jsonAttrReason, reason);
             return Response.status(201).entity(job.build()).build();
         }
         return Response.status(401).build();
@@ -402,10 +398,10 @@ public class RESTService {
     public Response updateUser(@QueryParam("token") String token, JsonObject obj) {
         User user = TokenManager.getInstance().getUserFromToken(token);
         if (user != null) {
-            int reason = l.updateUser(obj.getString("email"), obj.getString("displayName"), obj.getString("password"), obj.getInt("languageId"), user);
+            int reason = l.updateUser(obj.getString(jsonAttrEmail), obj.getString("displayName"), obj.getString(jsonAttrPassword), obj.getInt("languageId"), user);
             JsonBuilderFactory factory = Json.createBuilderFactory(null);
             JsonObjectBuilder job = factory.createObjectBuilder();
-            job.add("reason", reason);
+            job.add(jsonAttrReason, reason);
             return Response.status(200).entity(job.build()).build();
         }
         return Response.status(401).build();
@@ -419,7 +415,7 @@ public class RESTService {
         User user = TokenManager.getInstance().getUserFromToken(token);
         if (user != null) {
             Map<String, String> variables = new HashMap<String, String>();
-            variables.put("exhibitId", Integer.toString(obj.getInt("exhibitId")));
+            variables.put(jsonAttrExhibitId, Integer.toString(obj.getInt(jsonAttrExhibitId)));
             l.addNotificationToEveryUser(variables, 3);
             return Response.status(200).build();
         }
@@ -449,7 +445,7 @@ public class RESTService {
         User user = TokenManager.getInstance().getUserFromToken(token);
         if (user != null) {
             Map<String, String> variables = new HashMap<String, String>();
-            variables.put("exhibitId", Integer.toString(obj.getInt("exhibitId")));
+            variables.put(jsonAttrExhibitId, Integer.toString(obj.getInt(jsonAttrExhibitId)));
             l.addNotificationToEveryUser(variables, 5);
             return Response.status(200).build();
         }

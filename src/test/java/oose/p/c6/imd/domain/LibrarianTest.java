@@ -1,15 +1,11 @@
 package oose.p.c6.imd.domain;
 
 import oose.p.c6.imd.persistent.dao.IUserDao;
-import oose.p.c6.imd.service.Token;
-import oose.p.c6.imd.service.TokenManager;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-
-import javax.validation.constraints.AssertTrue;
 
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;

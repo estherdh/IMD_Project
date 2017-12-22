@@ -13,25 +13,25 @@ public class Library
     public int tryPlaceReplica(User user, int replicaId, int positionId) {
         Replica replica = getReplica(replicaId);
 
-        if(replica != null) {
-            if(user.userHasReplica(replica)) {
-                if(isPositionForType(positionId, replica.getType())) {
-                    if(isPositionFree(user, replica, positionId)) {
-                        placeReplica(user, replica, positionId);
-                        // success
-                        return 0;
-                    }
-                    // position is not free
-                    return 3;
-                }
-                // position is not available for this type
-                return 4;
-            }
+        if(replica == null) {
+            // replica does not exist
+            return 1;
+        }
+        if(!user.userHasReplica(replica)) {
             // user does not own replica
             return 2;
         }
-        // replica does not exist
-        return 1;
+        if(!isPositionForType(positionId, replica.getType())) {
+            // position is not available for this type
+            return 4;
+        }
+        if(!isPositionFree(user, replica, positionId)) {
+            // position is not free
+            return 3;
+        }
+        placeReplica(user, replica, positionId);
+        // success
+        return 0;
     }
 
     private Replica getReplica(int replicaId) {
