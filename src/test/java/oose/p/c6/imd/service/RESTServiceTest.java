@@ -1089,4 +1089,11 @@ public class RESTServiceTest {
         assertThat(jsonResponse.getInt("reason"), is(4));
     }
 
+    @Test
+    public void checkFavoriteExhibits(){
+        User u = new User(1,"", "", "", 10, 2);
+        List<Exhibit> list = new ArrayList<>();
+        when(librarian.getAvailableExhibits(u)).thenReturn(list);
+        //TODO add examples to list and check if right ones are favorited.
+    }
 }
