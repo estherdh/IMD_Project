@@ -64,7 +64,7 @@ public class ReplicaJDBCDaoTest
     public void findAvailableReplicasTest() {
         Era era = new Era(1, "tijdperk test");
         Exhibit exhibit = new Exhibit(1, "Het test object",
-                "Dit object wordt altijd al gebruikt om te testen", null, "object.png",
+                "Dit object wordt altijd al gebruikt om te testen", null, new ArrayList<>(),
                 1999, 1, 1);
         exhibit.setEra(era);
         Replica replica = new Replica(1, 1, 10, "traktor", 2, 0, exhibit);
@@ -85,7 +85,7 @@ public class ReplicaJDBCDaoTest
             assertThat(actual.get(i).getSprite(), is(expected.get(i).getSprite()));
             //check exhibit
             assertThat(actual.get(i).getExhibit().getDescription(), is(expected.get(i).getExhibit().getDescription()));
-            assertThat(actual.get(i).getExhibit().getImage(), is(expected.get(i).getExhibit().getImage()));
+            assertThat(actual.get(i).getExhibit().getImages(), is(expected.get(i).getExhibit().getImages()));
             assertThat(actual.get(i).getExhibit().getName(), is(expected.get(i).getExhibit().getName()));
             assertThat(actual.get(i).getExhibit().getVideo(), is(expected.get(i).getExhibit().getVideo()));
             assertThat(actual.get(i).getExhibit().getYear(), is(expected.get(i).getExhibit().getYear()));
@@ -131,7 +131,7 @@ public class ReplicaJDBCDaoTest
     public void getReplicasFromUserTest() {
         Era era = new Era(1, "tijdperk test");
         Exhibit exhibit = new Exhibit(1, "Het test object",
-                "Dit object wordt altijd al gebruikt om te testen", null, "object.png",
+                "Dit object wordt altijd al gebruikt om te testen", null, new ArrayList<>(),
                 1999, 1, 1);
         exhibit.setEra(era);
         Replica replica = new Replica(2, 1, 15, "test1", 2, 1, exhibit);
@@ -152,7 +152,7 @@ public class ReplicaJDBCDaoTest
             assertThat(actual.get(i).getSprite(), is(expected.get(i).getSprite()));
             //check exhibit
             assertThat(actual.get(i).getExhibit().getDescription(), is(expected.get(i).getExhibit().getDescription()));
-            assertThat(actual.get(i).getExhibit().getImage(), is(expected.get(i).getExhibit().getImage()));
+            assertThat(actual.get(i).getExhibit().getImages(), is(expected.get(i).getExhibit().getImages()));
             assertThat(actual.get(i).getExhibit().getName(), is(expected.get(i).getExhibit().getName()));
             assertThat(actual.get(i).getExhibit().getVideo(), is(expected.get(i).getExhibit().getVideo()));
             assertThat(actual.get(i).getExhibit().getYear(), is(expected.get(i).getExhibit().getYear()));

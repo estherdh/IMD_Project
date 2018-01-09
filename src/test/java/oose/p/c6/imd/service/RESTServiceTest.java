@@ -163,7 +163,10 @@ public class RESTServiceTest {
         //init
         Era era = new Era(1, "tijdperk test");
         Exhibit exhibit = new Exhibit(1, "Het test object",
-                "Dit object wordt altijd al gebruikt om te testen", null, "object.png",
+                "Dit object wordt altijd al gebruikt om te testen", null, new ArrayList<String>(){{
+            add("imagetest1");
+            add("imagetest2");
+        }},
                 1999, 1, 1);
         exhibit.setEra(era);
         Replica replica = new Replica(3, 1, 15, "test2", 2, 0, exhibit);
@@ -187,7 +190,6 @@ public class RESTServiceTest {
         assertThat(object1.getJsonObject("Exhibit").getString("Name"),  is(expected.get(0).getExhibit().getName()));
         assertThat(object1.getJsonObject("Exhibit").getString("Description"),  is(expected.get(0).getExhibit().getDescription()));
         assertThat(object1.getJsonObject("Exhibit").getString("Video"),  is("undefined"));
-        assertThat(object1.getJsonObject("Exhibit").getString("Image"),  is(expected.get(0).getExhibit().getImage()));
         assertThat(object1.getJsonObject("Exhibit").getInt("Year"),  is(expected.get(0).getExhibit().getYear()));
         assertThat(object1.getJsonObject("Exhibit").getInt("MuseumId"),  is(expected.get(0).getExhibit().getMuseumId()));
         //check era
@@ -212,7 +214,10 @@ public class RESTServiceTest {
 		//init
 		Era era = new Era(1, "tijdperk test");
 		Exhibit exhibit = new Exhibit(1, "Het test object",
-				"Dit object wordt altijd al gebruikt om te testen", null, "object.png",
+				"Dit object wordt altijd al gebruikt om te testen", null, new ArrayList<String>(){{
+            add("imagetest1");
+            add("imagetest2");
+        }},
 				1999, 1, 1);
 		exhibit.setEra(era);
 		Replica replica = new Replica(2, 1, 15, "test1", 2, 1, exhibit);
@@ -237,7 +242,6 @@ public class RESTServiceTest {
 		assertThat(object1.getJsonObject("Exhibit").getString("Name"),  is(expected.get(0).getExhibit().getName()));
 		assertThat(object1.getJsonObject("Exhibit").getString("Description"),  is(expected.get(0).getExhibit().getDescription()));
 		assertThat(object1.getJsonObject("Exhibit").getString("Video"),  is("undefined"));
-		assertThat(object1.getJsonObject("Exhibit").getString("Image"),  is(expected.get(0).getExhibit().getImage()));
 		assertThat(object1.getJsonObject("Exhibit").getInt("Year"),  is(expected.get(0).getExhibit().getYear()));
 		assertThat(object1.getJsonObject("Exhibit").getInt("MuseumId"),  is(expected.get(0).getExhibit().getMuseumId()));
 		//check era
@@ -356,7 +360,9 @@ public class RESTServiceTest {
 	@Test
 	public void getExhibitDetailsTestSuccess(){
 		//init
-		Exhibit exhibit = new Exhibit(1, "topstuk", "a topstuk", null, null, 2020, 2, 1);
+		Exhibit exhibit = new Exhibit(1, "topstuk", "a topstuk", null, new ArrayList<String>() {{
+		    add("test");
+		}}, 2020, 2, 1);
 		User mockUser = mock(User.class);
 		when(tokenManager.getUserFromToken("token")).thenReturn(mockUser);
 		when(librarian.getExhibitDetails(mockUser, 1)).thenReturn(exhibit);
@@ -369,7 +375,7 @@ public class RESTServiceTest {
 		assertThat(json.getString("Name"), is(equalTo("topstuk")));
 		assertThat(json.getString("Description"), is(equalTo("a topstuk")));
 		assertThat(json.getString("Video"), is(equalTo("undefined")));
-		assertThat(json.getString("Image"), is(equalTo("undefined")));
+		assertThat(json.getJsonArray("Images").get(0).toString(), is(equalTo("\"test\"")));
 		assertThat(json.getInt("Year"), is(2020));
 		assertThat(json.getInt("EraId"), is(2));
 		assertThat(json.getInt("MuseumId"), is(1));
@@ -400,8 +406,8 @@ public class RESTServiceTest {
 	@Test
 	public void getExhibitsTestSuccess() {
 		//init
-		Exhibit exhibit1 = new Exhibit(1, "topstuk", "a topstuk", null, null, 2020, 2, 1);
-		Exhibit exhibit2 = new Exhibit(2, "topstuk", "a topstuk", null, null, 2020, 2, 1);
+		Exhibit exhibit1 = new Exhibit(1, "topstuk", "a topstuk", null, new ArrayList<>(), 2020, 2, 1);
+		Exhibit exhibit2 = new Exhibit(2, "topstuk", "a topstuk", null, new ArrayList<>(), 2020, 2, 1);
 		List<Exhibit> exhibitList = new ArrayList<>();
 		exhibitList.add(exhibit1);
 		exhibitList.add(exhibit2);
@@ -448,8 +454,8 @@ public class RESTServiceTest {
 	@Test
 	public void getExhibitsFromMuseumTestSuccess() {
 		//init
-		Exhibit exhibit1 = new Exhibit(1, "topstuk", "a topstuk", null, null, 2020, 2, 1);
-		Exhibit exhibit2 = new Exhibit(2, "topstuk", "a topstuk", null, null, 2020, 2, 1);
+		Exhibit exhibit1 = new Exhibit(1, "topstuk", "a topstuk", null, new ArrayList<>(), 2020, 2, 1);
+		Exhibit exhibit2 = new Exhibit(2, "topstuk", "a topstuk", null, new ArrayList<>(), 2020, 2, 1);
 		List<Exhibit> exhibitList = new ArrayList<>();
 		exhibitList.add(exhibit1);
 		exhibitList.add(exhibit2);
@@ -496,8 +502,8 @@ public class RESTServiceTest {
     @Test
     public void getExhibitsFromEraTestSuccess() {
         //init
-        Exhibit exhibit1 = new Exhibit(1, "topstuk", "a topstuk", null, null, 2020, 2, 1);
-        Exhibit exhibit2 = new Exhibit(2, "topstuk", "a topstuk", null, null, 2020, 2, 1);
+        Exhibit exhibit1 = new Exhibit(1, "topstuk", "a topstuk", null, new ArrayList<>(), 2020, 2, 1);
+        Exhibit exhibit2 = new Exhibit(2, "topstuk", "a topstuk", null, new ArrayList<>(), 2020, 2, 1);
         List<Exhibit> exhibitList = new ArrayList<>();
         exhibitList.add(exhibit1);
         exhibitList.add(exhibit2);
@@ -1093,11 +1099,10 @@ public class RESTServiceTest {
     public void checkFavoriteExhibits(){
         User mockUser = mock(User.class);
         when(tokenManager.getUserFromToken("token")).thenReturn(mockUser);
-        when(mockUser.getLanguageId()).thenReturn(1);
         List<Exhibit> list = new ArrayList<>();
         when(librarian.getAvailableExhibits(mockUser)).thenReturn(list);
-        list.add(new Exhibit(1, "", "", "", "", 1,2,3));
-        list.add(new Exhibit(3, "", "", "", "", 1,2,3));
+        list.add(new Exhibit(1, "", "", "", new ArrayList<>(), 1,2,3));
+        list.add(new Exhibit(3, "", "", "", new ArrayList<>(), 1,2,3));
         Response r = service.getFavoriteExhibits("token");
         assertEquals(true, ((JsonArray)r.getEntity()).getJsonObject(0).getBoolean("Favorite") );
         assertEquals(1, ((JsonArray)r.getEntity()).size());

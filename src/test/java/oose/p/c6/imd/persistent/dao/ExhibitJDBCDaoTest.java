@@ -10,9 +10,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.awt.*;
 import java.io.FileReader;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -45,7 +47,7 @@ public class ExhibitJDBCDaoTest {
     @Test
     public void findExhibitWithTranslation() throws Exception {
         //init
-        Exhibit expectedExhibit = new Exhibit(3, "Trekker", "Deze trekker is geen tractor!", null, "object.png", 2015, 1, 2);
+        Exhibit expectedExhibit = new Exhibit(3, "Trekker", "Deze trekker is geen tractor!", null, new ArrayList<>(), 2015, 1, 2);
 
         //test
         Exhibit actualResult = dao.find(new User(1, "1", "1", "1", 1, 3), 3);
@@ -55,7 +57,7 @@ public class ExhibitJDBCDaoTest {
         assertThat(actualResult.getName(), is(expectedExhibit.getName()));
         assertThat(actualResult.getDescription(), is(expectedExhibit.getDescription()));
         assertThat(actualResult.getVideo(), is(expectedExhibit.getVideo()));
-        assertThat(actualResult.getImage(), is(expectedExhibit.getImage()));
+        assertThat(actualResult.getImages(), is(expectedExhibit.getImages()));
         assertThat(actualResult.getYear(), is(expectedExhibit.getYear()));
 
     }
@@ -121,13 +123,13 @@ public class ExhibitJDBCDaoTest {
 
     @Test
     public void listExhibits() {
-        Exhibit expectedExhibit = new Exhibit(3, "Trekker", "Deze trekker is geen tractor!", null, "object.png", 2015, 1, 2);
+        Exhibit expectedExhibit = new Exhibit(3, "Trekker", "Deze trekker is geen tractor!", null, new ArrayList<>(), 2015, 1, 2);
 
         List<Exhibit> result = dao.list(new User(1, "1", "1", "1", 1, 3));
 
         assertThat(result.get(2).getId(), is(expectedExhibit.getId()));
         assertThat(result.get(2).getYear(), is(expectedExhibit.getYear()));
-        assertThat(result.get(2).getImage(), is(expectedExhibit.getImage()));
+        assertThat(result.get(2).getImages(), is(expectedExhibit.getImages()));
         assertThat(result.get(2).getVideo(), is(expectedExhibit.getVideo()));
         assertThat(result.get(2).getDescription(), is(expectedExhibit.getDescription()));
         assertThat(result.get(2).getName(), is(expectedExhibit.getName()));
@@ -137,13 +139,13 @@ public class ExhibitJDBCDaoTest {
 
     @Test
     public void listExhibitsByEra() {
-        Exhibit expectedExhibit = new Exhibit(3, "Trekker", "Deze trekker is geen tractor!", null, "object.png", 2015, 1, 2);
+        Exhibit expectedExhibit = new Exhibit(3, "Trekker", "Deze trekker is geen tractor!", null, new ArrayList<>(), 2015, 1, 2);
 
         List<Exhibit> result = dao.listByEra(new User(1, "1", "1", "1", 1, 3), 1);
 
         assertThat(result.get(2).getId(), is(expectedExhibit.getId()));
         assertThat(result.get(2).getYear(), is(expectedExhibit.getYear()));
-        assertThat(result.get(2).getImage(), is(expectedExhibit.getImage()));
+        assertThat(result.get(2).getImages(), is(expectedExhibit.getImages()));
         assertThat(result.get(2).getVideo(), is(expectedExhibit.getVideo()));
         assertThat(result.get(2).getDescription(), is(expectedExhibit.getDescription()));
         assertThat(result.get(2).getName(), is(expectedExhibit.getName()));
@@ -153,13 +155,13 @@ public class ExhibitJDBCDaoTest {
 
     @Test
     public void listExhibitsByMuseum() {
-        Exhibit expectedExhibit = new Exhibit(3, "Trekker", "Deze trekker is geen tractor!", null, "object.png", 2015, 1, 2);
+        Exhibit expectedExhibit = new Exhibit(3, "Trekker", "Deze trekker is geen tractor!", null, new ArrayList<>(), 2015, 1, 2);
 
         List<Exhibit> result = dao.listByMuseum(new User(1, "1", "1", "1", 1, 3), 2);
 
         assertThat(result.get(0).getId(), is(expectedExhibit.getId()));
         assertThat(result.get(0).getYear(), is(expectedExhibit.getYear()));
-        assertThat(result.get(0).getImage(), is(expectedExhibit.getImage()));
+        assertThat(result.get(0).getImages(), is(expectedExhibit.getImages()));
         assertThat(result.get(0).getVideo(), is(expectedExhibit.getVideo()));
         assertThat(result.get(0).getDescription(), is(expectedExhibit.getDescription()));
         assertThat(result.get(0).getName(), is(expectedExhibit.getName()));
@@ -170,14 +172,23 @@ public class ExhibitJDBCDaoTest {
     @Test
     public void findExhibitsNotYetInQuestlog() {
         //init
-        Exhibit expectedExhibit = new Exhibit(1, "Het test object", "Dit object wordt altijd al gebruikt om te testen", null, "object.png", 1999, 1, 1);
+        Exhibit expectedExhibit = new Exhibit(1, "Het test object", "Dit object wordt altijd al gebruikt om te testen", null, new ArrayList<String>(){{
+            add("imagetest1");
+            add("imagetest2");
+        }}, 1999, 1, 1);
 
         //test
-        List<Exhibit> exhibits = dao.findExhibitsNotYetInQuestlog(1);
-        Exhibit actualExhibit = exhibits.get(0);
+        List<Exhibit> result = dao.findExhibitsNotYetInQuestlog(1);
 
         //check
-        assertThat(actualExhibit, samePropertyValuesAs(expectedExhibit));
+        assertThat(result.get(0).getId(), is(expectedExhibit.getId()));
+        assertThat(result.get(0).getYear(), is(expectedExhibit.getYear()));
+        assertThat(result.get(0).getImages(), is(expectedExhibit.getImages()));
+        assertThat(result.get(0).getVideo(), is(expectedExhibit.getVideo()));
+        assertThat(result.get(0).getDescription(), is(expectedExhibit.getDescription()));
+        assertThat(result.get(0).getName(), is(expectedExhibit.getName()));
+        assertThat(result.get(0).getEraId(), is(expectedExhibit.getEraId()));
+        assertThat(result.get(0).getMuseumId(), is(expectedExhibit.getMuseumId()));
     }
 
     @Test
