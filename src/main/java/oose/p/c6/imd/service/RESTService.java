@@ -8,9 +8,7 @@ import javax.json.*;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -22,6 +20,7 @@ public class RESTService {
     private String jsonAttrReason = "reason";
     private String jsonAttrExhibitId = "exhibitId";
     private String jsonAttrReplicaId = "replicaId";
+    private Integer[] mockedFavoriteIds = {1,2};
 
     @Inject
     private Librarian l;
@@ -277,6 +276,11 @@ public class RESTService {
             job.add("EraId", e.getEraId());
         }
         job.add("MuseumId", e.getMuseumId());
+        if(Arrays.asList(mockedFavoriteIds).contains(e.getId())) {
+            job.add("Favorite", true);
+        } else {
+            job.add("Favorite", false);
+        }
         return job.build();
     }
 
@@ -525,6 +529,24 @@ public class RESTService {
         if(user != null){
             l.markNotification(user, jo.getInt("NotificationId"), jo.getBoolean("Read"));
             return Response.status(200).build();
+        }
+        return Response.status(401).build();
+    }
+
+    @GET
+    @Path("/exhibit/favorite")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getFavoriteExhibits(@QueryParam("token") String token){
+        User user = TokenManager.getInstance().getUserFromToken(token);
+        if(user != null){
+            List<Exhibit> list = l.getAvailableExhibits(user);
+            List<Exhibit> favorites = new ArrayList<>();
+            for(Exhibit e : list){
+                if(Arrays.asList(mockedFavoriteIds).contains(e.getId())){
+                    favorites.add(e);
+                }
+            }
+            return buildExhibitResponseArray(favorites);
         }
         return Response.status(401).build();
     }
