@@ -214,6 +214,31 @@ public class ExhibitJDBCDao implements IExhibitDao {
     }
 
     @Override
+    public List<Museum> findMuseumsNotYetInQuestlog(int userId) {
+        Connection connection = ConnectMySQL.getInstance().getConnection();
+        ResultSet rs;
+        try {
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM museum m WHERE MuseumId " +
+                    "NOT IN(SELECT qp.Value FROM questlog ql INNER JOIN " +
+                    "questProperties qp ON ql.EntryId = qp.EntryId WHERE " +
+                    "UserId = ? AND QuestTypeId = 1 AND Removed = 0 AND Completed = 0) " +
+                    "AND QrCode IS NOT NULL");
+            ps.setInt(1, userId);
+            rs = ps.executeQuery();
+            List<Museum> list = new ArrayList<>();
+            while (rs.next()) {
+                Museum m = new Museum(rs.getInt("MuseumId"), rs.getString("MuseumName"), rs.getString("Website"), rs.getString("Region"));
+                list.add(m);
+                m.setQrCode(rs.getString("QrCode"));
+            }
+            connection.close();
+            return list;
+        } catch (SQLException e) {
+            return (ArrayList) handleException(e, new ArrayList<Museum>());
+        }
+    }
+
+    @Override
     public void add(Exhibit entity) {
         throw new MethodNotFoundException();
     }

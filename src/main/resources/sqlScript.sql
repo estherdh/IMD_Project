@@ -51,7 +51,8 @@ CREATE TABLE Museum (
   `MuseumName` VARCHAR(50) NOT NULL,
   `Website` VARCHAR(50),
   `Region` VARCHAR(45),
-  `Logo` VARCHAR(25)
+  `Logo` VARCHAR(25),
+  `QrCode` VARCHAR(60)
 );
 
 -- ADMINISTRATOR
@@ -270,11 +271,11 @@ INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, N
 INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name) VALUES (4, 2, '(EN) View an era', '(EN)View era');
 
 INSERT INTO librarian.questlog (UserId, QuestTypeId, Completed) VALUES (1, 1, 0);
-INSERT INTO librarian.questproperties(`Key`, `Value`, EntryId) VALUES ('QR', 'AAA', 1);
+INSERT INTO librarian.questproperties(`Key`, `Value`, EntryId) VALUES ('Museum', '1', 1);
 INSERT INTO librarian.questlog (UserId, QuestTypeId, Completed) VALUES (2, 1, 0);
-INSERT INTO librarian.questproperties(`Key`, `Value`, EntryId) VALUES ('QR', 'AAB', 2);
+INSERT INTO librarian.questproperties(`Key`, `Value`, EntryId) VALUES ('Museum', '1', 2);
 INSERT INTO librarian.questlog (UserId, QuestTypeId, Completed) VALUES (3, 1, 0);
-INSERT INTO librarian.questproperties(`Key`, `Value`, EntryId) VALUES ('QR', 'AAC', 3);
+INSERT INTO librarian.questproperties(`Key`, `Value`, EntryId) VALUES ('Museum', '1', 3);
 INSERT INTO librarian.questlog (UserId, QuestTypeId, Completed) VALUES (1, 2, 0);
 INSERT INTO librarian.questproperties(`Key`, `Value`, EntryId) VALUES ('Tekst', 'AAD', 4);
 INSERT INTO librarian.questlog (UserId, QuestTypeId, Completed) VALUES (2, 2, 0);
@@ -305,7 +306,7 @@ INSERT INTO eralanguage (`eraId`, `name`, `languageId`) VALUES (3, 'Steen tijd',
 INSERT INTO eralanguage (`eraId`, `name`, `languageId`) VALUES (3, 'Stone age', 2);
 
 
-INSERT INTO Museum (`MuseumName`, `website`, `Region`) VALUES ('test musei', 'http://google.nl', 'Nederland');
+INSERT INTO Museum (`MuseumName`, `website`, `Region`, `QrCode`) VALUES ('test musei', 'http://google.nl', 'Nederland', 'AAA');
 
 INSERT INTO Exhibit (`year`, `eraId`, `museumId`) VALUES ('1999', 1, 1);
 INSERT INTO ExhibitInfo (`ExhibitId`, `languageId`, `name`, `description`, `Image`)
@@ -317,7 +318,7 @@ INSERT INTO ExhibitInfo (`ExhibitId`, `languageId`, `name`, `description`, `Imag
 VALUES (2, 1, 'Het voorbeeld beeldje', 'Dit beeldje is ware kunst, een ideaal voorbeeld.', 'object.png'),
   (2, 3, 'Lol look at tis translation', 'Possibly testing de taal', 'object.png');
 
-INSERT INTO Museum (`MuseumName`, `website`, `Region`) VALUES ('De verzamel schuur', 'http://google.twente', 'Twente');
+INSERT INTO Museum (`MuseumName`, `website`, `Region`, `QrCode`) VALUES ('De verzamel schuur', 'http://google.twente', 'Twente', 'AAB');
 
 INSERT INTO Exhibit (`year`, `eraId`, `museumId`) VALUES ('2015', 1, 2);
 INSERT INTO ExhibitInfo (`ExhibitId`, `languageId`, `name`, `description`, `Image`)

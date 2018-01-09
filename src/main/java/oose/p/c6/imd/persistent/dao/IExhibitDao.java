@@ -18,4 +18,5 @@ public interface IExhibitDao extends IDao<Exhibit> {
     public List<Museum> listMuseums();
     public List<Exhibit> findExhibitsNotYetInQuestlog(int userId);
     public List<Era> findErasNotYetInQuestlog(int userId);
+    List<Museum> findMuseumsNotYetInQuestlog(int userId);
 }

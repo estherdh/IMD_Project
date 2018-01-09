@@ -193,4 +193,18 @@ public class ExhibitJDBCDaoTest {
         assertThat(actualEra, samePropertyValuesAs(expectedEra));
     }
 
+    @Test
+    public void findMuseumsNotYetInQuestlog() throws SQLException {
+        //init
+        Museum expectedMuseum = new Museum(2, "De verzamel schuur", "http://google.twente", "Twente");
+        expectedMuseum.setQrCode("AAB");
+
+        //test
+        List<Museum> museums = dao.findMuseumsNotYetInQuestlog(1);
+        Museum actualMuseum = museums.get(0);
+
+        //check
+        assertThat(actualMuseum, samePropertyValuesAs(expectedMuseum));
+    }
+
 }
