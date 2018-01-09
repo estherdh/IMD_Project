@@ -1091,9 +1091,15 @@ public class RESTServiceTest {
 
     @Test
     public void checkFavoriteExhibits(){
-        User u = new User(1,"", "", "", 10, 2);
+        User mockUser = mock(User.class);
+        when(tokenManager.getUserFromToken("token")).thenReturn(mockUser);
+        when(mockUser.getLanguageId()).thenReturn(1);
         List<Exhibit> list = new ArrayList<>();
-        when(librarian.getAvailableExhibits(u)).thenReturn(list);
-        //TODO add examples to list and check if right ones are favorited.
+        when(librarian.getAvailableExhibits(mockUser)).thenReturn(list);
+        list.add(new Exhibit(1, "", "", "", "", 1,2,3));
+        list.add(new Exhibit(3, "", "", "", "", 1,2,3));
+        Response r = service.getFavoriteExhibits("token");
+        assertEquals(true, ((JsonArray)r.getEntity()).getJsonObject(0).getBoolean("Favorite") );
+        assertEquals(1, ((JsonArray)r.getEntity()).size());
     }
 }
