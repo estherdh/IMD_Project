@@ -70,7 +70,7 @@ public class ExhibitJDBCDao implements IExhibitDao {
     }
 
     private Exhibit createExhibitFromResultset(ResultSet rs) throws SQLException {
-        return new Exhibit(rs.getInt("ExhibitId"), rs.getString("name"), rs.getString("description"), rs.getString("video"), rs.getString("image"), rs.getInt("year"), rs.getInt(eraIdColomnName), rs.getInt(museumIdColomnName));
+        return new Exhibit(rs.getInt("ExhibitId"), rs.getString("name"), rs.getString("description"), rs.getString("video"), findExhibitImagesFromExhibit(rs.getInt("ExhibitId")), rs.getInt("year"), rs.getInt(eraIdColomnName), rs.getInt(museumIdColomnName));
     }
 
     @Override
@@ -211,6 +211,18 @@ public class ExhibitJDBCDao implements IExhibitDao {
         } catch (SQLException e) {
             return (ArrayList) handleException(e, new ArrayList<Era>());
         }
+    }
+
+    private List<String> findExhibitImagesFromExhibit(int exhibitId) throws SQLException {
+        Connection connection = ConnectMySQL.getInstance().getConnection();
+        PreparedStatement ps = connection.prepareStatement("SELECT Path FROM ExhibitImage e INNER JOIN Image i ON i.ImageId=e.ImageId WHERE ExhibitId = ?");
+        ps.setInt(1, exhibitId);
+        ResultSet rs = ps.executeQuery();
+        List<String> images = new ArrayList<>();
+        while(rs.next()) {
+            images.add(rs.getString(1));
+        }
+        return images;
     }
 
     @Override
