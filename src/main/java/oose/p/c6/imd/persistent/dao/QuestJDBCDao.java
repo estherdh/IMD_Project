@@ -96,7 +96,7 @@ public class QuestJDBCDao implements IQuestDAO {
         List<Quest> questList = new ArrayList<>();
         try {
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM (questlog ql INNER JOIN QuestType qt ON ql.QuestTypeId = qt.QuestTypeId) " +
-                    "INNER JOIN QuestTypeLanguage qtl ON qt.QuestTypeId = qtl.QuestTypeId " +
+                    "INNER JOIN QuestTypeLanguage qtl ON qt.QuestTypeId = qtl.QuestTypeId INNER JOIN questproperties qp ON qp.EntryId = ql.EntryId " +
                     "WHERE UserId = ? AND Completed = 0 AND LanguageId IN " +
                     "(SELECT COALESCE(" +
                     "(SELECT languageId FROM questtypelanguage qtl2 WHERE qtl2.LanguageId = ? AND qtl2.QuestTypeId = qt.QuestTypeId), 1));");
@@ -106,7 +106,6 @@ public class QuestJDBCDao implements IQuestDAO {
             while (rs.next()) {
                 questList.add(createQuest(rs, generateQuest(rs)));
                 getQuestDescription(rs);
-                questList
             }
             if (!connection.isClosed()) {
                 connection.close();
@@ -166,8 +165,11 @@ public class QuestJDBCDao implements IQuestDAO {
     }
 
     private Quest createQuest(ResultSet rs, IQuestType typeStrategy) throws SQLException {
-        return new Quest(
-                rs.getInt("EntryId"),
+        String valueOfId = "";
+        Connection connection = ConnectMySQL.getInstance().getConnection();
+
+        Quest q = new Quest(
+                rs.getInt("ql.EntryId"),
                 rs.getString("Name"),
                 rs.getString("Description"),
                 rs.getInt("Reward"),
@@ -176,6 +178,47 @@ public class QuestJDBCDao implements IQuestDAO {
                 rs.getInt("Completed"),
                 typeStrategy
         );
+        switch (rs.getString("QuestTypeId")) {
+            case "3":
+                try {
+                    PreparedStatement ps = connection.prepareStatement("SELECT * FROM exhibitinfo e INNER JOIN questproperties qp ON qp.Value = e.ExhibitId " +
+                            "WHERE UserId = ? AND Completed = 0 AND qp.Value = ? AND LanguageId = " +
+                            "(SELECT LanguageId FROM users u WHERE u.UserId = ?);");
+                    ps.setInt(1, rs.getInt("UserId"));
+                    ps.setInt(2, rs.getInt("Value"));
+                    ps.setInt(3, rs.getInt("UserId"));
+                    ResultSet rs2 = ps.executeQuery();
+                    while (rs2.next()) {
+                        valueOfId = rs2.getString("Name");
+                    }
+                    if (!connection.isClosed()) {
+                        connection.close();
+                    }
+                } catch (SQLException e) {
+                    LOGGER.log(Level.SEVERE, e.toString(), e);
+                }
+            case "4":
+                try {
+                    PreparedStatement ps = connection.prepareStatement("SELECT * FROM eralanguage  e INNER JOIN questproperties qp ON qp.Value = e.EraId " +
+                            "WHERE UserId = ? AND Completed = 0 AND qp.Value = ? AND LanguageId = " +
+                            "(SELECT LanguageId FROM users u WHERE u.UserId = ?);");
+                    ps.setInt(1, rs.getInt("UserId"));
+                    ps.setInt(2, rs.getInt("Value"));
+                    ps.setInt(3, rs.getInt("UserId"));
+                    ResultSet rs2 = ps.executeQuery();
+                    while (rs2.next()) {
+                        valueOfId = rs2.getString("Name");
+                    }
+                    if (!connection.isClosed()) {
+                        connection.close();
+                    }
+                } catch (SQLException e) {
+                    LOGGER.log(Level.SEVERE, e.toString(), e);
+                }
+        }
+        q.setQuestDescritption(String questDescription);
+
+        return q;
     }
 
     private IQuestType generateQuest(ResultSet rs) throws SQLException {
