@@ -181,7 +181,7 @@ public class ReplicaJDBCDao implements IReplicaDao {
         int exhibitId = rs.getInt("ExhibitId");
         Era era = new Era(rs.getInt("EraId"), rs.getString("EraName"));
         Exhibit exhibit = new Exhibit(exhibitId, rs.getString("Name"),
-                rs.getString("Description"), rs.getString("Video"), rs.getString("Image"),
+                rs.getString("Description"), rs.getString("Video"), new ArrayList<>(),
                 rs.getInt("Year"), rs.getInt("EraId"), rs.getInt("MuseumId"));
         exhibit.setEra(era);
         return new Replica(rs.getInt("ReplicaId"), exhibitId, rs.getInt("Price"), rs.getString("Sprite"), rs.getInt("ReplicaTypeId"), rs.getInt("ReplicaPositionId"), exhibit);

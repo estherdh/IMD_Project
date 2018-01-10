@@ -263,11 +263,12 @@ public class RESTService {
             video = "undefined";
         }
         job.add("Video", video);
-        String image = e.getImage();
-        if(image == null) {
-            image = "undefined";
+        List<String> images = e.getImages();
+        JsonArrayBuilder jobAr = factory.createArrayBuilder();
+        for (String image:images) {
+            jobAr.add(image);
         }
-        job.add("Image", image);
+        job.add("Images", jobAr.build());
         job.add("Year", e.getYear());
         if(e.getEra() != null) {
             job.add("Era", createEraJson(e.getEra()));

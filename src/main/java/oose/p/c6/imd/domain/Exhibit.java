@@ -1,20 +1,23 @@
 package oose.p.c6.imd.domain;
 
+import java.util.List;
+
 public class Exhibit extends Model {
     private String name;
     private String description;
     private String video;
-    private String image;
+    private List<String> images;
     private int year;
     private int eraId;
     private int museumId;
     private Era era;
-    public Exhibit (int id, String name, String description, String video, String image, int year, int eraId, int museumId){
+
+    public Exhibit (int id, String name, String description, String video, List<String> images, int year, int eraId, int museumId){
         super(id);
         this.name = name;
         this.description = description;
         this.video = video;
-        this.image = image;
+        this.images = images;
         this.year = year;
         this.museumId = museumId;
         this.eraId = eraId;
@@ -42,14 +45,6 @@ public class Exhibit extends Model {
 
     public void setVideo(String video) {
         this.video = video;
-    }
-
-    public String getImage() {
-        return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
     }
 
     public int getYear() {
@@ -82,5 +77,13 @@ public class Exhibit extends Model {
 
     public void setEra(Era era) {
         this.era = era;
+    }
+
+    public List<String> getImages() {
+        return images;
+    }
+
+    public void setImages(List<String> images) {
+        this.images = images;
     }
 }
