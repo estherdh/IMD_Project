@@ -73,8 +73,8 @@ public class QrCodeQuestGeneratorTest {
         //check
         ResultSet rs = conn.prepareStatement("SELECT * FROM questproperties WHERE EntryId = 10").executeQuery();
         rs.next();
-        int i = Integer.parseInt((rs.getString(3)));
+        String i = (rs.getString(3));
 
-        assertEquals(i, expectedMuseums.get(0).getId());
+        assertEquals(i, expectedMuseums.get(0).getQrCode());
     }
 }
