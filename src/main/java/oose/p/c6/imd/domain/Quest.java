@@ -7,15 +7,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Quest {
-	int entryId;
-	String name;
-	String questTypeDescription;
-	int reward;
-	IQuestType questType;
-	int questTypeId;
-	int removed;
-	int completed;
-	String questDescription;
+	private int entryId;
+	private String name;
+	private String questTypeDescription;
+	private int reward;
+	private IQuestType questType;
+	private int questTypeId;
+	private int removed;
+	private int completed;
+	private String questDescription;
+	private String valueOfQuest;
 
 	public Quest(int entryId, String name, String questTypeDescription, int reward, int questTypeId, int removed, int completed, IQuestType questType) {
 		this.entryId = entryId;
@@ -46,8 +47,12 @@ public class Quest {
 		userDao.addNotification(1, variables, user);
 	}
 
-	private void setQuestDescription(String ) {
+	public void setQuestDescription(String description) {
+		this.questDescription = description;
+	}
 
+	public void setValueOfQuest(String value) {
+		this.valueOfQuest = value;
 	}
 
 	public int getEntryId() {
@@ -94,5 +99,9 @@ public class Quest {
 
 	public void setQuestType(IQuestType questType) {
 		this.questType = questType;
+	}
+
+	public String getQuestDescription() {
+		return questDescription;
 	}
 }

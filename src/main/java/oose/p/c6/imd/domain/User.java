@@ -16,7 +16,6 @@ public class User extends Model {
 
     private IUserDao userDao = DAOFactory.getUserDao();
     private IReplicaDao replicaDao = DAOFactory.getReplicaDao();
-    private IQuestDAO questDAO = DAOFactory.getQuestDao();
 
     private String email;
     private String password;
@@ -176,11 +175,6 @@ public class User extends Model {
     public boolean removeQuestFromQuestLog(int entryId) {
         return questLog.removeQuestFromQuestLog(entryId, super.getId());
     }
-
-    public List<Quest> getQuestsFromQuestlog(){
-        return questDAO.getQuestsForUser(id, languageId);
-    }
-
     public int getCoins() {
         return coins;
     }

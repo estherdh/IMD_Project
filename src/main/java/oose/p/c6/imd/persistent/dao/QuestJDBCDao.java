@@ -1,5 +1,6 @@
 package oose.p.c6.imd.persistent.dao;
 
+import com.mysql.cj.api.mysqla.result.Resultset;
 import oose.p.c6.imd.domain.*;
 import oose.p.c6.imd.persistent.ConnectMySQL;
 
@@ -165,8 +166,7 @@ public class QuestJDBCDao implements IQuestDAO {
     }
 
     private Quest createQuest(ResultSet rs, IQuestType typeStrategy) throws SQLException {
-        String valueOfId = "";
-        Connection connection = ConnectMySQL.getInstance().getConnection();
+
 
         Quest q = new Quest(
                 rs.getInt("ql.EntryId"),
@@ -178,8 +178,39 @@ public class QuestJDBCDao implements IQuestDAO {
                 rs.getInt("Completed"),
                 typeStrategy
         );
-        switch (rs.getString("QuestTypeId")) {
-            case "3":
+
+
+        createQuestDescription(rs, Integer.parseInt(rs.getString("Description")), q);
+
+        return q;
+    }
+
+    public void createQuestDescription(ResultSet rs, int questTypeId, Quest q) throws SQLException {
+        Connection connection = ConnectMySQL.getInstance().getConnection();
+        String valueOfId = "";
+
+        switch (questTypeId) {
+            case 1:
+                try {
+                    PreparedStatement ps = connection.prepareStatement("SELECT * FROM museum m INNER JOIN questproperties qp ON qp.Value = m.QrCode " +
+                            "WHERE UserId = ? AND Completed = 0 AND qp.Value = ? AND LanguageId = " +
+                            "(SELECT LanguageId FROM users u WHERE u.UserId = ?);");
+                    ps.setInt(1, rs.getInt("UserId"));
+                    ps.setInt(2, rs.getInt("Value"));
+                    ps.setInt(3, rs.getInt("UserId"));
+                    ResultSet rs2 = ps.executeQuery();
+                    while (rs2.next()) {
+                        valueOfId = rs2.getString("MuseumName");
+                    }
+                    if (!connection.isClosed()) {
+                        connection.close();
+                    }
+                    q.setQuestDescription(rs.getString("Description") + " " + valueOfId);
+                    q.setValueOfQuest(valueOfId);
+                } catch (SQLException e) {
+                    LOGGER.log(Level.SEVERE, e.toString(), e);
+                }
+            case 3:
                 try {
                     PreparedStatement ps = connection.prepareStatement("SELECT * FROM exhibitinfo e INNER JOIN questproperties qp ON qp.Value = e.ExhibitId " +
                             "WHERE UserId = ? AND Completed = 0 AND qp.Value = ? AND LanguageId = " +
@@ -194,10 +225,12 @@ public class QuestJDBCDao implements IQuestDAO {
                     if (!connection.isClosed()) {
                         connection.close();
                     }
+                    q.setQuestDescription(rs.getString("Description") + " " + valueOfId);
+                    q.setValueOfQuest(valueOfId);
                 } catch (SQLException e) {
                     LOGGER.log(Level.SEVERE, e.toString(), e);
                 }
-            case "4":
+            case 4:
                 try {
                     PreparedStatement ps = connection.prepareStatement("SELECT * FROM eralanguage  e INNER JOIN questproperties qp ON qp.Value = e.EraId " +
                             "WHERE UserId = ? AND Completed = 0 AND qp.Value = ? AND LanguageId = " +
@@ -212,13 +245,14 @@ public class QuestJDBCDao implements IQuestDAO {
                     if (!connection.isClosed()) {
                         connection.close();
                     }
+                    q.setQuestDescription(rs.getString("Description") + " " + valueOfId);
+                    q.setValueOfQuest(valueOfId);
                 } catch (SQLException e) {
                     LOGGER.log(Level.SEVERE, e.toString(), e);
                 }
+            default:
+                LOGGER.log(Level.WARNING, "Het questtype: " + rs.getString("QuestTypeId") + " is niet gevonden");
         }
-        q.setQuestDescritption(String questDescription);
-
-        return q;
     }
 
     private IQuestType generateQuest(ResultSet rs) throws SQLException {
