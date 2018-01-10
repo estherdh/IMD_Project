@@ -105,6 +105,8 @@ public class QuestJDBCDao implements IQuestDAO {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 questList.add(createQuest(rs, generateQuest(rs)));
+                getQuestDescription(rs);
+                questList
             }
             if (!connection.isClosed()) {
                 connection.close();
@@ -178,5 +180,9 @@ public class QuestJDBCDao implements IQuestDAO {
 
     private IQuestType generateQuest(ResultSet rs) throws SQLException {
         return QuestFactory.getInstance().generateQuest(QuestTypes.values()[rs.getInt("QuestTypeId") - 1], getVariablesOfQuest(rs.getInt("EntryId")));
+    }
+
+    public void getQuestDescription(ResultSet questDescription) {
+
     }
 }

@@ -9,17 +9,18 @@ import java.util.Map;
 public class Quest {
 	int entryId;
 	String name;
-	String description;
+	String questTypeDescription;
 	int reward;
 	IQuestType questType;
 	int questTypeId;
 	int removed;
 	int completed;
+	String questDescription;
 
-	public Quest(int entryId, String name, String description, int reward, int questTypeId, int removed, int completed, IQuestType questType) {
+	public Quest(int entryId, String name, String questTypeDescription, int reward, int questTypeId, int removed, int completed, IQuestType questType) {
 		this.entryId = entryId;
 		this.name = name;
-		this.description = description;
+		this.questTypeDescription = questTypeDescription;
 		this.reward = reward;
 		this.questTypeId = questTypeId;
 		this.removed = removed;
@@ -45,6 +46,10 @@ public class Quest {
 		userDao.addNotification(1, variables, user);
 	}
 
+	private void setQuestDescription(String ) {
+
+	}
+
 	public int getEntryId() {
 		return entryId;
 	}
@@ -57,8 +62,8 @@ public class Quest {
 		this.name = name;
 	}
 
-	public void setDescription(String description) {
-		this.description = description;
+	public void setQuestTypeDescription(String questTypeDescription) {
+		this.questTypeDescription = questTypeDescription;
 	}
 
 	public void setReward(int reward) {
@@ -69,8 +74,8 @@ public class Quest {
 		return name;
 	}
 
-	public String getDescription() {
-		return description;
+	public String getQuestTypeDescription() {
+		return questTypeDescription;
 	}
 
 	public int getReward() {

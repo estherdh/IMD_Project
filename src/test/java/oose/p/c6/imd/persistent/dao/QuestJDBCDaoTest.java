@@ -13,7 +13,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
-import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
@@ -54,11 +53,11 @@ public class QuestJDBCDaoTest {
 		List<Quest> actualResult = dao.getQuestsForUser(2, 2);
 		//check
 		assertThat(actualResult.get(0).getName(), is(expectedQuest1.getName()));
-		assertThat(actualResult.get(0).getDescription(), is(expectedQuest1.getDescription()));
+		assertThat(actualResult.get(0).getQuestTypeDescription(), is(expectedQuest1.getQuestTypeDescription()));
 		assertThat(actualResult.get(0).getReward(), is(expectedQuest1.getReward()));
 		assertTrue(actualResult.get(0).getQuestType() instanceof IQuestType);
 		assertThat(actualResult.get(1).getName(), is(expectedQuest2.getName()));
-		assertThat(actualResult.get(1).getDescription(), is(expectedQuest2.getDescription()));
+		assertThat(actualResult.get(1).getQuestTypeDescription(), is(expectedQuest2.getQuestTypeDescription()));
 		assertThat(actualResult.get(1).getReward(), is(expectedQuest2.getReward()));
 		assertTrue(actualResult.get(1).getQuestType() instanceof IQuestType);
 	}

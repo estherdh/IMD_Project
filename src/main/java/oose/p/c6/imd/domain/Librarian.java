@@ -107,7 +107,7 @@ public class Librarian {
     }
 
     public List<Quest> getQuestLog(User user) {
-        return questDAO.getQuestsForUser(user.getId(), user.getLanguageId());
+        return user.getQuestsFromQuestlog();
     }
 
     public void markNotification(User user, int notificationId, boolean read){
