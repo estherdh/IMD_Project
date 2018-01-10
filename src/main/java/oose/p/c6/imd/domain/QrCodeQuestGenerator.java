@@ -12,8 +12,8 @@ public class QrCodeQuestGenerator extends BaseQuestGenerator {
         if (!museums.isEmpty()) {
             Museum m = museums.get(new Random().nextInt(museums.size()));
 
-            String key = "Museum";
-            String value = String.valueOf(m.getId());
+            String key = "Qr";
+            String value = String.valueOf(m.getQrCode());
             setProperties(key, value);
 
             addQuestToQuestlog(userId);
