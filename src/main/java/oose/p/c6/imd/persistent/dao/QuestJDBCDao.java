@@ -29,6 +29,7 @@ public class QuestJDBCDao implements IQuestDAO {
             rs1.next();
             int entryId = rs1.getInt(1);
 
+            PreparedStatement psUpdateDescription = null;
             PreparedStatement psInsert2 = connection.prepareStatement(buildQuestPropertyQuery(properties));
             int j = 1;
             for (Map.Entry<String, String> entry : properties.entrySet()) {
@@ -41,9 +42,12 @@ public class QuestJDBCDao implements IQuestDAO {
                 rsPropertyId.next();
                 int propertyId = rsPropertyId.getInt(1);
 
-                addDescriptionToQuest(propertyId, entry.getValue(), questTypeId);
+                psUpdateDescription = addDescriptionToQuest(propertyId, entry.getValue(), questTypeId);
             }
             psInsert2.execute();
+            if (psUpdateDescription != null) {
+                psUpdateDescription.executeUpdate();
+            }
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, e.toString(), e);
         }
@@ -57,7 +61,7 @@ public class QuestJDBCDao implements IQuestDAO {
         return sb.toString().replaceAll(", $", "");
     }
 
-    private void addDescriptionToQuest(int propertyId, String value, int questTypeId) {
+    private PreparedStatement addDescriptionToQuest(int propertyId, String value, int questTypeId) {
         Connection connection = ConnectMySQL.getInstance().getConnection();
         try {
             PreparedStatement psSelectTypeDescription = connection.prepareStatement("SELECT * FROM questtypelanguage qt INNER JOIN " +
@@ -69,18 +73,18 @@ public class QuestJDBCDao implements IQuestDAO {
 
             if (getValueDescription(questTypeId, value) != null) {
                 String description = rsTypeDescription.getString("QuestDescription") + getValueDescription(questTypeId, value);
-                PreparedStatement psUpdate = connection.prepareStatement("UPDATE Questproperties SET `Description` = ? WHERE " +
-                        "PropertyId = ? ");
+                PreparedStatement psUpdate = connection.prepareStatement("UPDATE Questproperties qp SET qp.Description = ? WHERE " +
+                        "qp.PropertyId = ? ");
                 psUpdate.setString(1, description);
                 psUpdate.setInt(2, propertyId);
-                ResultSet rsUpdate = psUpdate.executeQuery();
-                rsUpdate.next();
+                return psUpdate;
             } else {
                 LOGGER.log(Level.WARNING, value + " bestaat niet in de database");
             }
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, e.toString(), e);
         }
+        return null;
     }
 
     private String getValueDescription(int questTypeId, String value) throws SQLException {
