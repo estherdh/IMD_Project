@@ -16,8 +16,7 @@ import java.util.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class QuestJDBCDaoTest {
     private Connection conn;
@@ -109,26 +108,31 @@ public class QuestJDBCDaoTest {
         int userId = 1;
         Map<String, String> properties = new HashMap<>();
 
-        String key = "TopstukNaam";
-        int value = 1;
-        int questTypeId = 2;
+        String value1 = "AAA";
+        int value2 = 1;
+        int questTypeId = 3;
 
-        properties.put("TestKey", key);
-        properties.put("TestKey2", String.valueOf(value));
+        properties.put("TestKey", value1);
+        properties.put("TestKey2", String.valueOf(value2));
+
+        String expectedDescription1 = null;
+        String expectedDescription2 = "Lees het topstuk: het test object";
 
         //test
         dao.addQuestToQuestlog(properties, userId, questTypeId);
 
         //check
-        ResultSet resultAdded = conn.createStatement().executeQuery("SELECT qp.Key, qp.Value FROM QuestProperties qp " +
+        ResultSet resultAdded = conn.createStatement().executeQuery("SELECT qp.Key, qp.Value, qp.Description FROM QuestProperties qp " +
                 "WHERE EntryId = 10 ORDER BY qp.Key ASC");
         resultAdded.next();
         assertEquals("TestKey", resultAdded.getString(1));
-        assertEquals(key, resultAdded.getString(2));
+        assertEquals(value1, resultAdded.getString(2));
+        assertEquals(expectedDescription1, resultAdded.getString(3));
 
         resultAdded.next();
         assertEquals("TestKey2", resultAdded.getString(1));
-        assertEquals(String.valueOf(value), resultAdded.getString(2));
+        assertEquals(String.valueOf(value2), resultAdded.getString(2));
+        assertEquals(expectedDescription2, resultAdded.getString(3));
     }
 
     @Test
@@ -138,5 +142,4 @@ public class QuestJDBCDaoTest {
         assertEquals(q.getName(), "(EN)Scan qr code");
         assertEquals(q.getReward(), 10);
     }
-
 }

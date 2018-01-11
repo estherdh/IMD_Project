@@ -1,6 +1,5 @@
 package oose.p.c6.imd.persistent.dao;
 
-import com.sun.org.apache.xpath.internal.SourceTree;
 import oose.p.c6.imd.domain.*;
 import oose.p.c6.imd.persistent.ConnectMySQL;
 
@@ -68,43 +67,64 @@ public class QuestJDBCDao implements IQuestDAO {
             ResultSet rsTypeDescription = psSelectTypeDescription.executeQuery();
             rsTypeDescription.next();
 
-            String description = rsTypeDescription.getString("QuestDescription") + getValueFromId(questTypeId, value);
-
-            PreparedStatement psUpdate = connection.prepareStatement("UPDATE Questproperties SET `Description` = ? WHERE " +
-                    "PropertyId = ? ");
-            psUpdate.setString(1, description);
-            psUpdate.setInt(2, propertyId);
+            if (getValueDescription(questTypeId, value) != null) {
+                String description = rsTypeDescription.getString("QuestDescription") + getValueDescription(questTypeId, value);
+                PreparedStatement psUpdate = connection.prepareStatement("UPDATE Questproperties SET `Description` = ? WHERE " +
+                        "PropertyId = ? ");
+                psUpdate.setString(1, description);
+                psUpdate.setInt(2, propertyId);
+                ResultSet rsUpdate = psUpdate.executeQuery();
+                rsUpdate.next();
+            } else {
+                LOGGER.log(Level.WARNING, value + " bestaat niet in de database");
+            }
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, e.toString(), e);
         }
     }
 
-    private String getValueFromId(int questTypeId, String value) throws SQLException {
+    private String getValueDescription(int questTypeId, String value) throws SQLException {
         Connection connection = ConnectMySQL.getInstance().getConnection();
         PreparedStatement psSelectValue = null;
         switch (questTypeId) {
-        case 1:
-            psSelectValue = connection.prepareStatement("SELECT MuseumName FROM museum WHERE QrCode = ?");
-            psSelectValue.setString(1, value);
-            break;
-        case 3:
-            psSelectValue = connection.prepareStatement("SELECT Name FROM exhibitinfo WHERE ExhibitId = ?");
-            psSelectValue.setInt(1, Integer.parseInt(value));
-            break;
-        case 4:
-            psSelectValue = connection.prepareStatement("SELECT Name FROM eralanguage WHERE EraId = ?");
-            psSelectValue.setInt(1, Integer.parseInt(value));
-            break;
-        default:
-            LOGGER.log(Level.WARNING, "Het questtype: " + questTypeId + " is niet gevonden");
-    }
+            case 1:
+                psSelectValue = connection.prepareStatement("SELECT MuseumName FROM museum WHERE QrCode = ?");
+                psSelectValue.setString(1, value);
+                break;
+            case 3:
+                if (isValueAnInteger(value)) {
+                    psSelectValue = connection.prepareStatement("SELECT Name FROM exhibitinfo WHERE ExhibitId = ?");
+                    psSelectValue.setInt(1, Integer.parseInt(value));
+                }
+                break;
+            case 4:
+                if (isValueAnInteger(value)) {
+                    psSelectValue = connection.prepareStatement("SELECT Name FROM eralanguage WHERE EraId = ?");
+                    psSelectValue.setInt(1, Integer.parseInt(value));
+                }
+                break;
+            default:
+                LOGGER.log(Level.WARNING, "Het questtype: " + questTypeId + " is niet gevonden");
+        }
 
         if (psSelectValue != null) {
             ResultSet rsValue = psSelectValue.executeQuery();
             rsValue.next();
-            return rsValue.getString(1);
+            if (!rsValue.getString(1).isEmpty()) {
+                return rsValue.getString(1);
+            }
+            return null;
         }
         return null;
+    }
+
+    private boolean isValueAnInteger(String value) {
+        try {
+            Integer.parseInt(value);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
     }
 
     @Override
