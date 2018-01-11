@@ -1,5 +1,6 @@
 package oose.p.c6.imd.persistent.dao;
 
+import com.sun.org.apache.xpath.internal.SourceTree;
 import oose.p.c6.imd.domain.*;
 import oose.p.c6.imd.persistent.ConnectMySQL;
 
@@ -35,12 +36,13 @@ public class QuestJDBCDao implements IQuestDAO {
                 psInsert2.setInt(j++, entryId);
                 psInsert2.setString(j++, entry.getKey());
                 psInsert2.setString(j++, entry.getValue());
-                //get propertyid
-                ResultSet rsPropertyId = connection.prepareStatement("SELECT PropertyId FROM questproperties WHERE EntryId = entryId AND Key = entry.getKey() AND Value = entry.getValue()").executeQuery();
+
+                PreparedStatement psPropertyId = connection.prepareStatement("SELECT LAST_INSERT_ID()");
+                ResultSet rsPropertyId = psPropertyId.executeQuery();
                 rsPropertyId.next();
                 int propertyId = rsPropertyId.getInt(1);
 
-                addDescriptionToQuest(entryId, entry.getKey(), entry.getValue(), questTypeId);
+                addDescriptionToQuest(propertyId, entry.getValue(), questTypeId);
             }
             psInsert2.execute();
         } catch (SQLException e) {
@@ -56,15 +58,18 @@ public class QuestJDBCDao implements IQuestDAO {
         return sb.toString().replaceAll(", $", "");
     }
 
-    private void addDescriptionToQuest(int propertyId, String key, String value, int questTypeId) {
+    private void addDescriptionToQuest(int propertyId, String value, int questTypeId) {
         Connection connection = ConnectMySQL.getInstance().getConnection();
         try {
             PreparedStatement psSelectTypeDescription = connection.prepareStatement("SELECT * FROM questtypelanguage qt INNER JOIN " +
                     "questlog ql ON qt.QuestTypeId = ql.QuestTypeId " +
-                    "WHERE QuestTypeId = ?");
+                    "WHERE qt.QuestTypeId = ?");
             psSelectTypeDescription.setInt(1, questTypeId);
             ResultSet rsTypeDescription = psSelectTypeDescription.executeQuery();
-            String description = rsTypeDescription.getString("QuestDescription") + " " + getValueFromId(questTypeId, Integer.parseInt(value));
+            rsTypeDescription.next();
+
+            String description = rsTypeDescription.getString("QuestDescription") + getValueFromId(questTypeId, value);
+
             PreparedStatement psUpdate = connection.prepareStatement("UPDATE Questproperties SET `Description` = ? WHERE " +
                     "PropertyId = ? ");
             psUpdate.setString(1, description);
@@ -74,26 +79,29 @@ public class QuestJDBCDao implements IQuestDAO {
         }
     }
 
-    private String getValueFromId(int questTypeId, int value) throws SQLException {
+    private String getValueFromId(int questTypeId, String value) throws SQLException {
         Connection connection = ConnectMySQL.getInstance().getConnection();
         PreparedStatement psSelectValue = null;
         switch (questTypeId) {
         case 1:
-            psSelectValue = connection.prepareStatement("SELECT MuseumName FROM museum WHERE MuseumId = ?");
+            psSelectValue = connection.prepareStatement("SELECT MuseumName FROM museum WHERE QrCode = ?");
+            psSelectValue.setString(1, value);
             break;
         case 3:
             psSelectValue = connection.prepareStatement("SELECT Name FROM exhibitinfo WHERE ExhibitId = ?");
+            psSelectValue.setInt(1, Integer.parseInt(value));
             break;
         case 4:
             psSelectValue = connection.prepareStatement("SELECT Name FROM eralanguage WHERE EraId = ?");
+            psSelectValue.setInt(1, Integer.parseInt(value));
             break;
         default:
             LOGGER.log(Level.WARNING, "Het questtype: " + questTypeId + " is niet gevonden");
     }
 
         if (psSelectValue != null) {
-            psSelectValue.setInt(1, value);
             ResultSet rsValue = psSelectValue.executeQuery();
+            rsValue.next();
             return rsValue.getString(1);
         }
         return null;

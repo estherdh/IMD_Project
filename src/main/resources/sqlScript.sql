@@ -77,6 +77,7 @@ CREATE TABLE QuestTypeLanguage (
   LanguageId INT NOT NULL,
   `Description` VARCHAR(256),
   `Name` VARCHAR(64) NOT NULL,
+  `QuestDescription` VARCHAR(256),
   CONSTRAINT pk_QuestTypeLanguage PRIMARY KEY (QuestTypeId, LanguageId)
 );
 
@@ -88,19 +89,12 @@ CREATE TABLE QuestLog (
   Removed BOOLEAN DEFAULT 0
 );
 
-CREATE TABLE QuestDescriptionLanguage (
-  EntryId INT NOT NULL,
-  LanguageId INT NOT NULL,
-  `QuestDescription` VARCHAR(256),
-  `Name` VARCHAR(64),
-  CONSTRAINT pk_QuestDescriptionLanguage PRIMARY KEY (EntryId, LanguageId)
-);
-
 CREATE TABLE QuestProperties (
   `PropertyId` INT AUTO_INCREMENT PRIMARY KEY,
   `Key` VARCHAR(15) NOT NULL,
   `Value` VARCHAR(60) NOT NULL,
-  `EntryId` INT
+  `EntryId` INT,
+  `Description` VARCHAR(256)
 );
 
 -- TOPSTUKKEN
@@ -205,12 +199,6 @@ FOREIGN KEY (EntryId) REFERENCES QuestLog (EntryId)
   ON DELETE CASCADE
   ON UPDATE RESTRICT;
 
-ALTER TABLE QuestDescriptionLanguage ADD CONSTRAINT FK_QuestDescriptionLanguage_Language
-FOREIGN KEY (LanguageId) REFERENCES Language (LanguageId);
-
-ALTER TABLE QuestDescriptionLanguage ADD CONSTRAINT FK_QuestDescriptionLanguage_Questlog
-FOREIGN KEY (EntryId) REFERENCES Questlog (EntryId);
-
 ALTER TABLE ExhibitInfo ADD CONSTRAINT FK_ExhibitInfo_Exhibit
 FOREIGN KEY (ExhibitId) REFERENCES Exhibit (ExhibitId);
 
@@ -280,21 +268,21 @@ INSERT INTO librarian.users (Email, Password, Coins, DisplayName, LanguageId) VA
 INSERT INTO librarian.users (Email, Password, Coins, DisplayName, LanguageId) VALUES ('Nope.avi@youtube.com', '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08', 200, 'MONEYBAGS', 3);
 
 INSERT INTO librarian.questtype (Reward) VALUES (10);
-INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name) VALUES (1, 1, '(NL)Scan een qr code', '(NL)Scannen qr code');
-INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name) VALUES (1, 2, '(EN)Scan a qr code', '(EN)Scan qr code');
-INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name) VALUES (1, 3, '(TESTING)Scan a qr code', '(TESTING)edoc rq nasc');
+INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name, QuestDescription) VALUES (1, 1, '(NL)Scan een qr code', '(NL)Scannen qr code', '(NL) Scan de Qr code in het museum: ');
+INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name, QuestDescription) VALUES (1, 2, '(EN)Scan a qr code', '(EN)Scan qr code', '(NL) Scan the qr code while visiting the museum: ');
+INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name, QuestDescription) VALUES (1, 3, '(TESTING)Scan a qr code', '(TESTING)edoc rq nasc', '(Testing) testestest ');
 
 INSERT INTO librarian.questtype (Reward) VALUES (15);
 INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name) VALUES (2, 1, '(NL)Stuur een bepaald stuk tekst op', '(NL)Stuur tekst');
 INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name) VALUES (2, 3, '(TESTING)TEKStQuESTREquest', '(TESTING)TEKStQuESTREquest');
 
 INSERT INTO librarian.questtype (Reward) VALUES (30);
-INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name) VALUES (3, 1, '(NL) Lees een topstuk', '(NL)Lezen topstuk');
-INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name) VALUES (3, 2, '(EN) Read an exhibit', '(EN)Read exhibit');
+INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name, QuestDescription) VALUES (3, 1, '(NL) Lees een topstuk', '(NL)Lezen topstuk', '(NL) Lees het topstuk: ');
+INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name, QuestDescription) VALUES (3, 2, '(EN) Read an exhibit', '(EN)Read exhibit', '(NL) Read the exhibit: ');
 
 INSERT INTO librarian.questtype (Reward) VALUES (30);
-INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name) VALUES (4, 1, '(NL) Bekijk een tijdperk', '(NL)Bekijken tijdperk');
-INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name) VALUES (4, 2, '(EN) View an era', '(EN)View era');
+INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name, QuestDescription) VALUES (4, 1, '(NL) Bekijk een tijdperk', '(NL)Bekijken tijdperk', '(NL) Ga naar de bibliotheek en open het boek: ');
+INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name, QuestDescription) VALUES (4, 2, '(EN) View an era', '(EN)View era', '(NL) Go to the library and open the book: ');
 
 INSERT INTO librarian.questlog (UserId, QuestTypeId, Completed) VALUES (1, 1, 0);
 INSERT INTO librarian.questproperties(`Key`, `Value`, EntryId) VALUES ('QR', 'AAA', 1);

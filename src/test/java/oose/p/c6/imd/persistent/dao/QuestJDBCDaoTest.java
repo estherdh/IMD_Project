@@ -41,26 +41,26 @@ public class QuestJDBCDaoTest {
         conn.close();
     }
 
-	@Test
-	public void getQuestsFromUserTestSuccess() throws Exception {
-		//init
-		QuestFactory factory = mock(QuestFactory.class);
-		QuestFactory.setFactory(factory);
-		when(factory.generateQuest(any(QuestTypes.class), any(Map.class))).thenReturn(new QrScanQuest(new HashMap<>()));
-		Quest expectedQuest1 = new Quest(1, "(EN)Scan qr code", "(EN)Scan a qr code", 10, 1, 0, 0, new QrScanQuest(new HashMap<>()));
-		Quest expectedQuest2 = new Quest(2, "(NL)Stuur tekst", "(NL)Stuur een bepaald stuk tekst op", 15, 1, 0, 0, new QrScanQuest(new HashMap<>()));
-		//test
-		List<Quest> actualResult = dao.getQuestsForUser(2, 2);
-		//check
-		assertThat(actualResult.get(0).getName(), is(expectedQuest1.getName()));
-		assertThat(actualResult.get(0).getQuestTypeDescription(), is(expectedQuest1.getQuestTypeDescription()));
-		assertThat(actualResult.get(0).getReward(), is(expectedQuest1.getReward()));
-		assertTrue(actualResult.get(0).getQuestType() instanceof IQuestType);
-		assertThat(actualResult.get(1).getName(), is(expectedQuest2.getName()));
-		assertThat(actualResult.get(1).getQuestTypeDescription(), is(expectedQuest2.getQuestTypeDescription()));
-		assertThat(actualResult.get(1).getReward(), is(expectedQuest2.getReward()));
-		assertTrue(actualResult.get(1).getQuestType() instanceof IQuestType);
-	}
+    @Test
+    public void getQuestsFromUserTestSuccess() throws Exception {
+        //init
+        QuestFactory factory = mock(QuestFactory.class);
+        QuestFactory.setFactory(factory);
+        when(factory.generateQuest(any(QuestTypes.class), any(Map.class))).thenReturn(new QrScanQuest(new HashMap<>()));
+        Quest expectedQuest1 = new Quest(1, "(EN)Scan qr code", "(EN)Scan a qr code", 10, 1, 0, 0, new QrScanQuest(new HashMap<>()));
+        Quest expectedQuest2 = new Quest(2, "(NL)Stuur tekst", "(NL)Stuur een bepaald stuk tekst op", 15, 1, 0, 0, new QrScanQuest(new HashMap<>()));
+        //test
+        List<Quest> actualResult = dao.getQuestsForUser(2, 2);
+        //check
+        assertThat(actualResult.get(0).getName(), is(expectedQuest1.getName()));
+        assertThat(actualResult.get(0).getDescription(), is(expectedQuest1.getDescription()));
+        assertThat(actualResult.get(0).getReward(), is(expectedQuest1.getReward()));
+        assertTrue(actualResult.get(0).getQuestType() instanceof IQuestType);
+        assertThat(actualResult.get(1).getName(), is(expectedQuest2.getName()));
+        assertThat(actualResult.get(1).getDescription(), is(expectedQuest2.getDescription()));
+        assertThat(actualResult.get(1).getReward(), is(expectedQuest2.getReward()));
+        assertTrue(actualResult.get(1).getQuestType() instanceof IQuestType);
+    }
 
     @Test
     public void getQuestsFromUserTestUserDoesntExist() throws Exception {
@@ -131,12 +131,12 @@ public class QuestJDBCDaoTest {
         assertEquals(String.valueOf(value), resultAdded.getString(2));
     }
 
-	@Test
-	public void findQuest(){
-		User test2 = new User(2, "test@void", "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08", "muspi merol", 0, 2);
-		Quest q = dao.find(2 , test2);
-		assertEquals(q.getName(), "(EN)Scan qr code");
-		assertEquals(q.getReward(), 10);
-	}
+    @Test
+    public void findQuest() {
+        User test2 = new User(2, "test@void", "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08", "muspi merol", 0, 2);
+        Quest q = dao.find(2, test2);
+        assertEquals(q.getName(), "(EN)Scan qr code");
+        assertEquals(q.getReward(), 10);
+    }
 
 }
