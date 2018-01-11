@@ -88,6 +88,14 @@ CREATE TABLE QuestLog (
   Removed BOOLEAN DEFAULT 0
 );
 
+CREATE TABLE QuestDescriptionLanguage (
+  EntryId INT NOT NULL,
+  LanguageId INT NOT NULL,
+  `QuestDescription` VARCHAR(256),
+  `Name` VARCHAR(64),
+  CONSTRAINT pk_QuestDescriptionLanguage PRIMARY KEY (EntryId, LanguageId)
+);
+
 CREATE TABLE QuestProperties (
   `PropertyId` INT AUTO_INCREMENT PRIMARY KEY,
   `Key` VARCHAR(15) NOT NULL,
@@ -196,6 +204,12 @@ ALTER TABLE QuestProperties ADD CONSTRAINT FK_QuestProperties_QuestLog
 FOREIGN KEY (EntryId) REFERENCES QuestLog (EntryId)
   ON DELETE CASCADE
   ON UPDATE RESTRICT;
+
+ALTER TABLE QuestDescriptionLanguage ADD CONSTRAINT FK_QuestDescriptionLanguage_Language
+FOREIGN KEY (LanguageId) REFERENCES Language (LanguageId);
+
+ALTER TABLE QuestDescriptionLanguage ADD CONSTRAINT FK_QuestDescriptionLanguage_Questlog
+FOREIGN KEY (EntryId) REFERENCES Questlog (EntryId);
 
 ALTER TABLE ExhibitInfo ADD CONSTRAINT FK_ExhibitInfo_Exhibit
 FOREIGN KEY (ExhibitId) REFERENCES Exhibit (ExhibitId);

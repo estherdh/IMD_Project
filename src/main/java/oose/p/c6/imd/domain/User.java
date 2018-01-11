@@ -175,6 +175,7 @@ public class User extends Model {
     public boolean removeQuestFromQuestLog(int entryId) {
         return questLog.removeQuestFromQuestLog(entryId, super.getId());
     }
+
     public int getCoins() {
         return coins;
     }

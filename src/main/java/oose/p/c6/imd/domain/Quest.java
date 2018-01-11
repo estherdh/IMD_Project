@@ -7,21 +7,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Quest {
-	private int entryId;
-	private String name;
-	private String questTypeDescription;
-	private int reward;
-	private IQuestType questType;
-	private int questTypeId;
-	private int removed;
-	private int completed;
-	private String questDescription;
-	private String valueOfQuest;
+	int entryId;
+	String name;
+	String description;
+	int reward;
+	IQuestType questType;
+	int questTypeId;
+	int removed;
+	int completed;
 
-	public Quest(int entryId, String name, String questTypeDescription, int reward, int questTypeId, int removed, int completed, IQuestType questType) {
+	public Quest(int entryId, String name, String description, int reward, int questTypeId, int removed, int completed, IQuestType questType) {
 		this.entryId = entryId;
 		this.name = name;
-		this.questTypeDescription = questTypeDescription;
+		this.description = description;
 		this.reward = reward;
 		this.questTypeId = questTypeId;
 		this.removed = removed;
@@ -47,14 +45,6 @@ public class Quest {
 		userDao.addNotification(1, variables, user);
 	}
 
-	public void setQuestDescription(String description) {
-		this.questDescription = description;
-	}
-
-	public void setValueOfQuest(String value) {
-		this.valueOfQuest = value;
-	}
-
 	public int getEntryId() {
 		return entryId;
 	}
@@ -67,8 +57,8 @@ public class Quest {
 		this.name = name;
 	}
 
-	public void setQuestTypeDescription(String questTypeDescription) {
-		this.questTypeDescription = questTypeDescription;
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public void setReward(int reward) {
@@ -79,8 +69,8 @@ public class Quest {
 		return name;
 	}
 
-	public String getQuestTypeDescription() {
-		return questTypeDescription;
+	public String getDescription() {
+		return description;
 	}
 
 	public int getReward() {
@@ -99,9 +89,5 @@ public class Quest {
 
 	public void setQuestType(IQuestType questType) {
 		this.questType = questType;
-	}
-
-	public String getQuestDescription() {
-		return questDescription;
 	}
 }
