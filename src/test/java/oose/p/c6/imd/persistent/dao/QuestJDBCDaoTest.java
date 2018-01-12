@@ -103,20 +103,48 @@ public class QuestJDBCDaoTest {
     }
 
     @Test
-    public void addQuestToQuestlog() throws SQLException {
+    public void addQuestToQuestlogType1Test() throws SQLException {
+        //init
+        int userId = 1;
+        Map<String, String> properties = new HashMap<>();
+
+        String value = "AAB";
+
+        int questTypeId = 1;
+
+        properties.put("TestKey", value);
+
+        String expectedDescription = "(NL) Scan de Qr code in het museum: De verzamel schuur";
+
+        //test
+        dao.addQuestToQuestlog(properties, userId, questTypeId);
+
+        //check
+        ResultSet resultAdded = conn.createStatement().executeQuery("SELECT qp.Key, qp.Value, qp.Description FROM QuestProperties qp " +
+                "WHERE EntryId = 10 ORDER BY qp.Key ASC");
+
+        resultAdded.next();
+        assertEquals("TestKey", resultAdded.getString(1));
+        assertEquals(value, resultAdded.getString(2));
+        assertEquals(expectedDescription, resultAdded.getString(3));
+    }
+
+    @Test
+    public void addQuestToQuestlogType3Test() throws SQLException {
         //init
         int userId = 1;
         Map<String, String> properties = new HashMap<>();
 
         String value1 = "AAA";
         int value2 = 1;
+
         int questTypeId = 3;
 
         properties.put("TestKey", value1);
         properties.put("TestKey2", String.valueOf(value2));
 
         String expectedDescription1 = null;
-        String expectedDescription2 = "Lees het topstuk: het test object";
+        String expectedDescription2 = "(NL) Lees het topstuk: Het test object";
 
         //test
         dao.addQuestToQuestlog(properties, userId, questTypeId);
@@ -133,6 +161,32 @@ public class QuestJDBCDaoTest {
         assertEquals("TestKey2", resultAdded.getString(1));
         assertEquals(String.valueOf(value2), resultAdded.getString(2));
         assertEquals(expectedDescription2, resultAdded.getString(3));
+    }
+
+    @Test
+    public void addQuestToQuestlogType4Test() throws SQLException {
+        //init
+        int userId = 1;
+        Map<String, String> properties = new HashMap<>();
+
+        int value = 1;
+
+        int questTypeId = 4;
+
+        properties.put("TestKey", String.valueOf(value));
+
+        String expectedDescription = "(NL) Ga naar de bibliotheek en open het boek: tijdperk test";
+
+        //test
+        dao.addQuestToQuestlog(properties, userId, questTypeId);
+
+        //check
+        ResultSet resultAdded = conn.createStatement().executeQuery("SELECT qp.Key, qp.Value, qp.Description FROM QuestProperties qp " +
+                "WHERE EntryId = 10 ORDER BY qp.Key ASC");
+        resultAdded.next();
+        assertEquals("TestKey", resultAdded.getString(1));
+        assertEquals(String.valueOf(value), resultAdded.getString(2));
+        assertEquals(expectedDescription, resultAdded.getString(3));
     }
 
     @Test
