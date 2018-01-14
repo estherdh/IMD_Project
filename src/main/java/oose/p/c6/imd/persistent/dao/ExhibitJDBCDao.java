@@ -234,9 +234,8 @@ public class ExhibitJDBCDao implements IExhibitDao {
                     "NOT IN(SELECT qp.Value FROM questlog ql INNER JOIN " +
                     "questProperties qp ON ql.EntryId = qp.EntryId WHERE " +
                     "UserId = ? AND QuestTypeId = 1 AND Removed = 0 AND Completed = 0) " +
-                    "AND LanguageId = COALESCE((SELECT LanguageId FROM users WHERE UserId = ?), 1) AND QrCode IS NOT NULL");
+                    "AND QrCode IS NOT NULL");
             ps.setInt(1, userId);
-            ps.setInt(2, userId);
             rs = ps.executeQuery();
             List<Museum> list = new ArrayList<>();
             while (rs.next()) {
