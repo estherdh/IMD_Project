@@ -176,8 +176,8 @@ public class ExhibitJDBCDao implements IExhibitDao {
                     "NOT IN(SELECT qp.Value FROM questlog ql INNER JOIN " +
                     "questProperties qp ON ql.EntryId = qp.EntryId " +
                     "WHERE UserId = ? AND QuestTypeId = 3 AND Removed = 0 AND Completed = 0) AND " +
-                    "ei.LanguageId = COALESCE ((SELECT u.LanguageId FROM users u " +
-                    "WHERE u.UserId = ?), 1)");
+                    "ei.LanguageId IN (SELECT COALESCE((SELECT ei2.LanguageId FROM exhibitinfo ei2 " +
+                    "WHERE ei2.LanguageId = (SELECT u.LanguageId FROM users u WHERE u.UserId = ?) AND ei2.ExhibitId = e.ExhibitId), 1))");
             ps.setInt(1, userId);
             ps.setInt(2, userId);
             return getListFromPreparedStatement(ps, connection);
@@ -196,8 +196,8 @@ public class ExhibitJDBCDao implements IExhibitDao {
                     "NOT IN(SELECT qp.Value FROM questlog ql INNER JOIN " +
                     "questProperties qp ON ql.EntryId = qp.EntryId " +
                     "WHERE UserId = ? AND QuestTypeId = 4 AND Removed = 0 AND Completed = 0) " +
-                    "AND el.LanguageId = COALESCE ((SELECT u.LanguageId FROM users u " +
-                    "WHERE u.UserId = ?), 1)");
+                    "AND el.LanguageId IN (SELECT COALESCE ((SELECT el2.LanguageId FROM eralanguage el2 WHERE el2.LanguageId = " +
+                    "(SELECT u.LanguageId FROM users u WHERE u.UserId = ?) AND el2.EraId = e.EraId), 1))");
             ps.setInt(1, userId);
             ps.setInt(2, userId);
             rs = ps.executeQuery();

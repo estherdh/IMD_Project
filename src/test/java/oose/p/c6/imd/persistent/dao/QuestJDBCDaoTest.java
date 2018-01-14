@@ -114,7 +114,7 @@ public class QuestJDBCDaoTest {
 
         properties.put("TestKey", value);
 
-        String expectedDescription = "(NL) Scan de Qr code in het museum: De verzamel schuur";
+        String expectedDescription = "Bezoek De verzamel schuur en scan de QR-code.";
 
         //test
         dao.addQuestToQuestlog(properties, userId, questTypeId);
@@ -144,7 +144,7 @@ public class QuestJDBCDaoTest {
         properties.put("TestKey2", String.valueOf(value2));
 
         String expectedDescription1 = null;
-        String expectedDescription2 = "(NL) Lees het topstuk: Het test object";
+        String expectedDescription2 = "Bekijk de schat Het test object uit het tijdperk tijdperk test.";
 
         //test
         dao.addQuestToQuestlog(properties, userId, questTypeId);
@@ -175,7 +175,7 @@ public class QuestJDBCDaoTest {
 
         properties.put("TestKey", String.valueOf(value));
 
-        String expectedDescription = "(NL) Ga naar de bibliotheek en open het boek: tijdperk test";
+        String expectedDescription = "Open het boek uit tijdperk tijdperk test om de quest te voltooien.";
 
         //test
         dao.addQuestToQuestlog(properties, userId, questTypeId);
