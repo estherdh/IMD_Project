@@ -4,12 +4,16 @@ import oose.p.c6.imd.persistent.dao.DAOFactory;
 import oose.p.c6.imd.persistent.dao.IExhibitDao;
 import oose.p.c6.imd.persistent.dao.IQuestDAO;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public abstract class BaseQuestGenerator {
     int questTypeId;
     Map<String, String> properties = new HashMap<>();
+    List<String> valuesById = new ArrayList<>();
+
     IExhibitDao exhibitDao = DAOFactory.getExhibitDao();
 
     public abstract void generateQuest(int userId);
