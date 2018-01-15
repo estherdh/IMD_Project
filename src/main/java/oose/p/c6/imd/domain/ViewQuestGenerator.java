@@ -12,7 +12,7 @@ import java.util.Map;
 
 public abstract class ViewQuestGenerator extends BaseQuestGenerator {
 
-    Map<String, String> properties = new HashMap<>();
+    private Map<String, String> properties = new HashMap<>();
     List<String> valuesById = new ArrayList<>();
 
     IExhibitDao exhibitDao = DAOFactory.getExhibitDao();

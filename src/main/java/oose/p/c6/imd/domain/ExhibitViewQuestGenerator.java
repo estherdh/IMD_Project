@@ -1,6 +1,5 @@
 package oose.p.c6.imd.domain;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 

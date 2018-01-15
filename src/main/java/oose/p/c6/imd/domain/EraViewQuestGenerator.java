@@ -1,6 +1,5 @@
 package oose.p.c6.imd.domain;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -16,7 +15,6 @@ public class EraViewQuestGenerator extends ViewQuestGenerator {
 
             setProperties("Tijdperk", String.valueOf(e.getId()));
 
-            List<String> valuesById = new ArrayList<>();
             valuesById.add(e.getName());
 
             addQuestToQuestlog(userId);
