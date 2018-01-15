@@ -23,6 +23,10 @@ public class QuestFactory {
 		switch (type) {
 			case QRCODESCAN:
 				return new QrScanQuest(properties);
+			case ERAVIEW:
+				return new EraViewQuest(properties);
+			case EXHIBITVIEW:
+				return new ExhibitViewQuest(properties);
 			default:
 				LOGGER.log(Level.WARNING, "HET QUESTTYPE " + type + " IS NIET GEVONDEN IN 'QuestFactory - generateQuests()'");
 				return new DummyQuest();

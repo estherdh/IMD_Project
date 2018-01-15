@@ -44,10 +44,14 @@ public class Librarian {
 
     public void scanQrCode(User user, String qrCode) {
         Action qrScanAction = new QrScanAction(qrCode);
-        if (user.checkQuestCompleted(qrScanAction)) {
-            userDao.update(user);
-        }
+        checkQuestCompleted(qrScanAction, user);
     }
+
+    private void checkQuestCompleted(Action action, User user) {
+		if (user.checkQuestCompleted(action)) {
+			userDao.update(user);
+		}
+	}
 
     public User getUserByEmail(String email) {
         return userDao.findUserByEmail(email);
@@ -75,9 +79,17 @@ public class Librarian {
         return shop.getAvailableReplicas(user);
     }
 
-    public Exhibit getExhibitDetails(User user, int exhibitId){return exhibits.find(user, exhibitId);}
+    public Exhibit getExhibitDetails(User user, int exhibitId){
+		ExhibitViewAction action = new ExhibitViewAction(exhibitId);
+		checkQuestCompleted(action, user);
+    	return exhibits.find(user, exhibitId);
+    }
 
-    public List<Exhibit> getAvailableExhibitsFromEra(User user, int eraId){return exhibits.listByEra(user, eraId);}
+    public List<Exhibit> getAvailableExhibitsFromEra(User user, int eraId){
+    	EraViewAction action = new EraViewAction(eraId);
+    	checkQuestCompleted(action, user);
+        return exhibits.listByEra(user, eraId);
+    }
     public List<Exhibit> getAvailableExhibitsFromMuseum(User user, int museumId){return exhibits.listByMuseum(user, museumId);}
     public List<Exhibit> getAvailableExhibits(User user){return exhibits.list(user);}
 
