@@ -165,6 +165,21 @@ public class RESTService {
     }
 
     @GET
+    @Path("/museum/qr/{qrcode}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getMuseumByQr(@QueryParam("token") String token, @PathParam("qrcode") String qrCode) {
+        User user = TokenManager.getInstance().getUserFromToken(token);
+        if (user != null) {
+            JsonBuilderFactory factory = Json.createBuilderFactory(null);
+            JsonObjectBuilder jo = factory.createObjectBuilder();
+            jo.add("museumId", l.getMuseumByQr(qrCode));
+            l.scanQrCode(user, qrCode);
+            return Response.status(200).entity(jo.build()).build();
+        }
+        return Response.status(401).build();
+    }
+
+    @GET
     @Path("/quest/remove")
     public Response removeQuestFromQuestLog(@QueryParam("entryID") int entryID, @QueryParam("token") String token) {
         User user = TokenManager.getInstance().getUserFromToken(token);

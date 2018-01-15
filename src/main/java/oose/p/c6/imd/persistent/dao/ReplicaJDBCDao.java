@@ -6,6 +6,7 @@ import oose.p.c6.imd.domain.Replica;
 import oose.p.c6.imd.domain.User;
 import oose.p.c6.imd.persistent.ConnectMySQL;
 
+import javax.inject.Inject;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -17,28 +18,31 @@ import java.util.logging.Logger;
 
 public class ReplicaJDBCDao implements IReplicaDao {
     private static final Logger LOGGER = Logger.getLogger(ReplicaJDBCDao.class.getName());
+    private IExhibitDao exhibitDao = DAOFactory.getExhibitDao();
 
     @Override
     public List<Replica> findAvailableReplicas(User user) {
-            return getReplicaList("SELECT 0 as ReplicaPositionId, r.*, e.*, ei.*, (" +
+            return getReplicaList("SELECT 0 as ReplicaPositionId, r.*, e.*, ei.*, yl.*, (" +
                     "SELECT `Name` FROM eralanguage erlan "+
                     "WHERE erlan.EraId=e.EraId AND erlan.LanguageId = (SELECT COALESCE((SELECT `LanguageId` FROM `eralanguage` erlang " +
                     "WHERE erlang.EraId=e.EraId AND `LanguageId` = ?), 1))) AS EraName FROM `replica` r " +
                     "INNER JOIN `exhibit` e ON e.ExhibitId=r.ExhibitId " +
                     "INNER JOIN exhibitinfo ei ON ei.ExhibitId=e.ExhibitId " +
+                    "INNER JOIN YearLanguage yl ON yl.LanguageId = (SELECT COALESCE((SELECT languageId FROM YearLanguage yl1 WHERE yl1.languageId = ?), 1)) " +
                     "WHERE ei.LanguageId = (SELECT COALESCE((SELECT `LanguageId` FROM `exhibitinfo` WHERE `ExhibitId` = e.ExhibitId AND `LanguageId` = ?), 1)) " +
                     "AND r.ReplicaId NOT IN (SELECT `ReplicaId` FROM `userreplica` WHERE `UserId` = ?)", user);
     }
 
     @Override
     public List<Replica> getReplicasFromUser(User user) {
-            return getReplicaList("SELECT ur.ReplicaPositionId, r.*, e.*, ei.*, (" +
+            return getReplicaList("SELECT ur.ReplicaPositionId, r.*, e.*, ei.*, yl.*, (" +
                     "SELECT `Name` FROM eralanguage erlan "+
                     "WHERE erlan.EraId=e.EraId AND erlan.LanguageId = (SELECT COALESCE((SELECT `LanguageId` FROM `eralanguage` erlang " +
                     "WHERE erlang.EraId=e.EraId AND `LanguageId` = ?), 1))) AS EraName FROM `userreplica` ur " +
                     "INNER JOIN `replica` r ON r.ReplicaId=ur.ReplicaId " +
                     "INNER JOIN `exhibit` e ON e.ExhibitId=r.ExhibitId " +
                     "INNER JOIN exhibitinfo ei ON ei.ExhibitId=e.ExhibitId " +
+                    "INNER JOIN YearLanguage yl ON yl.LanguageId = (SELECT COALESCE((SELECT languageId FROM YearLanguage yl1 WHERE yl1.languageId = ?), 1)) " +
                     "WHERE ei.LanguageId = (SELECT COALESCE((SELECT `LanguageId` FROM `exhibitinfo` WHERE `ExhibitId` = e.ExhibitId AND `LanguageId` = ?), 1)) AND `UserId` = ?", user);
     }
 
@@ -49,7 +53,8 @@ public class ReplicaJDBCDao implements IReplicaDao {
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setInt(1, user.getLanguageId());
             ps.setInt(2, user.getLanguageId());
-            ps.setInt(3, user.getId());
+            ps.setInt(3, user.getLanguageId());
+            ps.setInt(4, user.getId());
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 replicas.add(createReplicaWithExhibitAndEra(rs));
@@ -180,9 +185,7 @@ public class ReplicaJDBCDao implements IReplicaDao {
     private Replica createReplicaWithExhibitAndEra(ResultSet rs) throws SQLException {
         int exhibitId = rs.getInt("ExhibitId");
         Era era = new Era(rs.getInt("EraId"), rs.getString("EraName"));
-        Exhibit exhibit = new Exhibit(exhibitId, rs.getString("Name"),
-                rs.getString("Description"), rs.getString("Video"), new ArrayList<>(),
-                rs.getInt("Year"), rs.getInt("EraId"), rs.getInt("MuseumId"));
+        Exhibit exhibit = exhibitDao.createExhibitFromResultset(rs);
         exhibit.setEra(era);
         return new Replica(rs.getInt("ReplicaId"), exhibitId, rs.getInt("Price"), rs.getString("Sprite"), rs.getInt("ReplicaTypeId"), rs.getInt("ReplicaPositionId"), exhibit);
     }
