@@ -281,7 +281,7 @@ public class ExhibitJDBCDao implements IExhibitDao {
         Connection connection = ConnectMySQL.getInstance().getConnection();
         ResultSet rs;
         try {
-            PreparedStatement ps = connection.prepareStatement("SELECT * FROM museum m WHERE MuseumId " +
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM museum m WHERE QrCode " +
                     "NOT IN(SELECT qp.Value FROM questlog ql INNER JOIN " +
                     "questProperties qp ON ql.EntryId = qp.EntryId WHERE " +
                     "UserId = ? AND QuestTypeId = 1 AND Removed = 0 AND Completed = 0) " +

@@ -300,11 +300,11 @@ INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, N
 INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name, QuestDescription) VALUES (4, 2, '(EN) View an era', '(EN)View era', '(NL) Go to the library and open the book: ');
 
 INSERT INTO librarian.questlog (UserId, QuestTypeId, Completed) VALUES (1, 1, 0);
-INSERT INTO librarian.questproperties(`Key`, `Value`, EntryId) VALUES ('Museum', '1', 1);
+INSERT INTO librarian.questproperties(`Key`, `Value`, EntryId) VALUES ('Qr', 'AAA', 1);
 INSERT INTO librarian.questlog (UserId, QuestTypeId, Completed) VALUES (2, 1, 0);
-INSERT INTO librarian.questproperties(`Key`, `Value`, EntryId) VALUES ('Museum', '1', 2);
+INSERT INTO librarian.questproperties(`Key`, `Value`, EntryId) VALUES ('Qr', 'AAA', 2);
 INSERT INTO librarian.questlog (UserId, QuestTypeId, Completed) VALUES (3, 1, 0);
-INSERT INTO librarian.questproperties(`Key`, `Value`, EntryId) VALUES ('Museum', '1', 3);
+INSERT INTO librarian.questproperties(`Key`, `Value`, EntryId) VALUES ('Qr', 'AAA', 3);
 INSERT INTO librarian.questlog (UserId, QuestTypeId, Completed) VALUES (1, 2, 0);
 INSERT INTO librarian.questproperties(`Key`, `Value`, EntryId) VALUES ('Tekst', 'AAD', 4);
 INSERT INTO librarian.questlog (UserId, QuestTypeId, Completed) VALUES (2, 2, 0);
