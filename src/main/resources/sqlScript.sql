@@ -58,7 +58,8 @@ CREATE TABLE Museum (
   `MuseumName` VARCHAR(50) NOT NULL,
   `Website` VARCHAR(50),
   `Region` VARCHAR(45),
-  `Logo` VARCHAR(25)
+  `Logo` VARCHAR(25),
+  `QrCode` VARCHAR(60)
 );
 
 -- ADMINISTRATOR
@@ -335,7 +336,7 @@ INSERT INTO eralanguage (`eraId`, `name`, `languageId`) VALUES (3, 'Steen tijd',
 INSERT INTO eralanguage (`eraId`, `name`, `languageId`) VALUES (3, 'Stone age', 2);
 
 
-INSERT INTO Museum (`MuseumName`, `website`, `Region`) VALUES ('test musei', 'http://google.nl', 'Nederland');
+INSERT INTO Museum (`MuseumName`, `website`, `Region`, `QrCode`) VALUES ('test musei', 'http://google.nl', 'Nederland', 'AAA');
 
 INSERT INTO Exhibit (`year`, `eraId`, `museumId`) VALUES ('1999', 1, 1);
 INSERT INTO ExhibitImage(ExhibitId, ImageId) VALUES(1, 1);
@@ -350,7 +351,7 @@ INSERT INTO ExhibitInfo (`ExhibitId`, `languageId`, `name`, `description`)
 VALUES (2, 1, 'Het voorbeeld beeldje', 'Dit beeldje is ware kunst, een ideaal voorbeeld.'),
   (2, 3, 'Lol look at tis translation', 'Possibly testing de taal');
 
-INSERT INTO Museum (`MuseumName`, `website`, `Region`) VALUES ('De verzamel schuur', 'http://google.twente', 'Twente');
+INSERT INTO Museum (`MuseumName`, `website`, `Region`, `QrCode`) VALUES ('De verzamel schuur', 'http://google.twente', 'Twente', 'AAB');
 
 INSERT INTO Exhibit (`year`, `eraId`, `museumId`) VALUES ('2015', 1, 2);
 INSERT INTO ExhibitInfo (`ExhibitId`, `languageId`, `name`, `description`)

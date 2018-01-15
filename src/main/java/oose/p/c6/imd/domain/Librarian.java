@@ -139,4 +139,8 @@ public class Librarian {
         }
         return validationState;
     }
+
+    public int getMuseumByQr(String qrCode) {
+        return exhibits.findMuseumByQr(qrCode);
+    }
 }
