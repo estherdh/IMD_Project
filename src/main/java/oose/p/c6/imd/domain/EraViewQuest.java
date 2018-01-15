@@ -5,7 +5,7 @@ import java.util.Map;
 public class EraViewQuest implements IQuestType {
 	private int expectedEraId;
 	public EraViewQuest(Map<String, String> properties) {
-		this.expectedEraId = Integer.parseInt(properties.get("Era"));
+		this.expectedEraId = Integer.parseInt(properties.get("Tijdperk"));
 	}
 	@Override
 	public boolean checkQuestComplete(Action action) {
