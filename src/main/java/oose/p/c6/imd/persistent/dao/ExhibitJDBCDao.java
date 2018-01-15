@@ -26,8 +26,10 @@ public class ExhibitJDBCDao implements IExhibitDao {
         Connection connection = ConnectMySQL.getInstance().getConnection();
         ResultSet rs = null;
         try {
-            PreparedStatement ps = connection.prepareStatement("SELECT * FROM Exhibit e LEFT JOIN ExhibitInfo ei ON e.ExhibitId = ei.ExhibitId AND ei.languageId IN (SELECT COALESCE((SELECT languageId FROM ExhibitInfo eil WHERE eil.ExhibitId = e.ExhibitId AND languageId = ?), 1)) WHERE e.ExhibitId = ?");
-            ps.setInt(2, exhibitId);
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM Exhibit e LEFT JOIN ExhibitInfo ei ON e.ExhibitId = ei.ExhibitId AND ei.languageId IN (SELECT COALESCE((SELECT languageId FROM ExhibitInfo eil WHERE eil.ExhibitId = e.ExhibitId AND languageId = ?), 1)) " +
+                    "INNER JOIN YearLanguage yl ON yl.LanguageId = (SELECT COALESCE((SELECT languageId FROM YearLanguage yl1 WHERE yl1.languageId = ?), 1)) WHERE e.ExhibitId = ?");
+            ps.setInt(3, exhibitId);
+            ps.setInt(2, user.getLanguageId());
             ps.setInt(1, user.getLanguageId());
             rs = ps.executeQuery();
             Exhibit e = null;
@@ -46,9 +48,12 @@ public class ExhibitJDBCDao implements IExhibitDao {
     public List<Exhibit> listByMuseum(User user, int museumId) {
         Connection connection = ConnectMySQL.getInstance().getConnection();
         try {
-            PreparedStatement ps = connection.prepareStatement("SELECT * FROM Exhibit e LEFT JOIN ExhibitInfo ei ON e.ExhibitId = ei.ExhibitId AND ei.languageId  IN (SELECT COALESCE((SELECT languageId FROM ExhibitInfo eil WHERE eil.ExhibitId = e.ExhibitId AND languageId = ?), 1)) WHERE e.MuseumId = ?");
-            ps.setInt(2, museumId);
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM Exhibit e LEFT JOIN ExhibitInfo ei ON e.ExhibitId = ei.ExhibitId AND ei.languageId  IN (SELECT COALESCE((SELECT languageId FROM ExhibitInfo eil WHERE eil.ExhibitId = e.ExhibitId AND languageId = ?), 1)) " +
+                    "INNER JOIN YearLanguage yl ON yl.LanguageId = (SELECT COALESCE((SELECT languageId FROM YearLanguage yl1 WHERE yl1.languageId = ?), 1)) WHERE e.MuseumId = ?");
+            ps.setInt(3, museumId);
+            ps.setInt(2, user.getLanguageId());
             ps.setInt(1, user.getLanguageId());
+
             return getListFromPreparedStatement(ps, connection);
         } catch (SQLException e) {
             return (ArrayList) handleException(e, new ArrayList<Exhibit>());
@@ -59,8 +64,10 @@ public class ExhibitJDBCDao implements IExhibitDao {
     public List<Exhibit> listByEra(User user, int eraId) {
         Connection connection = ConnectMySQL.getInstance().getConnection();
         try {
-            PreparedStatement ps = connection.prepareStatement("SELECT * FROM Exhibit e LEFT JOIN ExhibitInfo ei ON e.ExhibitId = ei.ExhibitId AND ei.languageId IN (SELECT COALESCE((SELECT languageId FROM ExhibitInfo eil WHERE eil.ExhibitId = e.ExhibitId AND languageId = ?), 1)) WHERE e.EraId = ?;");
-            ps.setInt(2, eraId);
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM Exhibit e LEFT JOIN ExhibitInfo ei ON e.ExhibitId = ei.ExhibitId AND ei.languageId IN (SELECT COALESCE((SELECT languageId FROM ExhibitInfo eil WHERE eil.ExhibitId = e.ExhibitId AND languageId = ?), 1)) " +
+                    "INNER JOIN YearLanguage yl ON yl.LanguageId = (SELECT COALESCE((SELECT languageId FROM YearLanguage yl1 WHERE yl1.languageId = ?), 1))  WHERE e.EraId = ?;");
+            ps.setInt(3, eraId);
+            ps.setInt(2, user.getLanguageId());
             ps.setInt(1, user.getLanguageId());
             return getListFromPreparedStatement(ps, connection);
         } catch (SQLException e) {
@@ -69,16 +76,38 @@ public class ExhibitJDBCDao implements IExhibitDao {
         }
     }
 
-    private Exhibit createExhibitFromResultset(ResultSet rs) throws SQLException {
-        return new Exhibit(rs.getInt("ExhibitId"), rs.getString("name"), rs.getString("description"), rs.getString("video"), findExhibitImagesFromExhibit(rs.getInt("ExhibitId")), rs.getInt("year"), rs.getInt(eraIdColomnName), rs.getInt(museumIdColomnName));
+    @Override
+    public Exhibit createExhibitFromResultset(ResultSet rs) throws SQLException {
+        return new Exhibit(rs.getInt("ExhibitId"), rs.getString("name"), rs.getString("description"), rs.getString("video"), findExhibitImagesFromExhibit(rs.getInt("ExhibitId")), createYear(rs.getInt("Year"), rs.getInt("Year2"), rs.getString("Before"), rs.getString("After")), rs.getInt(eraIdColomnName), rs.getInt(museumIdColomnName));
+    }
+
+    private String createYear(int year, int year2, String yearBefore, String yearAfter) {
+        StringBuilder stringBuilder = new StringBuilder();
+        if(year2 == 0) {
+            if(year < 0) {
+                stringBuilder.append(year+" "+yearBefore);
+            } else {
+                stringBuilder.append(year+" "+yearAfter);
+            }
+        }
+        if(year < 0 && year2 < 0) {
+            stringBuilder.append(year+"-"+year2+" "+yearBefore);
+        } else if (year > 0 && year2 > 0) {
+            stringBuilder.append(year+"-"+year2+" "+yearAfter);
+        } else if (year < 0 && year2 > 0) {
+            stringBuilder.append(year+" "+yearBefore+"-"+year2+" "+yearAfter);
+        }
+        return stringBuilder.toString();
     }
 
     @Override
     public List<Exhibit> list(User user) {
         Connection connection = ConnectMySQL.getInstance().getConnection();
         try {
-            PreparedStatement ps = connection.prepareStatement("SELECT * FROM Exhibit e LEFT JOIN ExhibitInfo ei ON e.ExhibitId = ei.ExhibitId AND ei.languageId IN (SELECT COALESCE((SELECT languageId FROM ExhibitInfo eil WHERE eil.ExhibitId = e.ExhibitId AND languageId = ?), 1));");
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM Exhibit e LEFT JOIN ExhibitInfo ei ON e.ExhibitId = ei.ExhibitId AND ei.languageId IN (SELECT COALESCE((SELECT languageId FROM ExhibitInfo eil WHERE eil.ExhibitId = e.ExhibitId AND languageId = ?), 1)) " +
+                    "INNER JOIN YearLanguage yl ON yl.LanguageId = (SELECT COALESCE((SELECT languageId FROM YearLanguage yl1 WHERE yl1.languageId = ?), 1)) ;");
             ps.setInt(1, user.getLanguageId());
+            ps.setInt(2, user.getLanguageId());
             return getListFromPreparedStatement(ps, connection);
         } catch (SQLException e) {
             return (ArrayList) handleException(e, new ArrayList<Exhibit>());
@@ -149,6 +178,25 @@ public class ExhibitJDBCDao implements IExhibitDao {
     }
 
     @Override
+    public int findMuseumByQr(String qrCode) {
+        Connection connection = ConnectMySQL.getInstance().getConnection();
+        int museumId = -1;
+        try {
+            PreparedStatement ps = connection.prepareStatement("SELECT MuseumId FROM Museum WHERE QrCode = ?");
+            ps.setString(1, qrCode);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                museumId = rs.getInt("MuseumId");
+            }
+            connection.close();
+            return museumId;
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, e.toString(), e);
+            return museumId;
+        }
+    }
+
+    @Override
     public List<Museum> listMuseums() {
         Connection connection = ConnectMySQL.getInstance().getConnection();
         ResultSet rs = null;
@@ -172,7 +220,9 @@ public class ExhibitJDBCDao implements IExhibitDao {
         Connection connection = ConnectMySQL.getInstance().getConnection();
         try {
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM exhibit e INNER JOIN exhibitinfo ei " +
-                    "ON e.ExhibitId = ei.ExhibitId WHERE e.ExhibitId " +
+                    "ON e.ExhibitId = ei.ExhibitId " +
+                    "INNER JOIN YearLanguage yl ON yl.LanguageId = (SELECT COALESCE((SELECT languageId FROM YearLanguage yl1 WHERE yl1.languageId = (SELECT languageId FROM users WHERE UserId = ?)), 1)) " +
+                    "WHERE e.ExhibitId " +
                     "NOT IN(SELECT qp.Value FROM questlog ql INNER JOIN " +
                     "questProperties qp ON ql.EntryId = qp.EntryId " +
                     "WHERE UserId = ? AND QuestTypeId = 3 AND Removed = 0 AND Completed = 0) AND " +
@@ -180,6 +230,7 @@ public class ExhibitJDBCDao implements IExhibitDao {
                     "WHERE ei2.LanguageId = (SELECT u.LanguageId FROM users u WHERE u.UserId = ?) AND ei2.ExhibitId = e.ExhibitId), 1))");
             ps.setInt(1, userId);
             ps.setInt(2, userId);
+            ps.setInt(3, userId);
             return getListFromPreparedStatement(ps, connection);
         } catch (SQLException e) {
             return (ArrayList) handleException(e, new ArrayList<Exhibit>());

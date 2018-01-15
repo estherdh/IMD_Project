@@ -56,7 +56,7 @@ public class ExhibitViewQuestGeneratorTest {
 
         expectedExhibits = (new ArrayList<Exhibit>() {{
             add(new Exhibit(4, "Voorbeeld streektaal", "Dit papier bevat een stuk tekst in streektaal: Oet de goaldn korenaarn skeup God de Tweantenaarn, en oet t kaf en d restn de leu oet t Westn",
-                    null, null, 2017, 1, 2));
+                    null, null, "2017 n.C.", 1, 2));
         }});
 
         when(exhibitDao.findExhibitsNotYetInQuestlog(userId)).thenReturn(expectedExhibits);

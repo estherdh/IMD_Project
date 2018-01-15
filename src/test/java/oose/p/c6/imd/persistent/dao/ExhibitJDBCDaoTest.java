@@ -47,7 +47,7 @@ public class ExhibitJDBCDaoTest {
     @Test
     public void findExhibitWithTranslation() throws Exception {
         //init
-        Exhibit expectedExhibit = new Exhibit(3, "Trekker", "Deze trekker is geen tractor!", null, new ArrayList<>(), 2015, 1, 2);
+        Exhibit expectedExhibit = new Exhibit(3, "Trekker", "Deze trekker is geen tractor!", null, new ArrayList<>(), "2015 n.C.", 1, 2);
 
         //test
         Exhibit actualResult = dao.find(new User(1, "1", "1", "1", 1, 3), 3);
@@ -91,6 +91,18 @@ public class ExhibitJDBCDaoTest {
     }
 
     @Test
+    public void findMuseumByQr() {
+        //init
+        int expected = 1;
+
+        //test
+        int actualResult = dao.findMuseumByQr("AAA");
+
+        //check
+        assertThat(actualResult, is(expected));
+    }
+
+    @Test
     public void listMuseum() {
         Museum expected = new Museum(1, "test musei", "http://google.nl", "Nederland");
         Museum expected2 = new Museum(2, "De verzamel schuur", "http://google.twente", "Twente");
@@ -123,7 +135,7 @@ public class ExhibitJDBCDaoTest {
 
     @Test
     public void listExhibits() {
-        Exhibit expectedExhibit = new Exhibit(3, "Trekker", "Deze trekker is geen tractor!", null, new ArrayList<>(), 2015, 1, 2);
+        Exhibit expectedExhibit = new Exhibit(3, "Trekker", "Deze trekker is geen tractor!", null, new ArrayList<>(), "2015 n.C.", 1, 2);
 
         List<Exhibit> result = dao.list(new User(1, "1", "1", "1", 1, 3));
 
@@ -139,7 +151,7 @@ public class ExhibitJDBCDaoTest {
 
     @Test
     public void listExhibitsByEra() {
-        Exhibit expectedExhibit = new Exhibit(3, "Trekker", "Deze trekker is geen tractor!", null, new ArrayList<>(), 2015, 1, 2);
+        Exhibit expectedExhibit = new Exhibit(3, "Trekker", "Deze trekker is geen tractor!", null, new ArrayList<>(), "2015 n.C.", 1, 2);
 
         List<Exhibit> result = dao.listByEra(new User(1, "1", "1", "1", 1, 3), 1);
 
@@ -155,7 +167,7 @@ public class ExhibitJDBCDaoTest {
 
     @Test
     public void listExhibitsByMuseum() {
-        Exhibit expectedExhibit = new Exhibit(3, "Trekker", "Deze trekker is geen tractor!", null, new ArrayList<>(), 2015, 1, 2);
+        Exhibit expectedExhibit = new Exhibit(3, "Trekker", "Deze trekker is geen tractor!", null, new ArrayList<>(), "2015 n.C.", 1, 2);
 
         List<Exhibit> result = dao.listByMuseum(new User(1, "1", "1", "1", 1, 3), 2);
 
@@ -175,7 +187,7 @@ public class ExhibitJDBCDaoTest {
         Exhibit expectedExhibit = new Exhibit(1, "Het test object", "Dit object wordt altijd al gebruikt om te testen", null, new ArrayList<String>(){{
             add("imagetest1");
             add("imagetest2");
-        }}, 1999, 1, 1);
+        }}, "1999 n.C.", 1, 1);
 
         //test
         List<Exhibit> result = dao.findExhibitsNotYetInQuestlog(1);

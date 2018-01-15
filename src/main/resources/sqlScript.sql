@@ -10,6 +10,13 @@ CREATE TABLE Language (
   `Name` VARCHAR(32) NOT NULL UNIQUE
 );
 
+CREATE TABLE YearLanguage (
+    `LanguageId` INT(11) NOT NULL,
+    `Before` VARCHAR(45) NOT NULL,
+    `After` VARCHAR(45) NOT NULL,
+    PRIMARY KEY (`LanguageId`)
+);
+
 -- GEBRUIKER
 
 CREATE TABLE Users (
@@ -109,7 +116,8 @@ CREATE TABLE Exhibit (
   ExhibitId INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
   MuseumId INT NOT NULL,
   EraId INT NOT NULL,
-  Year INT NOT NULL
+  Year INT NOT NULL,
+  Year2 INT NULL
 );
 
 CREATE TABLE ExhibitImage (
@@ -232,6 +240,9 @@ FOREIGN KEY (ReplicaId) REFERENCES Replica (ReplicaId);
 ALTER TABLE UserReplica ADD CONSTRAINT FK_UserReplica_ReplicaPositions
 FOREIGN KEY (ReplicaPositionId) REFERENCES ReplicaPositions (ReplicaPositionId);
 
+ALTER TABLE YearLanguage ADD CONSTRAINT FK_YearLanguage_Language
+FOREIGN KEY (LanguageId) REFERENCES Language (LanguageId);
+
 ALTER TABLE Exhibit ADD CONSTRAINT FK_Exhibit_Museum
 FOREIGN KEY (MuseumId) REFERENCES Museum (MuseumId);
 
@@ -263,6 +274,9 @@ FOREIGN KEY (UserNotificationId) REFERENCES UserNotification (UserNotificationId
 INSERT INTO librarian.language (Short_Code, Name) VALUES ('nl', 'Nederlands');
 INSERT INTO librarian.language (Short_Code, Name) VALUES ('en', 'English');
 INSERT INTO librarian.language (Short_Code, Name) VALUES ('TESTING', 'Lorem ipsum');
+
+INSERT INTO librarian.yearlanguage (LanguageId, `Before`, `After`) VALUES (1, 'v.C.', 'n.C.');
+INSERT INTO librarian.yearlanguage (LanguageId, `Before`, `After`) VALUES (2, 'BC', 'AD');
 
 INSERT INTO librarian.users (Email, Password, Coins, DisplayName, LanguageId) VALUES ('mail', 'password', 0, 'DeNaam', 1);
 INSERT INTO librarian.users (Email, Password, Coins, DisplayName, LanguageId) VALUES ('test@void', '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08', 0, 'muspi merol', 2);
