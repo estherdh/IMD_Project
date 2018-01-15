@@ -13,9 +13,9 @@ public class EraViewQuestGenerator extends ViewQuestGenerator {
         if (!eras.isEmpty()) {
             Era e = eras.get(new Random().nextInt(eras.size()));
 
-            String key = "Era";
-            String value = String.valueOf(e.getId());
-            setProperties(key, value);
+            setProperties("Tijdperk", String.valueOf(e.getId()));
+
+            valuesById.add(e.getName());
 
             addQuestToQuestlog(userId);
         }

@@ -19,7 +19,7 @@ public class UserJDBCDao implements IUserDao {
     private static final Logger LOGGER = Logger.getLogger(UserJDBCDao.class.getName());
 
     public void add(User entity) {
-		Connection connection = ConnectMySQL.getInstance().getConnection();
+        Connection connection = ConnectMySQL.getInstance().getConnection();
         try{
             PreparedStatement ps = connection.prepareStatement("INSERT INTO Users (`Email`, `Password`, `DisplayName`, `Coins`, `LanguageId`) VALUES (?, ?, ?, ?, ?)");
             ps = fillVariables(ps, entity.getEmail(), entity.getPassword(), entity.getDisplayName(), entity.getCoins(), entity.getLanguageId());
@@ -39,7 +39,7 @@ public class UserJDBCDao implements IUserDao {
     }
 
     public void update(User entity) {
-		Connection connection = ConnectMySQL.getInstance().getConnection();
+        Connection connection = ConnectMySQL.getInstance().getConnection();
         try{
             PreparedStatement ps = connection.prepareStatement("UPDATE Users SET `Email` = ?," +
                     " `Password` = ?," +
@@ -56,7 +56,7 @@ public class UserJDBCDao implements IUserDao {
     }
 
     public void remove(User entity) {
-		Connection connection = ConnectMySQL.getInstance().getConnection();
+        Connection connection = ConnectMySQL.getInstance().getConnection();
         try{
             PreparedStatement ps = connection.prepareStatement("DELETE FROM Users WHERE UserId = ?");
             ps.setInt(1, entity.getId());

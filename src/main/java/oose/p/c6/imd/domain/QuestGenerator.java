@@ -10,7 +10,7 @@ public class QuestGenerator {
     }
 
     public void generateQuest(int userId) {
-        int random = ThreadLocalRandom.current().nextInt(0, QuestTypes.values().length - 1);
+        int random = ThreadLocalRandom.current().nextInt(0, QuestTypes.values().length);
         QuestTypes questType = QuestTypes.values()[random];
         BaseQuestGenerator questGeneratorType = questGeneratorFactory.getQuestGenerator(questType);
         if(questGeneratorType != null) {

@@ -13,12 +13,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
-import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class QuestJDBCDaoTest {
     private Connection conn;
@@ -42,26 +40,26 @@ public class QuestJDBCDaoTest {
         conn.close();
     }
 
-	@Test
-	public void getQuestsFromUserTestSuccess() throws Exception {
-		//init
-		QuestFactory factory = mock(QuestFactory.class);
-		QuestFactory.setFactory(factory);
-		when(factory.generateQuest(any(QuestTypes.class), any(Map.class))).thenReturn(new QrScanQuest(new HashMap<>()));
-		Quest expectedQuest1 = new Quest(1, "(EN)Scan qr code", "(EN)Scan a qr code", 10, 1, 0, 0, new QrScanQuest(new HashMap<>()));
-		Quest expectedQuest2 = new Quest(2, "(NL)Stuur tekst", "(NL)Stuur een bepaald stuk tekst op", 15, 1, 0, 0, new QrScanQuest(new HashMap<>()));
-		//test
-		List<Quest> actualResult = dao.getQuestsForUser(2, 2);
-		//check
-		assertThat(actualResult.get(0).getName(), is(expectedQuest1.getName()));
-		assertThat(actualResult.get(0).getDescription(), is(expectedQuest1.getDescription()));
-		assertThat(actualResult.get(0).getReward(), is(expectedQuest1.getReward()));
-		assertTrue(actualResult.get(0).getQuestType() instanceof IQuestType);
-		assertThat(actualResult.get(1).getName(), is(expectedQuest2.getName()));
-		assertThat(actualResult.get(1).getDescription(), is(expectedQuest2.getDescription()));
-		assertThat(actualResult.get(1).getReward(), is(expectedQuest2.getReward()));
-		assertTrue(actualResult.get(1).getQuestType() instanceof IQuestType);
-	}
+    @Test
+    public void getQuestsFromUserTestSuccess() throws Exception {
+        //init
+        QuestFactory factory = mock(QuestFactory.class);
+        QuestFactory.setFactory(factory);
+        when(factory.generateQuest(any(QuestTypes.class), any(Map.class))).thenReturn(new QrScanQuest(new HashMap<>()));
+        Quest expectedQuest2 = new Quest(1, "(EN)Scan qr code", "(EN)Scan a qr code", 10, 1, 0, 0, new QrScanQuest(new HashMap<>()));
+        Quest expectedQuest1 = new Quest(2, "(NL)Stuur tekst", "(NL)Stuur een bepaald stuk tekst op", 15, 1, 0, 0, new QrScanQuest(new HashMap<>()));
+        //test
+        List<Quest> actualResult = dao.getQuestsForUser(2, 2);
+        //check
+        assertThat(actualResult.get(0).getName(), is(expectedQuest1.getName()));
+        assertThat(actualResult.get(0).getDescription(), is(expectedQuest1.getDescription()));
+        assertThat(actualResult.get(0).getReward(), is(expectedQuest1.getReward()));
+        assertTrue(actualResult.get(0).getQuestType() instanceof IQuestType);
+        assertThat(actualResult.get(1).getName(), is(expectedQuest2.getName()));
+        assertThat(actualResult.get(1).getDescription(), is(expectedQuest2.getDescription()));
+        assertThat(actualResult.get(1).getReward(), is(expectedQuest2.getReward()));
+        assertTrue(actualResult.get(1).getQuestType() instanceof IQuestType);
+    }
 
     @Test
     public void getQuestsFromUserTestUserDoesntExist() throws Exception {
@@ -105,39 +103,111 @@ public class QuestJDBCDaoTest {
     }
 
     @Test
-    public void addQuestToQuestlog() throws SQLException {
+    public void addQuestToQuestlogType1Test() throws SQLException {
         //init
         int userId = 1;
         Map<String, String> properties = new HashMap<>();
 
-        String key = "TopstukNaam";
-        int value = 1;
-        int questTypeId = 2;
+        String value = "AAB";
 
-        properties.put("TestKey", key);
-        properties.put("TestKey2", String.valueOf(value));
+        int questTypeId = 1;
+
+        properties.put("TestKey", value);
+
+        String expectedDescription = "Bezoek De verzamel schuur en scan de QR-code.";
+
+        List<String> valuesById = new ArrayList<>();
+        valuesById.add("De verzamel schuur");
 
         //test
-        dao.addQuestToQuestlog(properties, userId, questTypeId);
+        dao.addQuestToQuestlog(properties, userId, questTypeId, valuesById);
 
         //check
-        ResultSet resultAdded = conn.createStatement().executeQuery("SELECT qp.Key, qp.Value FROM QuestProperties qp " +
-                "WHERE EntryId = 10 ORDER BY qp.Key ASC");
+        ResultSet resultAdded = conn.createStatement().executeQuery("SELECT qp.Key, qp.Value, ql.Description FROM QuestProperties qp " +
+                "INNER JOIN questlog ql ON qp.EntryId = ql.EntryId " +
+                "WHERE qp.EntryId = 10 ORDER BY qp.Key ASC");
+
         resultAdded.next();
         assertEquals("TestKey", resultAdded.getString(1));
-        assertEquals(key, resultAdded.getString(2));
+        assertEquals(value, resultAdded.getString(2));
+
+        assertEquals(expectedDescription, resultAdded.getString(3));
+    }
+
+    @Test
+    public void addQuestToQuestlogType3Test() throws SQLException {
+        //init
+        int userId = 1;
+        Map<String, String> properties = new HashMap<>();
+
+        String value1 = "AAA";
+        int value2 = 1;
+
+        int questTypeId = 3;
+
+        properties.put("TestKey", value1);
+        properties.put("TestKey2", String.valueOf(value2));
+
+        String expectedDescription = "Bekijk de schat Het test object uit het tijdperk tijdperk test.";
+
+        List<String> valuesById = new ArrayList<>();
+        valuesById.add("tijdperk test");
+        valuesById.add("Het test object");
+
+        //test
+        dao.addQuestToQuestlog(properties, userId, questTypeId, valuesById);
+
+        //check
+        ResultSet resultAdded = conn.createStatement().executeQuery("SELECT qp.Key, qp.Value, ql.Description FROM QuestProperties qp " +
+                "INNER JOIN questlog ql ON qp.EntryId = ql.EntryId " +
+                "WHERE qp.EntryId = 10 ORDER BY qp.Key ASC");
+        resultAdded.next();
+        assertEquals("TestKey", resultAdded.getString(1));
+        assertEquals(value1, resultAdded.getString(2));
 
         resultAdded.next();
         assertEquals("TestKey2", resultAdded.getString(1));
-        assertEquals(String.valueOf(value), resultAdded.getString(2));
+        assertEquals(String.valueOf(value2), resultAdded.getString(2));
+
+        assertEquals(expectedDescription, resultAdded.getString(3));
     }
 
-	@Test
-	public void findQuest(){
-		User test2 = new User(2, "test@void", "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08", "muspi merol", 0, 2);
-		Quest q = dao.find(2 , test2);
-		assertEquals(q.getName(), "(EN)Scan qr code");
-		assertEquals(q.getReward(), 10);
-	}
+    @Test
+    public void addQuestToQuestlogType4Test() throws SQLException {
+        //init
+        int userId = 1;
+        Map<String, String> properties = new HashMap<>();
 
+        int value = 1;
+
+        int questTypeId = 4;
+
+        properties.put("TestKey", String.valueOf(value));
+
+        String expectedDescription = "Open het boek uit tijdperk tijdperk test om de quest te voltooien.";
+
+        List<String> valuesById = new ArrayList<>();
+        valuesById.add("tijdperk test");
+
+        //test
+        dao.addQuestToQuestlog(properties, userId, questTypeId, valuesById);
+
+        //check
+        ResultSet resultAdded = conn.createStatement().executeQuery("SELECT qp.Key, qp.Value, ql.Description FROM QuestProperties qp " +
+                "INNER JOIN questlog ql ON qp.EntryId = ql.EntryId " +
+                "WHERE qp.EntryId = 10 ORDER BY qp.Key ASC");
+        resultAdded.next();
+        assertEquals("TestKey", resultAdded.getString(1));
+        assertEquals(String.valueOf(value), resultAdded.getString(2));
+
+        assertEquals(expectedDescription, resultAdded.getString(3));
+    }
+
+    @Test
+    public void findQuest() {
+        User test2 = new User(2, "test@void", "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08", "muspi merol", 0, 2);
+        Quest q = dao.find(2, test2);
+        assertEquals(q.getName(), "(EN)Scan qr code");
+        assertEquals(q.getReward(), 10);
+    }
 }
