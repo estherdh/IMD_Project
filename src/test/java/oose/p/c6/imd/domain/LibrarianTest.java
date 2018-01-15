@@ -223,6 +223,18 @@ public class LibrarianTest {
     }
 
     @Test
+    public void getMuseumByQr() {
+	    // init
+        String qrCode = "AAA";
+
+        //test
+	    librarian.getMuseumByQr(qrCode);
+
+        //check
+        verify(exhibit, times(1)).findMuseumByQr(qrCode);
+    }
+
+    @Test
     public void listMuseumsTest() {
         //test
         librarian.listMuseums();

@@ -178,6 +178,25 @@ public class ExhibitJDBCDao implements IExhibitDao {
     }
 
     @Override
+    public int findMuseumByQr(String qrCode) {
+        Connection connection = ConnectMySQL.getInstance().getConnection();
+        int museumId = -1;
+        try {
+            PreparedStatement ps = connection.prepareStatement("SELECT MuseumId FROM Museum WHERE QrCode = ?");
+            ps.setString(1, qrCode);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                museumId = rs.getInt("MuseumId");
+            }
+            connection.close();
+            return museumId;
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, e.toString(), e);
+            return museumId;
+        }
+    }
+
+    @Override
     public List<Museum> listMuseums() {
         Connection connection = ConnectMySQL.getInstance().getConnection();
         ResultSet rs = null;

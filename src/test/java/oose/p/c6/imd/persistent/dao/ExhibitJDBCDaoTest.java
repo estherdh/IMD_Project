@@ -91,6 +91,18 @@ public class ExhibitJDBCDaoTest {
     }
 
     @Test
+    public void findMuseumByQr() {
+        //init
+        int expected = 1;
+
+        //test
+        int actualResult = dao.findMuseumByQr("AAA");
+
+        //check
+        assertThat(actualResult, is(expected));
+    }
+
+    @Test
     public void listMuseum() {
         Museum expected = new Museum(1, "test musei", "http://google.nl", "Nederland");
         Museum expected2 = new Museum(2, "De verzamel schuur", "http://google.twente", "Twente");

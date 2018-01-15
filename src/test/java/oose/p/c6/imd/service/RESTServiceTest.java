@@ -289,6 +289,31 @@ public class RESTServiceTest {
 	}
 
 	@Test
+    public void getMuseumByQrTestSuccess() {
+        //init
+        String qrCode = "AAA";
+        User mockUser = mock(User.class);
+        when(tokenManager.getUserFromToken("token")).thenReturn(mockUser);
+        //test
+        service.getMuseumByQr("token", qrCode);
+        //check
+        verify(librarian, times(1)).scanQrCode(mockUser, qrCode);
+        verify(librarian, times(1)).getMuseumByQr(qrCode);
+    }
+
+    @Test
+    public void getMuseumByQrTestInvalidUser() {
+        //init
+        String qrCode = "AAA";
+        User mockUser = mock(User.class);
+        //test
+        service.getMuseumByQr("token", qrCode);
+        //check
+        verify(librarian, times(0)).scanQrCode(mockUser, qrCode);
+        verify(librarian, times(0)).getMuseumByQr(qrCode);
+    }
+
+	@Test
 	public void removeQuestFromQuestLogTestSuccess() {
 		//init
 		User mockUser = mock(User.class);
