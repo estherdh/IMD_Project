@@ -9,6 +9,12 @@ import org.h2.tools.RunScript;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
+
 import java.io.FileReader;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -22,12 +28,17 @@ import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.beans.SamePropertyValuesAs.samePropertyValuesAs;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 
+@RunWith(MockitoJUnitRunner.class)
 public class ReplicaJDBCDaoTest
 {
     private User user;
 
     private Connection conn;
+    private IExhibitDao exhibitDao;
     private ReplicaJDBCDao dao;
 
     @Before
@@ -40,6 +51,8 @@ public class ReplicaJDBCDaoTest
         ConnectMySQL.getInstance().getConnection().close();
         this.conn = ConnectMySQL.getInstance().getConnection();
         RunScript.execute(conn, new FileReader("src/main/resources/sqlScript.sql"));
+        exhibitDao = mock(IExhibitDao.class);
+        DAOFactory.setExhibitDao(exhibitDao);
         dao = new ReplicaJDBCDao();
     }
 
@@ -61,17 +74,21 @@ public class ReplicaJDBCDaoTest
     }
 
     @Test
-    public void findAvailableReplicasTest() {
+    public void findAvailableReplicasTest() throws SQLException {
         Era era = new Era(1, "tijdperk test");
         Exhibit exhibit = new Exhibit(1, "Het test object",
-                "Dit object wordt altijd al gebruikt om te testen", null, new ArrayList<>(),
-                1999, 1, 1);
+                "Dit object wordt altijd al gebruikt om te testen", null, new ArrayList<String>() {{
+                    add("imagetest1");
+                    add("imagetest2");
+        }},
+                "1999 n.C.", 1, 1);
         exhibit.setEra(era);
         Replica replica = new Replica(1, 1, 10, "traktor", 2, 0, exhibit);
         // init
         List<Replica> expected = new ArrayList<Replica>() {{
             add(replica);
         }};
+        Mockito.when(exhibitDao.createExhibitFromResultset(any(ResultSet.class))).thenReturn(exhibit);
         // test
         List<Replica> actual = dao.findAvailableReplicas(user);
         // check result
@@ -83,15 +100,8 @@ public class ReplicaJDBCDaoTest
             assertThat(actual.get(i).getType(), is(expected.get(i).getType()));
             assertThat(actual.get(i).getPosition(), is(0));
             assertThat(actual.get(i).getSprite(), is(expected.get(i).getSprite()));
-            //check exhibit
-            assertThat(actual.get(i).getExhibit().getDescription(), is(expected.get(i).getExhibit().getDescription()));
-            assertThat(actual.get(i).getExhibit().getImages(), is(expected.get(i).getExhibit().getImages()));
-            assertThat(actual.get(i).getExhibit().getName(), is(expected.get(i).getExhibit().getName()));
-            assertThat(actual.get(i).getExhibit().getVideo(), is(expected.get(i).getExhibit().getVideo()));
-            assertThat(actual.get(i).getExhibit().getYear(), is(expected.get(i).getExhibit().getYear()));
-            //check era
-            assertThat(actual.get(i).getExhibit().getEra().getName(), is(expected.get(i).getExhibit().getEra().getName()));
         }
+        Mockito.verify(exhibitDao, times(1)).createExhibitFromResultset(any(ResultSet.class));
     }
 
     @Test
@@ -128,17 +138,21 @@ public class ReplicaJDBCDaoTest
     }
 
     @Test
-    public void getReplicasFromUserTest() {
+    public void getReplicasFromUserTest() throws SQLException {
         Era era = new Era(1, "tijdperk test");
         Exhibit exhibit = new Exhibit(1, "Het test object",
-                "Dit object wordt altijd al gebruikt om te testen", null, new ArrayList<>(),
-                1999, 1, 1);
+                "Dit object wordt altijd al gebruikt om te testen", null, new ArrayList<String>() {{
+            add("imagetest1");
+            add("imagetest2");
+        }},
+                "1999 n.C.", 1, 1);
         exhibit.setEra(era);
         Replica replica = new Replica(2, 1, 15, "test1", 2, 1, exhibit);
         // init
         List<Replica> expected = new ArrayList<Replica>() {{
             add(replica);
         }};
+        Mockito.when(exhibitDao.createExhibitFromResultset(any(ResultSet.class))).thenReturn(exhibit);
         // test
         List<Replica> actual = dao.getReplicasFromUser(user);
         // check result
@@ -150,15 +164,8 @@ public class ReplicaJDBCDaoTest
             assertThat(actual.get(i).getType(), is(expected.get(i).getType()));
             assertThat(actual.get(i).getPosition(), is(expected.get(i).getPosition()));
             assertThat(actual.get(i).getSprite(), is(expected.get(i).getSprite()));
-            //check exhibit
-            assertThat(actual.get(i).getExhibit().getDescription(), is(expected.get(i).getExhibit().getDescription()));
-            assertThat(actual.get(i).getExhibit().getImages(), is(expected.get(i).getExhibit().getImages()));
-            assertThat(actual.get(i).getExhibit().getName(), is(expected.get(i).getExhibit().getName()));
-            assertThat(actual.get(i).getExhibit().getVideo(), is(expected.get(i).getExhibit().getVideo()));
-            assertThat(actual.get(i).getExhibit().getYear(), is(expected.get(i).getExhibit().getYear()));
-            //check era
-            assertThat(actual.get(i).getExhibit().getEra().getName(), is(expected.get(i).getExhibit().getEra().getName()));
         }
+        Mockito.verify(exhibitDao, times(2)).createExhibitFromResultset(any(ResultSet.class));
     }
 
     @Test

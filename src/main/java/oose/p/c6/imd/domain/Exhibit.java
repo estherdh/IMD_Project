@@ -7,12 +7,12 @@ public class Exhibit extends Model {
     private String description;
     private String video;
     private List<String> images;
-    private int year;
+    private String year;
     private int eraId;
     private int museumId;
     private Era era;
 
-    public Exhibit (int id, String name, String description, String video, List<String> images, int year, int eraId, int museumId){
+    public Exhibit (int id, String name, String description, String video, List<String> images, String year, int eraId, int museumId){
         super(id);
         this.name = name;
         this.description = description;
@@ -47,14 +47,6 @@ public class Exhibit extends Model {
         this.video = video;
     }
 
-    public int getYear() {
-        return year;
-    }
-
-    public void setYear(int year) {
-        this.year = year;
-    }
-
     public int getEraId() {
         return eraId;
     }
@@ -85,5 +77,13 @@ public class Exhibit extends Model {
 
     public void setImages(List<String> images) {
         this.images = images;
+    }
+
+    public String getYear() {
+        return year;
+    }
+
+    public void setYear(String year) {
+        this.year = year;
     }
 }
