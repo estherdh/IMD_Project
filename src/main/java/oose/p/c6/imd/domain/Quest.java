@@ -7,87 +7,103 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Quest {
-	int entryId;
-	String name;
-	String description;
-	int reward;
-	IQuestType questType;
-	int questTypeId;
-	int removed;
-	int completed;
+    int entryId;
+    String name;
+    String description;
+    int reward;
+    IQuestType questType;
+    int questTypeId;
+    int removed;
+    int completed;
+    String questDescription;
 
-	public Quest(int entryId, String name, String description, int reward, int questTypeId, int removed, int completed, IQuestType questType) {
-		this.entryId = entryId;
-		this.name = name;
-		this.description = description;
-		this.reward = reward;
-		this.questTypeId = questTypeId;
-		this.removed = removed;
-		this.completed = completed;
-		this.questType = questType;
-	}
+    public Quest(int entryId, String name, String description, int reward, int questTypeId, int removed, int completed, IQuestType questType) {
+        this.entryId = entryId;
+        this.name = name;
+        this.description = description;
+        this.reward = reward;
+        this.questTypeId = questTypeId;
+        this.removed = removed;
+        this.completed = completed;
+        this.questType = questType;
+    }
 
-	public int checkQuestComplete(Action action) {
-		if (questType.checkQuestComplete(action)) {
-			sendNotification();
-			return reward;
-		} else {
-			return 0;
-		}
-	}
+    public int checkQuestComplete(Action action) {
+        if (questType.checkQuestComplete(action)) {
+            sendNotification();
+            return reward;
+        } else {
+            return 0;
+        }
+    }
 
-	private void sendNotification() {
-		IUserDao userDao = DAOFactory.getUserDao();
-		User user = userDao.getUserByQuestId(entryId);
-		Map<String, String> variables = new HashMap<String, String>();
-		variables.put("QuestId", Integer.toString(entryId));
-		variables.put("Coins", Integer.toString(user.getCoins() + reward));
-		userDao.addNotification(1, variables, user);
-	}
+    private void sendNotification() {
+        IUserDao userDao = DAOFactory.getUserDao();
+        User user = userDao.getUserByQuestId(entryId);
+        Map<String, String> variables = new HashMap<String, String>();
+        variables.put("QuestId", Integer.toString(entryId));
+        variables.put("Coins", Integer.toString(user.getCoins() + reward));
+        userDao.addNotification(1, variables, user);
+    }
 
-	public int getEntryId() {
-		return entryId;
-	}
+    public int getEntryId() {
+        return entryId;
+    }
 
-	public void setEntryId(int entryId) {
-		this.entryId = entryId;
-	}
+    public void setEntryId(int entryId) {
+        this.entryId = entryId;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	public void setReward(int reward) {
-		this.reward = reward;
-	}
+    public void setReward(int reward) {
+        this.reward = reward;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public void setQuestDescription(String questDescription) {
+        this.questDescription = questDescription;
+    }
 
-	public String getDescription() {
-		return description;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public int getReward() {
-		return reward;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public IQuestType getQuestType() {
-		return questType;
-	}
+    public int getReward() {
+        return reward;
+    }
 
-	public int getQuestTypeId() { return questTypeId; }
+    public IQuestType getQuestType() {
+        return questType;
+    }
 
-	public int getCompleted() { return completed; }
+    public int getQuestTypeId() {
+        return questTypeId;
+    }
 
-	public int getRemoved() { return removed; }
+    public int getCompleted() {
+        return completed;
+    }
 
-	public void setQuestType(IQuestType questType) {
-		this.questType = questType;
-	}
+    public int getRemoved() {
+        return removed;
+    }
+
+    public String getQuestDescription() {
+        return questDescription;
+    }
+
+    public void setQuestType(IQuestType questType) {
+        this.questType = questType;
+    }
+
 }

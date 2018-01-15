@@ -10,6 +10,6 @@ public interface IQuestDAO extends IDao<Quest> {
 	List<Quest> getQuestsForUser(int id, int languageID);
 	boolean removeQuestFromQuestLog(int entryId, int userId);
 	void setQuestComplete(int entryId);
-	void addQuestToQuestlog(Map<String, String> properties, int userId, int questTypeId);
+	void addQuestToQuestlog(Map<String, String> properties, int userId, int questTypeId, List<String> valuesById);
 	Quest find(int id, User user);
 }
