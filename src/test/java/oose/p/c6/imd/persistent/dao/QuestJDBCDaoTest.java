@@ -116,16 +116,21 @@ public class QuestJDBCDaoTest {
 
         String expectedDescription = "Bezoek De verzamel schuur en scan de QR-code.";
 
+        List<String> valuesById = new ArrayList<>();
+        valuesById.add("De verzamel schuur");
+
         //test
-        dao.addQuestToQuestlog(properties, userId, questTypeId);
+        dao.addQuestToQuestlog(properties, userId, questTypeId, valuesById);
 
         //check
-        ResultSet resultAdded = conn.createStatement().executeQuery("SELECT qp.Key, qp.Value, qp.Description FROM QuestProperties qp " +
-                "WHERE EntryId = 10 ORDER BY qp.Key ASC");
+        ResultSet resultAdded = conn.createStatement().executeQuery("SELECT qp.Key, qp.Value, ql.Description FROM QuestProperties qp " +
+                "INNER JOIN questlog ql ON qp.EntryId = ql.EntryId " +
+                "WHERE qp.EntryId = 10 ORDER BY qp.Key ASC");
 
         resultAdded.next();
         assertEquals("TestKey", resultAdded.getString(1));
         assertEquals(value, resultAdded.getString(2));
+
         assertEquals(expectedDescription, resultAdded.getString(3));
     }
 
@@ -143,24 +148,28 @@ public class QuestJDBCDaoTest {
         properties.put("TestKey", value1);
         properties.put("TestKey2", String.valueOf(value2));
 
-        String expectedDescription1 = null;
-        String expectedDescription2 = "Bekijk de schat Het test object uit het tijdperk tijdperk test.";
+        String expectedDescription = "Bekijk de schat Het test object uit het tijdperk tijdperk test.";
+
+        List<String> valuesById = new ArrayList<>();
+        valuesById.add("tijdperk test");
+        valuesById.add("Het test object");
 
         //test
-        dao.addQuestToQuestlog(properties, userId, questTypeId);
+        dao.addQuestToQuestlog(properties, userId, questTypeId, valuesById);
 
         //check
-        ResultSet resultAdded = conn.createStatement().executeQuery("SELECT qp.Key, qp.Value, qp.Description FROM QuestProperties qp " +
-                "WHERE EntryId = 10 ORDER BY qp.Key ASC");
+        ResultSet resultAdded = conn.createStatement().executeQuery("SELECT qp.Key, qp.Value, ql.Description FROM QuestProperties qp " +
+                "INNER JOIN questlog ql ON qp.EntryId = ql.EntryId " +
+                "WHERE qp.EntryId = 10 ORDER BY qp.Key ASC");
         resultAdded.next();
         assertEquals("TestKey", resultAdded.getString(1));
         assertEquals(value1, resultAdded.getString(2));
-        assertEquals(expectedDescription1, resultAdded.getString(3));
 
         resultAdded.next();
         assertEquals("TestKey2", resultAdded.getString(1));
         assertEquals(String.valueOf(value2), resultAdded.getString(2));
-        assertEquals(expectedDescription2, resultAdded.getString(3));
+
+        assertEquals(expectedDescription, resultAdded.getString(3));
     }
 
     @Test
@@ -177,15 +186,20 @@ public class QuestJDBCDaoTest {
 
         String expectedDescription = "Open het boek uit tijdperk tijdperk test om de quest te voltooien.";
 
+        List<String> valuesById = new ArrayList<>();
+        valuesById.add("tijdperk test");
+
         //test
-        dao.addQuestToQuestlog(properties, userId, questTypeId);
+        dao.addQuestToQuestlog(properties, userId, questTypeId, valuesById);
 
         //check
-        ResultSet resultAdded = conn.createStatement().executeQuery("SELECT qp.Key, qp.Value, qp.Description FROM QuestProperties qp " +
-                "WHERE EntryId = 10 ORDER BY qp.Key ASC");
+        ResultSet resultAdded = conn.createStatement().executeQuery("SELECT qp.Key, qp.Value, ql.Description FROM QuestProperties qp " +
+                "INNER JOIN questlog ql ON qp.EntryId = ql.EntryId " +
+                "WHERE qp.EntryId = 10 ORDER BY qp.Key ASC");
         resultAdded.next();
         assertEquals("TestKey", resultAdded.getString(1));
         assertEquals(String.valueOf(value), resultAdded.getString(2));
+
         assertEquals(expectedDescription, resultAdded.getString(3));
     }
 

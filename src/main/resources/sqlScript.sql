@@ -87,15 +87,15 @@ CREATE TABLE QuestLog (
   UserId INT NOT NULL,
   QuestTypeId INT NOT NULL,
   `Completed` BOOLEAN DEFAULT 0,
-  Removed BOOLEAN DEFAULT 0
+  Removed BOOLEAN DEFAULT 0,
+  `Description` VARCHAR(256)
 );
 
 CREATE TABLE QuestProperties (
   `PropertyId` INT AUTO_INCREMENT PRIMARY KEY,
   `Key` VARCHAR(15) NOT NULL,
   `Value` VARCHAR(60) NOT NULL,
-  `EntryId` INT,
-  `Description` VARCHAR(256)
+  `EntryId` INT
 );
 
 -- TOPSTUKKEN
