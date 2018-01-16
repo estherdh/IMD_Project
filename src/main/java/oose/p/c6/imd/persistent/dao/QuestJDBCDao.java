@@ -96,7 +96,7 @@ public class QuestJDBCDao implements IQuestDAO {
     public Quest find(int id, User user) {
         Connection connection = ConnectMySQL.getInstance().getConnection();
         try {
-            PreparedStatement ps = connection.prepareStatement("SELECT ql.EntryId, qtl.Name, qtl.Description, qt.Reward " +
+            PreparedStatement ps = connection.prepareStatement("SELECT ql.EntryId, qtl.Name, qt.Reward " +
                     ", ql.Removed, ql.Completed, ql.Description as DescriptionQL, qt.QuestTypeId, qp.Value " +
                     "FROM (questlog ql INNER JOIN QuestType qt ON ql.QuestTypeId = qt.QuestTypeId) " +
                     "INNER JOIN QuestTypeLanguage qtl ON qt.QuestTypeId = qtl.QuestTypeId INNER JOIN questproperties qp " +
@@ -141,41 +141,26 @@ public class QuestJDBCDao implements IQuestDAO {
         Connection connection = ConnectMySQL.getInstance().getConnection();
         List<Quest> questList = new ArrayList<>();
         try {
-            PreparedStatement ps = connection.prepareStatement("SELECT ql.EntryId, qtl.Name, qtl.Description, qt.Reward " +
-                    ", ql.Removed, ql.Completed, ql.Description as DescriptionQL, qt.QuestTypeId, qp.Value FROM (questlog ql INNER JOIN QuestType qt ON ql.QuestTypeId = qt.QuestTypeId) " +
-                    "INNER JOIN QuestTypeLanguage qtl ON qt.QuestTypeId = qtl.QuestTypeId INNER JOIN questproperties qp ON qp.EntryId = ql.EntryId " +
+            PreparedStatement ps = connection.prepareStatement("SELECT ql.EntryId, qtl.Name, qt.Reward " +
+                    ", ql.Removed, ql.Completed, ql.Description, qt.QuestTypeId FROM (questlog ql INNER JOIN QuestType qt ON ql.QuestTypeId = qt.QuestTypeId) " +
+                    "INNER JOIN QuestTypeLanguage qtl ON qt.QuestTypeId = qtl.QuestTypeId " +
                     "WHERE UserId = ? AND Completed = 0 AND LanguageId IN " +
                     "(SELECT COALESCE(" +
-                    "(SELECT languageId FROM questtypelanguage qtl2 WHERE qtl2.LanguageId = ? AND qtl2.QuestTypeId = qt.QuestTypeId), 1)) " +
-                    "ORDER BY PropertyId DESC;");
+                    "(SELECT languageId FROM questtypelanguage qtl2 WHERE qtl2.LanguageId = ? AND qtl2.QuestTypeId = qt.QuestTypeId), 1))");
             ps.setInt(1, userId);
             ps.setInt(2, languageId);
             ResultSet rs = ps.executeQuery();
-            return addQuestsToQuestList(connection, questList, rs);
+            while(rs.next()) {
+                questList.add(createQuest(rs, generateQuest(rs)));
+            }
+            if (!connection.isClosed()) {
+                connection.close();
+            }
+            return questList;
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, e.toString(), e);
             return questList;
         }
-    }
-
-    private List<Quest> addQuestsToQuestList(Connection connection, List<Quest> questList, ResultSet rs) throws SQLException {
-        int[] entryId = new int[4];
-        int j = 1;
-        boolean isUnique = true;
-        while (rs.next()) {
-            entryId[j] = rs.getInt("EntryId");
-            for (int anEntryId : entryId) {
-                isUnique = (anEntryId != entryId[j]);
-            }
-            if (isUnique) {
-                questList.add(createQuest(rs, generateQuest(rs)));
-            }
-            j++;
-        }
-        if (!connection.isClosed()) {
-            connection.close();
-        }
-        return questList;
     }
 
     public boolean removeQuestFromQuestLog(int entryId, int userId) {
@@ -226,7 +211,7 @@ public class QuestJDBCDao implements IQuestDAO {
     }
 
     private Quest createQuest(ResultSet rs, IQuestType typeStrategy) throws SQLException {
-        Quest q = new Quest(
+        return new Quest(
                 rs.getInt("EntryId"),
                 rs.getString("Name"),
                 rs.getString("Description"),
@@ -236,8 +221,6 @@ public class QuestJDBCDao implements IQuestDAO {
                 rs.getInt("Completed"),
                 typeStrategy
         );
-        q.setQuestDescription(rs.getString("DescriptionQL"));
-        return q;
     }
 
     private IQuestType generateQuest(ResultSet rs) throws SQLException {

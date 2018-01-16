@@ -5,7 +5,7 @@ import java.util.Random;
 
 public class QrCodeQuestGenerator extends BaseQuestGenerator {
     public void generateQuest(int userId) {
-        questTypeId = 4;
+        questTypeId = 1;
 
         List<Museum> museums = findMuseumsNotYetInQuestlog(userId);
 

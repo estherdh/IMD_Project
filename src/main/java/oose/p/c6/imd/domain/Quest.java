@@ -15,7 +15,6 @@ public class Quest {
     int questTypeId;
     int removed;
     int completed;
-    String questDescription;
 
     public Quest(int entryId, String name, String description, int reward, int questTypeId, int removed, int completed, IQuestType questType) {
         this.entryId = entryId;
@@ -66,10 +65,6 @@ public class Quest {
         this.reward = reward;
     }
 
-    public void setQuestDescription(String questDescription) {
-        this.questDescription = questDescription;
-    }
-
     public String getName() {
         return name;
     }
@@ -96,10 +91,6 @@ public class Quest {
 
     public int getRemoved() {
         return removed;
-    }
-
-    public String getQuestDescription() {
-        return questDescription;
     }
 
     public void setQuestType(IQuestType questType) {
