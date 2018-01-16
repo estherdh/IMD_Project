@@ -30,7 +30,7 @@ public class EraViewQuestTest {
 	}
 
 	@Test
-	public void checkQuestCompleteTestWrongQrCode() throws Exception {
+	public void checkQuestCompleteTestWrongEra() throws Exception {
 		//init
 		Action inputAction = new EraViewAction(2);
 		//test

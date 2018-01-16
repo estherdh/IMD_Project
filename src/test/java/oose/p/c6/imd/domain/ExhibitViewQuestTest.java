@@ -30,7 +30,7 @@ public class ExhibitViewQuestTest {
 	}
 
 	@Test
-	public void checkQuestCompleteTestWrongQrCode() throws Exception {
+	public void checkQuestCompleteTestWrongExhibit() throws Exception {
 		//init
 		Action inputAction = new ExhibitViewAction(2);
 		//test
