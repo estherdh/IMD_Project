@@ -6,23 +6,23 @@ import org.junit.Test;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-public class QrScanQuestTest {
-	private QrScanQuest quest;
-
+public class EraViewQuestTest {
+	private EraViewQuest quest;
 	@Before
 	public void setUp() throws Exception {
 		Map<String, String> input = new HashMap<>();
-		input.put("QR", "qrCodeTest");
-		this.quest = new QrScanQuest(input);
+		input.put("Tijdperk", "1");
+		this.quest = new EraViewQuest(input);
 
 	}
 
 	@Test
 	public void checkQuestCompleteTestSuccess() throws Exception {
 		//init
-		Action inputAction = new QrScanAction("qrCodeTest");
+		Action inputAction = new EraViewAction(1);
 		//test
 		boolean result = quest.checkQuestComplete(inputAction);
 		//check
@@ -32,7 +32,7 @@ public class QrScanQuestTest {
 	@Test
 	public void checkQuestCompleteTestWrongQrCode() throws Exception {
 		//init
-		Action inputAction = new QrScanAction("aWrongQrCode");
+		Action inputAction = new EraViewAction(2);
 		//test
 		boolean result = quest.checkQuestComplete(inputAction);
 		//check
