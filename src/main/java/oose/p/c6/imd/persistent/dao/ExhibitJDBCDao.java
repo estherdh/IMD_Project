@@ -20,6 +20,9 @@ public class ExhibitJDBCDao implements IExhibitDao {
     private static final Logger LOGGER = Logger.getLogger(IExhibitDao.class.getName());
     private String museumIdColomnName = "MuseumId";
     private String eraIdColomnName = "EraId";
+    private String excludeValue = "NOT IN(SELECT qp.Value FROM questlog ql INNER JOIN " +
+            "questProperties qp ON ql.EntryId = qp.EntryId " +
+            "WHERE UserId = ? ";
 
     @Override
     public Exhibit find(User user, int exhibitId) {
@@ -83,19 +86,19 @@ public class ExhibitJDBCDao implements IExhibitDao {
 
     private String createYear(int year, int year2, String yearBefore, String yearAfter) {
         StringBuilder stringBuilder = new StringBuilder();
-        if(year2 == 0) {
-            if(year < 0) {
-                stringBuilder.append(year+" "+yearBefore);
+        if (year2 == 0) {
+            if (year < 0) {
+                stringBuilder.append(year + " " + yearBefore);
             } else {
-                stringBuilder.append(year+" "+yearAfter);
+                stringBuilder.append(year + " " + yearAfter);
             }
         }
-        if(year < 0 && year2 < 0) {
-            stringBuilder.append(year+"-"+year2+" "+yearBefore);
+        if (year < 0 && year2 < 0) {
+            stringBuilder.append(year + "-" + year2 + " " + yearBefore);
         } else if (year > 0 && year2 > 0) {
-            stringBuilder.append(year+"-"+year2+" "+yearAfter);
+            stringBuilder.append(year + "-" + year2 + " " + yearAfter);
         } else if (year < 0 && year2 > 0) {
-            stringBuilder.append(year+" "+yearBefore+"-"+year2+" "+yearAfter);
+            stringBuilder.append(year + " " + yearBefore + "-" + year2 + " " + yearAfter);
         }
         return stringBuilder.toString();
     }
@@ -222,10 +225,8 @@ public class ExhibitJDBCDao implements IExhibitDao {
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM exhibit e INNER JOIN exhibitinfo ei " +
                     "ON e.ExhibitId = ei.ExhibitId " +
                     "INNER JOIN YearLanguage yl ON yl.LanguageId = (SELECT COALESCE((SELECT languageId FROM YearLanguage yl1 WHERE yl1.languageId = (SELECT languageId FROM users WHERE UserId = ?)), 1)) " +
-                    "WHERE e.ExhibitId " +
-                    "NOT IN(SELECT qp.Value FROM questlog ql INNER JOIN " +
-                    "questProperties qp ON ql.EntryId = qp.EntryId " +
-                    "WHERE UserId = ? AND QuestTypeId = 3 AND Removed = 0 AND Completed = 0) AND " +
+                    "WHERE e.ExhibitId " + excludeValue +
+                    "AND QuestTypeId = 3 AND Removed = 0 AND Completed = 0) AND " +
                     "ei.LanguageId IN (SELECT COALESCE((SELECT ei2.LanguageId FROM exhibitinfo ei2 " +
                     "WHERE ei2.LanguageId = (SELECT u.LanguageId FROM users u WHERE u.UserId = ?) AND ei2.ExhibitId = e.ExhibitId), 1))");
             ps.setInt(1, userId);
@@ -243,11 +244,8 @@ public class ExhibitJDBCDao implements IExhibitDao {
         ResultSet rs;
         try {
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM era e INNER JOIN eralanguage el " +
-                    "ON e.EraId = el.EraId WHERE el.EraId " +
-                    "NOT IN(SELECT qp.Value FROM questlog ql INNER JOIN " +
-                    "questProperties qp ON ql.EntryId = qp.EntryId " +
-                    "WHERE UserId = ? AND QuestTypeId = 4 AND Removed = 0 AND Completed = 0) " +
-                    "AND el.LanguageId IN (SELECT COALESCE ((SELECT el2.LanguageId FROM eralanguage el2 WHERE el2.LanguageId = " +
+                    "ON e.EraId = el.EraId WHERE el.EraId " + excludeValue +
+                    "AND QuestTypeId = 4 AND Removed = 0 AND Completed = 0) AND el.LanguageId IN (SELECT COALESCE ((SELECT el2.LanguageId FROM eralanguage el2 WHERE el2.LanguageId = " +
                     "(SELECT u.LanguageId FROM users u WHERE u.UserId = ?) AND el2.EraId = e.EraId), 1))");
             ps.setInt(1, userId);
             ps.setInt(2, userId);
@@ -270,7 +268,7 @@ public class ExhibitJDBCDao implements IExhibitDao {
         ps.setInt(1, exhibitId);
         ResultSet rs = ps.executeQuery();
         List<String> images = new ArrayList<>();
-        while(rs.next()) {
+        while (rs.next()) {
             images.add(rs.getString(1));
         }
         return images;
@@ -282,9 +280,7 @@ public class ExhibitJDBCDao implements IExhibitDao {
         ResultSet rs;
         try {
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM museum m WHERE QrCode " +
-                    "NOT IN(SELECT qp.Value FROM questlog ql INNER JOIN " +
-                    "questProperties qp ON ql.EntryId = qp.EntryId WHERE " +
-                    "UserId = ? AND QuestTypeId = 1 AND Removed = 0 AND Completed = 0) " +
+                    excludeValue + "AND QuestTypeId = 1 AND Removed = 0 AND Completed = 0) " +
                     "AND QrCode IS NOT NULL");
             ps.setInt(1, userId);
             rs = ps.executeQuery();

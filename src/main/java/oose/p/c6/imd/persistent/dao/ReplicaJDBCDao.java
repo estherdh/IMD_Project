@@ -6,7 +6,6 @@ import oose.p.c6.imd.domain.Replica;
 import oose.p.c6.imd.domain.User;
 import oose.p.c6.imd.persistent.ConnectMySQL;
 
-import javax.inject.Inject;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

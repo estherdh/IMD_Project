@@ -37,18 +37,22 @@ public class QuestJDBCDao implements IQuestDAO {
                 psInsert2.setString(j++, entry.getKey());
                 psInsert2.setString(j++, entry.getValue());
 
-                questDescription = createQuestDescription(entry.getValue(), questTypeId, userId, valuesById);
+                questDescription = createQuestDescription(questTypeId, userId, valuesById);
             }
             psInsert2.execute();
 
-            PreparedStatement psInsert3 = connection.prepareStatement("UPDATE Questlog SET Description = ? WHERE EntryId = ?");
-            psInsert3.setString(1, questDescription);
-            psInsert3.setInt(2, entryId);
-            psInsert3.executeUpdate();
+            updateDescription(connection, entryId, questDescription);
 
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, e.toString(), e);
         }
+    }
+
+    private void updateDescription(Connection connection, int entryId, String questDescription) throws SQLException {
+        PreparedStatement psInsert3 = connection.prepareStatement("UPDATE Questlog SET Description = ? WHERE EntryId = ?");
+        psInsert3.setString(1, questDescription);
+        psInsert3.setInt(2, entryId);
+        psInsert3.executeUpdate();
     }
 
     private String buildQuestPropertyQuery(Map<String, String> properties) {
@@ -59,7 +63,7 @@ public class QuestJDBCDao implements IQuestDAO {
         return sb.toString().replaceAll(", $", "");
     }
 
-    private String createQuestDescription(String value, int questTypeId, int userId, List<String> valuesById) {
+    private String createQuestDescription(int questTypeId, int userId, List<String> valuesById) {
         Connection connection = ConnectMySQL.getInstance().getConnection();
         try {
             PreparedStatement psSelectTypeDescription = connection.prepareStatement("SELECT * FROM questtypelanguage qt INNER JOIN " +
@@ -80,7 +84,7 @@ public class QuestJDBCDao implements IQuestDAO {
         return null;
     }
 
-    private String buildDescription(List<String> values, String description) throws SQLException {
+    private String buildDescription(List<String> values, String description) {
         String result = description;
         for (int i = 0; i < values.size(); i++) {
             result = result.replace("{{{" + (i + 1) + "}}}", values.get(i));
@@ -147,27 +151,31 @@ public class QuestJDBCDao implements IQuestDAO {
             ps.setInt(1, userId);
             ps.setInt(2, languageId);
             ResultSet rs = ps.executeQuery();
-            int[] entryId = new int[4];
-            int j = 0;
-            boolean isUnique = true;
-            while (rs.next()) {
-                entryId[j] = rs.getInt("EntryId");
-                j++;
-                for (int anEntryId : entryId) {
-                    isUnique = (anEntryId != rs.getInt("EntryId"));
-                }
-                if (isUnique) {
-                    questList.add(createQuest(rs, generateQuest(rs)));
-                }
-            }
-            if (!connection.isClosed()) {
-                connection.close();
-            }
-            return questList;
+            return addQuestsToQuestList(connection, questList, rs);
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, e.toString(), e);
             return questList;
         }
+    }
+
+    private List<Quest> addQuestsToQuestList(Connection connection, List<Quest> questList, ResultSet rs) throws SQLException {
+        int[] entryId = new int[4];
+        int j = 1;
+        boolean isUnique = true;
+        while (rs.next()) {
+            entryId[j] = rs.getInt("EntryId");
+            for (int anEntryId : entryId) {
+                isUnique = (anEntryId != entryId[j]);
+            }
+            if (isUnique) {
+                questList.add(createQuest(rs, generateQuest(rs)));
+            }
+            j++;
+        }
+        if (!connection.isClosed()) {
+            connection.close();
+        }
+        return questList;
     }
 
     public boolean removeQuestFromQuestLog(int entryId, int userId) {
