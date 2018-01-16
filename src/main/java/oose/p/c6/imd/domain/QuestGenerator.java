@@ -10,11 +10,20 @@ public class QuestGenerator {
     }
 
     public void generateQuest(int userId) {
-        int random = ThreadLocalRandom.current().nextInt(0, QuestTypes.values().length - 1);
-        QuestTypes questType = QuestTypes.values()[random];
+
+        QuestTypes questType = QuestTypes.values()[random()];
+
         BaseQuestGenerator questGeneratorType = questGeneratorFactory.getQuestGenerator(questType);
         if(questGeneratorType != null) {
             questGeneratorType.generateQuest(userId);
         }
+    }
+
+    private int random() {
+        int random = ThreadLocalRandom.current().nextInt(0, QuestTypes.values().length);
+        while(random == 1) {
+            random = ThreadLocalRandom.current().nextInt(0, QuestTypes.values().length);
+        }
+        return random;
     }
 }

@@ -6,7 +6,7 @@ public class QrScanQuest implements IQuestType {
 	private String qrString;
 
 	public QrScanQuest(Map<String, String> properties) {
-		this.qrString = properties.get("QR");
+		this.qrString = properties.get("Qr");
 	}
 
 	@Override

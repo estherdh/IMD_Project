@@ -4,6 +4,7 @@ public class Museum extends Model {
     private String name;
     private String site;
     private String region;
+    private String qrCode;
 
     public Museum(int id, String name, String site, String region) {
         super(id);
@@ -34,5 +35,13 @@ public class Museum extends Model {
 
     public void setRegion(String region) {
         this.region = region;
+    }
+
+    public void setQrCode(String qrCode) {
+        this.qrCode = qrCode;
+    }
+
+    public String getQrCode() {
+        return qrCode;
     }
 }

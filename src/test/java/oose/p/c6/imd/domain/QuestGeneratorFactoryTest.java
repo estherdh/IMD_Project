@@ -23,9 +23,16 @@ public class QuestGeneratorFactoryTest {
     }
 
     @Test
-    public void getQuestGeneratorDefaultTest(){
+    public void getQuestGeneratorQrCodeQuestGeneratorTest(){
         QuestGeneratorFactory questGeneratorFactory = QuestGeneratorFactory.getInstance();
         BaseQuestGenerator questGenerator = questGeneratorFactory.getQuestGenerator(QuestTypes.QRCODESCAN);
+        assertThat(questGenerator, instanceOf(QrCodeQuestGenerator.class));
+    }
+
+    @Test
+    public void getQuestGeneratorDefaultTest(){
+        QuestGeneratorFactory questGeneratorFactory = QuestGeneratorFactory.getInstance();
+        BaseQuestGenerator questGenerator = questGeneratorFactory.getQuestGenerator(QuestTypes.GENERICTEXT);
         assertThat(questGenerator, is(nullValue()));
     }
 }

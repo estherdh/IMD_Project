@@ -3,7 +3,7 @@ package oose.p.c6.imd.domain;
 import java.util.List;
 import java.util.Random;
 
-public class ExhibitViewQuestGenerator extends ViewQuestGenerator {
+public class ExhibitViewQuestGenerator extends BaseQuestGenerator {
 
     public void generateQuest(int userId) {
         questTypeId = 3;
@@ -13,9 +13,12 @@ public class ExhibitViewQuestGenerator extends ViewQuestGenerator {
         if (!exhibits.isEmpty()) {
             Exhibit e = exhibits.get(new Random().nextInt(exhibits.size()));
 
-            String key = "Topstuk";
-            String value = String.valueOf(e.getId());
-            setProperties(key, value);
+            setProperties("Topstuk", String.valueOf(e.getId()));
+            setProperties("Tijdperk", String.valueOf(e.getEraId()));
+
+            Era era = exhibitDao.findEra(userDao.find(userId), e.getEraId());
+            valuesById.add(era.getName());
+            valuesById.add(e.getName());
 
             addQuestToQuestlog(userId);
         }
