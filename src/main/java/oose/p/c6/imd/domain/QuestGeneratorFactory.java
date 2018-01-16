@@ -20,6 +20,8 @@ public class QuestGeneratorFactory {
                 return new ExhibitViewQuestGenerator();
             case ERAVIEW:
                 return new EraViewQuestGenerator();
+            case QRCODESCAN:
+                return new QrCodeQuestGenerator();
             default:
                 LOGGER.log(Level.WARNING, "Geen generator voor questtype: "+questType+" gevonden");
                 return null;

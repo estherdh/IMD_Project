@@ -3,7 +3,7 @@ package oose.p.c6.imd.domain;
 import java.util.List;
 import java.util.Random;
 
-public class EraViewQuestGenerator extends ViewQuestGenerator {
+public class EraViewQuestGenerator extends BaseQuestGenerator {
 
     public void generateQuest(int userId) {
         questTypeId = 4;

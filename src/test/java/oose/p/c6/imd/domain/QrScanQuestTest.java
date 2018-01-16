@@ -14,7 +14,7 @@ public class QrScanQuestTest {
 	@Before
 	public void setUp() throws Exception {
 		Map<String, String> input = new HashMap<>();
-		input.put("QR", "qrCodeTest");
+		input.put("Qr", "qrCodeTest");
 		this.quest = new QrScanQuest(input);
 
 	}

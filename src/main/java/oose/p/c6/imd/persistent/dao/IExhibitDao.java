@@ -22,4 +22,5 @@ public interface IExhibitDao extends IDao<Exhibit> {
     List<Era> findErasNotYetInQuestlog(int userId);
     Exhibit createExhibitFromResultset(ResultSet rs) throws SQLException;
     int findMuseumByQr(String qrCode);
+    List<Museum> findMuseumsNotYetInQuestlog(int userId);
 }
