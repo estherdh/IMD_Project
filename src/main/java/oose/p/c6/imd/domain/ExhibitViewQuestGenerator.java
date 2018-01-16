@@ -6,7 +6,7 @@ import java.util.Random;
 public class ExhibitViewQuestGenerator extends BaseQuestGenerator {
 
     public void generateQuest(int userId) {
-        questTypeId = 4;
+        questTypeId = 3;
 
         List<Exhibit> exhibits = findExhibitsNotYetInQuestlog(userId);
 

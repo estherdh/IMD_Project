@@ -292,12 +292,12 @@ INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, N
 INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name) VALUES (2, 3, '(TESTING)TEKStQuESTREquest', '(TESTING)TEKStQuESTREquest');
 
 INSERT INTO librarian.questtype (Reward) VALUES (30);
-INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name, QuestDescription) VALUES (3, 1, '(NL) Bekijk een tijdperk', '(NL)Bekijken tijdperk', 'Open het boek uit tijdperk {{{1}}} om de quest te voltooien.');
-INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name, QuestDescription) VALUES (3, 2, '(EN) View an era', '(EN)View era', '(NL) Go to the library and open the book: ');
+INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name, QuestDescription) VALUES (3, 1, '(NL) Lees een topstuk', '(NL)Lezen topstuk', 'Bekijk de schat {{{2}}} uit het tijdperk {{{1}}}.');
+INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name, QuestDescription) VALUES (3, 2, '(EN) Read an exhibit', '(EN)Read exhibit', '(NL) Read the exhibit: ');
 
 INSERT INTO librarian.questtype (Reward) VALUES (30);
-INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name, QuestDescription) VALUES (4, 1, '(NL) Lees een topstuk', '(NL)Lezen topstuk', 'Bekijk de schat {{{2}}} uit het tijdperk {{{1}}}.');
-INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name, QuestDescription) VALUES (4, 2, '(EN) Read an exhibit', '(EN)Read exhibit', '(NL) Read the exhibit: ');
+INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name, QuestDescription) VALUES (4, 1, '(NL) Bekijk een tijdperk', '(NL)Bekijken tijdperk', 'Open het boek uit tijdperk {{{1}}} om de quest te voltooien.');
+INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name, QuestDescription) VALUES (4, 2, '(EN) View an era', '(EN)View era', '(NL) Go to the library and open the book: ');
 
 INSERT INTO librarian.questlog (UserId, QuestTypeId, Completed) VALUES (1, 1, 0);
 INSERT INTO librarian.questproperties(`Key`, `Value`, EntryId) VALUES ('Qr', 'AAA', 1);
@@ -311,15 +311,15 @@ INSERT INTO librarian.questlog (UserId, QuestTypeId, Completed) VALUES (2, 2, 0)
 INSERT INTO librarian.questproperties(`Key`, `Value`, EntryId) VALUES ('Tekst', 'AAE', 5);
 
 
-INSERT INTO librarian.questlog (UserId, QuestTypeId, Completed) VALUES (1, 4, 0);
-INSERT INTO librarian.questproperties(`Key`, `Value`, EntryId) VALUES ('Tijdperk', '1', 6);
-INSERT INTO librarian.questlog (UserId, QuestTypeId, Completed) VALUES (1, 4, 0);
-INSERT INTO librarian.questproperties(`Key`, `Value`, EntryId) VALUES ('Tijdperk', '2', 7);
+INSERT INTO librarian.questlog (UserId, QuestTypeId, Completed) VALUES (1, 3, 0);
+INSERT INTO librarian.questproperties(`Key`, `Value`, EntryId) VALUES ('Topstuk', '2', 6);
+INSERT INTO librarian.questlog (UserId, QuestTypeId, Completed) VALUES (1, 3, 0);
+INSERT INTO librarian.questproperties(`Key`, `Value`, EntryId) VALUES ('Topstuk', '3', 7);
 
-INSERT INTO librarian.questlog (UserId, QuestTypeId) VALUES (1, 3);
-INSERT INTO librarian.questproperties (`Key`, `Value`, EntryId) VALUES ('Topstuk', '2', 8);
-INSERT INTO librarian.questlog (UserId, QuestTypeId) VALUES (1, 3);
-INSERT INTO librarian.questproperties (`Key`, `Value`, EntryId) VALUES ('Topstuk', '3', 9);
+INSERT INTO librarian.questlog (UserId, QuestTypeId) VALUES (1, 4);
+INSERT INTO librarian.questproperties (`Key`, `Value`, EntryId) VALUES ('Tijdperk', '1', 8);
+INSERT INTO librarian.questlog (UserId, QuestTypeId) VALUES (1, 4);
+INSERT INTO librarian.questproperties (`Key`, `Value`, EntryId) VALUES ('Tijdperk', '2', 9);
 
 INSERT INTO Image(ImageId, Path) VALUES(1, 'imagetest1');
 INSERT INTO Image(ImageId, Path) VALUES(2, 'imagetest2');
