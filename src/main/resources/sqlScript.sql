@@ -11,10 +11,10 @@ CREATE TABLE Language (
 );
 
 CREATE TABLE YearLanguage (
-    `LanguageId` INT(11) NOT NULL,
-    `Before` VARCHAR(45) NOT NULL,
-    `After` VARCHAR(45) NOT NULL,
-    PRIMARY KEY (`LanguageId`)
+  `LanguageId` INT(11) NOT NULL,
+  `Before` VARCHAR(45) NOT NULL,
+  `After` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`LanguageId`)
 );
 
 -- GEBRUIKER
@@ -121,8 +121,8 @@ CREATE TABLE Exhibit (
 );
 
 CREATE TABLE ExhibitImage (
- `ExhibitId` INT NOT NULL,
- `ImageId` INT NOT NULL
+  `ExhibitId` INT NOT NULL,
+  `ImageId` INT NOT NULL
 );
 
 CREATE TABLE ExhibitInfo (
@@ -283,28 +283,28 @@ INSERT INTO librarian.users (Email, Password, Coins, DisplayName, LanguageId) VA
 INSERT INTO librarian.users (Email, Password, Coins, DisplayName, LanguageId) VALUES ('Nope.avi@youtube.com', '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08', 200, 'MONEYBAGS', 3);
 
 INSERT INTO librarian.questtype (Reward) VALUES (10);
-INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name, QuestDescription) VALUES (1, 1, '(NL)Scan een qr code', '(NL)Scannen qr code', 'Bezoek {{{1}}} en scan de QR-code.');
-INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name, QuestDescription) VALUES (1, 2, '(EN)Scan a qr code', '(EN)Scan qr code', '(NL) Scan the qr code while visiting the museum: ');
-INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name, QuestDescription) VALUES (1, 3, '(TESTING)Scan a qr code', '(TESTING)edoc rq nasc', '(Testing) testestest ');
+INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name) VALUES (1, 1, 'Bezoek {{{1}}} en scan de QR-code.', '(NL)Scannen qr code');
+INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name) VALUES (1, 2, 'Visit {{{1}}} and scan the QR-code.', '(EN)Scan qr code');
+INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name) VALUES (1, 3, '(TESTING)Scan a qr code', '(TESTING)edoc rq nasc');
 
 INSERT INTO librarian.questtype (Reward) VALUES (15);
 INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name) VALUES (2, 1, '(NL)Stuur een bepaald stuk tekst op', '(NL)Stuur tekst');
 INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name) VALUES (2, 3, '(TESTING)TEKStQuESTREquest', '(TESTING)TEKStQuESTREquest');
 
 INSERT INTO librarian.questtype (Reward) VALUES (30);
-INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name, QuestDescription) VALUES (3, 1, '(NL) Lees een topstuk', '(NL)Lezen topstuk', 'Bekijk de schat {{{2}}} uit het tijdperk {{{1}}}.');
-INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name, QuestDescription) VALUES (3, 2, '(EN) Read an exhibit', '(EN)Read exhibit', '(NL) Read the exhibit: ');
+INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name) VALUES (3, 1, 'Bekijk de schat {{{2}}} uit het tijdperk {{{1}}}.', '(NL)Lezen topstuk');
+INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name) VALUES (3, 2, 'Examine treasure {{{2}}} from era {{{1}}}.', '(EN)Read exhibit');
 
 INSERT INTO librarian.questtype (Reward) VALUES (30);
-INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name, QuestDescription) VALUES (4, 1, '(NL) Bekijk een tijdperk', '(NL)Bekijken tijdperk', 'Open het boek uit tijdperk {{{1}}} om de quest te voltooien.');
-INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name, QuestDescription) VALUES (4, 2, '(EN) View an era', '(EN)View era', '(NL) Go to the library and open the book: ');
+INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name) VALUES (4, 1, 'Open het boek uit tijdperk {{{1}}} om de quest te voltooien.', '(NL)Bekijken tijdperk');
+INSERT INTO librarian.questtypelanguage (QuestTypeId, LanguageId, Description, Name) VALUES (4, 2, 'Open the book from era {{{1}}} to complete this quest.', '(EN)View era');
 
 INSERT INTO librarian.questlog (UserId, QuestTypeId, Completed) VALUES (1, 1, 0);
 INSERT INTO librarian.questproperties(`Key`, `Value`, EntryId) VALUES ('Qr', 'AAA', 1);
 INSERT INTO librarian.questlog (UserId, QuestTypeId, Completed) VALUES (2, 1, 0);
-INSERT INTO librarian.questproperties(`Key`, `Value`, EntryId) VALUES ('Qr', 'AAA', 2);
+INSERT INTO librarian.questproperties(`Key`, `Value`, EntryId) VALUES ('Qr', 'AAB', 2);
 INSERT INTO librarian.questlog (UserId, QuestTypeId, Completed) VALUES (3, 1, 0);
-INSERT INTO librarian.questproperties(`Key`, `Value`, EntryId) VALUES ('Qr', 'AAA', 3);
+INSERT INTO librarian.questproperties(`Key`, `Value`, EntryId) VALUES ('Qr', 'AAC', 3);
 INSERT INTO librarian.questlog (UserId, QuestTypeId, Completed) VALUES (1, 2, 0);
 INSERT INTO librarian.questproperties(`Key`, `Value`, EntryId) VALUES ('Tekst', 'AAD', 4);
 INSERT INTO librarian.questlog (UserId, QuestTypeId, Completed) VALUES (2, 2, 0);
@@ -371,9 +371,9 @@ INSERT INTO `replicatype` (`ReplicaTypeId`, `Name`) VALUES
   (3, 'table');
 
 INSERT INTO `replica` (`ReplicaId`, `ExhibitId`, `Price`, `Sprite`, `ReplicaTypeId`) VALUES
-    (1, 1, 10, 'traktor', 2),
-    (2, 1, 15, 'test1', 2),
-    (3, 1, 12, 'test2', 2);
+  (1, 1, 10, 'traktor', 2),
+  (2, 1, 15, 'test1', 2),
+  (3, 1, 12, 'test2', 2);
 
 INSERT INTO `replicapositions` (`ReplicaPositionId`, `ReplicaTypeId`) VALUES
   (1, 2),

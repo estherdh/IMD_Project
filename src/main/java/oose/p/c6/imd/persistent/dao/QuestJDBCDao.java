@@ -76,7 +76,7 @@ public class QuestJDBCDao implements IQuestDAO {
             ResultSet rsTypeDescription = psSelectTypeDescription.executeQuery();
             rsTypeDescription.next();
 
-            return buildDescription(valuesById, rsTypeDescription.getString("QuestDescription"));
+            return buildDescription(valuesById, rsTypeDescription.getString("Description"));
 
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, e.toString(), e);
