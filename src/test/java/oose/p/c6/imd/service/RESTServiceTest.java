@@ -47,20 +47,6 @@ public class RESTServiceTest {
     }
 
     @Test
-    public void helloTest() throws Exception {
-        //init
-        String expectedResult = "hello world";
-        when(token.getTokenString()).thenReturn("token");
-        when(librarian.getUserByEmail(anyString())).thenReturn(mock(User.class));
-        when(librarian.verifyLogin(anyString(), anyString())).thenReturn(0);
-        when(tokenManager.getTokenFromTokenString(anyString())).thenReturn(token);
-        //test
-        String actualResult = service.hello();
-        //check
-        assertThat(actualResult, is(equalTo(expectedResult)));
-    }
-
-    @Test
     public void loginTestSuccess() throws Exception {
         //init
         JsonObject jo = Json.createObjectBuilder()
