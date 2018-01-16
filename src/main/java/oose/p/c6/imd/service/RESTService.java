@@ -25,25 +25,6 @@ public class RESTService {
     @Inject
     private Librarian l;
 
-    @GET
-    @Path("/")
-    public String hello() {
-    	try {
-			JsonBuilderFactory factory = Json.createBuilderFactory(null);
-			JsonObjectBuilder job = factory.createObjectBuilder();
-			job.add(jsonAttrEmail, "test@void");
-			job.add(jsonAttrPassword, "test");
-			JsonObject jo = job.build();
-			String token = ((JsonObject) login(jo).getEntity()).getString("token");
-			TokenManager.getInstance().getTokenFromTokenString(token).devSetTokenString();
-			return "hello world";
-		} catch (Exception e) {
-    	    String msg = "Something happend. Misschien draai je een database waar test@void niet bestaat, of je hebt het programma gebroken. <hr>";
-    	    LOGGER.log(Level.SEVERE, msg + e.toString(), e);
-    		return msg + e.getMessage();
-		}
-    }
-
     @POST
     @Path("/login")
     @Produces(MediaType.APPLICATION_JSON)
@@ -526,7 +507,7 @@ public class RESTService {
     }
 
     @DELETE
-    @Path("/user/remove")
+    @Path("/user/delete")
     public Response removeAccount(@QueryParam("token") String token) {
         User user = TokenManager.getInstance().getUserFromToken(token);
         if (user != null) {
