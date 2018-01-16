@@ -135,7 +135,7 @@ public class QuestJDBCDaoTest {
     }
 
     @Test
-    public void addQuestToQuestlogType3Test() throws SQLException {
+    public void addQuestToQuestlogType4Test() throws SQLException {
         //init
         int userId = 1;
         Map<String, String> properties = new HashMap<>();
@@ -143,7 +143,7 @@ public class QuestJDBCDaoTest {
         String value1 = "AAA";
         int value2 = 1;
 
-        int questTypeId = 3;
+        int questTypeId = 4;
 
         properties.put("TestKey", value1);
         properties.put("TestKey2", String.valueOf(value2));
@@ -173,14 +173,14 @@ public class QuestJDBCDaoTest {
     }
 
     @Test
-    public void addQuestToQuestlogType4Test() throws SQLException {
+    public void addQuestToQuestlogType3Test() throws SQLException {
         //init
         int userId = 1;
         Map<String, String> properties = new HashMap<>();
 
         int value = 1;
 
-        int questTypeId = 4;
+        int questTypeId = 3;
 
         properties.put("TestKey", String.valueOf(value));
 

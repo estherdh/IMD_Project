@@ -6,7 +6,7 @@ import java.util.Random;
 public class EraViewQuestGenerator extends BaseQuestGenerator {
 
     public void generateQuest(int userId) {
-        questTypeId = 4;
+        questTypeId = 3;
 
         List<Era> eras = findErasNotYetInQuestlog(userId);
 
