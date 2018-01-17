@@ -97,10 +97,10 @@ public class QuestJDBCDao implements IQuestDAO {
         Connection connection = ConnectMySQL.getInstance().getConnection();
         try {
             PreparedStatement ps = connection.prepareStatement("SELECT ql.EntryId, qtl.Name, qt.Reward " +
-                    ", ql.Removed, ql.Completed, ql.Description as DescriptionQL, qt.QuestTypeId, qp.Value " +
+                    ", ql.Removed, ql.Completed, ql.Description, qt.QuestTypeId, qp.Value " +
                     "FROM (questlog ql INNER JOIN QuestType qt ON ql.QuestTypeId = qt.QuestTypeId) " +
                     "INNER JOIN QuestTypeLanguage qtl ON qt.QuestTypeId = qtl.QuestTypeId INNER JOIN questproperties qp " +
-                    "ON qp.EntryId = ql.EntryId WHERE UserId = ? And ql.EntryId = ?  AND Removed = 0 AND LanguageId IN " +
+                    "ON qp.EntryId = ql.EntryId WHERE UserId = ? And ql.EntryId = ? AND LanguageId IN " +
                     "(SELECT COALESCE((SELECT languageId FROM questtypelanguage qtl2 WHERE qtl2.LanguageId = ? AND qtl2.QuestTypeId = qt.QuestTypeId), 1)) " +
                     "ORDER BY PropertyId DESC;");
             ps.setInt(1, user.getId());
@@ -144,7 +144,7 @@ public class QuestJDBCDao implements IQuestDAO {
             PreparedStatement ps = connection.prepareStatement("SELECT ql.EntryId, qtl.Name, qt.Reward " +
                     ", ql.Removed, ql.Completed, ql.Description, qt.QuestTypeId FROM (questlog ql INNER JOIN QuestType qt ON ql.QuestTypeId = qt.QuestTypeId) " +
                     "INNER JOIN QuestTypeLanguage qtl ON qt.QuestTypeId = qtl.QuestTypeId " +
-                    "WHERE UserId = ? AND Completed = 0 AND LanguageId IN " +
+                    "WHERE UserId = ? AND LanguageId IN " +
                     "(SELECT COALESCE(" +
                     "(SELECT languageId FROM questtypelanguage qtl2 WHERE qtl2.LanguageId = ? AND qtl2.QuestTypeId = qt.QuestTypeId), 1))");
             ps.setInt(1, userId);

@@ -60,6 +60,7 @@ public class Librarian {
     public boolean removeQuestFromQuestLog(int entryId, User user) {
         boolean success = user.removeQuestFromQuestLog(entryId);
         if (success) {
+            questGenerator.generateQuest(user.getId());
             Map<String, String> notificationVariables = new HashMap<>();
             notificationVariables.put("QuestId", Integer.toString(entryId));
             sendNotification(user, 2,notificationVariables);
