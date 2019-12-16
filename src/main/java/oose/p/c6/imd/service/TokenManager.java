@@ -34,7 +34,7 @@ public class TokenManager {
                 return token.getUser();
             }
         }
-        return null; //bclsc
+        return null;
     }
 
     public Token getTokenFromTokenString(String t){

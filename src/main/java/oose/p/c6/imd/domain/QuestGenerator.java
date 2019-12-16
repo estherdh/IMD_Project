@@ -3,7 +3,7 @@ package oose.p.c6.imd.domain;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class QuestGenerator {
-    private QuestGeneratorFactory questGeneratorFactory;
+    private QuestGeneratorFactory questGeneratorFactory; //
 
     public QuestGenerator() {
         questGeneratorFactory = QuestGeneratorFactory.getInstance();
